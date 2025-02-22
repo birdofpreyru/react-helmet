@@ -1,6 +1,7 @@
+*.tgz
+.*
 .eslintrc.js
+__tests__
 jest.setup.js
-*.config.js
 node_modules
 src
-__tests__
