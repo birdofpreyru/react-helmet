@@ -11,6 +11,7 @@ _This is a fork of https://github.com/staylor/react-helmet-async library, which 
 
 _This fork is published to NPM as https://www.npmjs.com/package/@dr.pogodin/react-helmet, its version 2.0.4 exactly matches the same version of the forked library, but with React peer dependency version set to 19. Future versions will take care of an update of dependencies, and code upgrades to the latest React best practices._
 
+[![Sponsor](https://raw.githubusercontent.com/birdofpreyru/js-utils/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 ---
 
 [Announcement post on Times Open blog](https://open.nytimes.com/the-future-of-meta-tag-management-for-modern-react-development-ec26a7dc9183)
