@@ -58,8 +58,8 @@
     "globals": "^16.0.0",
     "jsdom": "22.1.0",
     "raf": "3.4.1",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "rimraf": "6.0.1",
     "tsx": "4.6.1",
     "typescript": "5.7.3",
@@ -68,6 +68,6 @@
     "vitest": "0.34.6"
   },
   "peerDependencies": {
-    "react": "19"
+    "react": "^18.3.1"
   }
 }
