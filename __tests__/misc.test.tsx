@@ -1,9 +1,7 @@
-import React from 'react';
-
-import { Helmet } from '../src';
+import { Helmet, type OnChangeClientStateT } from '../src';
 import { HELMET_ATTRIBUTE } from '../src/constants';
 
-import { render } from './utils';
+import { render } from '../config/jest/utils';
 
 // TODO: This is confusing
 Helmet.defaultProps.defer = false;
@@ -29,14 +27,14 @@ describe('misc', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag.getAttribute).toBeDefined();
+      expect(existingTag!.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'This is "quoted" text and & and \'.');
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not change the DOM if it recevies identical props', () => {
-      const onChange = vi.fn();
+      const onChange = jest.fn();
 
       render(
         <Helmet
@@ -55,13 +53,13 @@ describe('misc', () => {
         />,
       );
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('does not write the DOM if the client and server are identical', () => {
       document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = vi.fn();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
       render(
         <Helmet
           script={[
@@ -76,14 +74,14 @@ describe('misc', () => {
 
       expect(onChange).toHaveBeenCalled();
 
-      const [, addedTags, removedTags] = onChange.mock.calls[0];
+      const [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
       expect(addedTags).toEqual({});
       expect(removedTags).toEqual({});
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = vi.fn();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
       let addedTags;
       let removedTags;
       render(
@@ -102,15 +100,15 @@ describe('misc', () => {
 
       expect(onChange).toHaveBeenCalled();
 
-      addedTags = onChange.mock.calls[0][1];
-      removedTags = onChange.mock.calls[0][2];
+      addedTags = onChange.mock.calls[0]![1];
+      removedTags = onChange.mock.calls[0]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
       expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -133,26 +131,26 @@ describe('misc', () => {
         />,
       );
 
-      expect(onChange).toBeCalledTimes(2);
+      expect(onChange).toHaveBeenCalledTimes(2);
 
-      addedTags = onChange.mock.calls[1][1];
-      removedTags = onChange.mock.calls[1][2];
+      addedTags = onChange.mock.calls[1]?.[1];
+      removedTags = onChange.mock.calls[1]?.[2];
 
       expect(addedTags).toHaveProperty('metaTags');
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags[0]).toBeDefined();
+      expect(addedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags[0]).toBeDefined();
+      expect(addedTags?.linkTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toHaveProperty('metaTags');
-      expect(removedTags.metaTags[0]).toBeDefined();
-      expect(removedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(removedTags?.metaTags[0]).toBeDefined();
+      expect(removedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).not.toHaveProperty('linkTags');
     });
 
     it('does not accept nested Helmets', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         render(
@@ -179,10 +177,10 @@ describe('misc', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag.getAttribute).toBeDefined();
+      expect(existingTag!.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'Test Description');
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('requestAnimationFrame works as expected', () => {
@@ -211,14 +209,14 @@ describe('misc', () => {
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag.getAttribute).toBeDefined();
+      expect(existingTag!.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'This is "quoted" text and & and \'.');
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not change the DOM if it recevies identical props', () => {
-      const onChange = vi.fn();
+      const onChange = jest.fn();
       render(
         <Helmet onChangeClientState={onChange}>
           <meta name="description" content="Test description" />
@@ -234,13 +232,13 @@ describe('misc', () => {
         </Helmet>,
       );
 
-      expect(onChange).toBeCalledTimes(1);
+      expect(onChange).toHaveBeenCalledTimes(1);
     });
 
     it('does not write the DOM if the client and server are identical', () => {
       document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = vi.fn();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
       render(
         <Helmet onChangeClientState={onChange}>
           <script src="http://localhost/test.js" type="text/javascript" />
@@ -249,14 +247,14 @@ describe('misc', () => {
 
       expect(onChange).toHaveBeenCalled();
 
-      const [, addedTags, removedTags] = onChange.mock.calls[0];
+      const [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
       expect(addedTags).toEqual({});
       expect(removedTags).toEqual({});
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = vi.fn();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
       let addedTags;
       let removedTags;
 
@@ -269,15 +267,15 @@ describe('misc', () => {
 
       expect(onChange).toHaveBeenCalled();
 
-      addedTags = onChange.mock.calls[0][1];
-      removedTags = onChange.mock.calls[0][2];
+      addedTags = onChange.mock.calls[0]![1];
+      removedTags = onChange.mock.calls[0]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
       expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -289,26 +287,26 @@ describe('misc', () => {
         </Helmet>,
       );
 
-      expect(onChange).toBeCalledTimes(2);
+      expect(onChange).toHaveBeenCalledTimes(2);
 
-      addedTags = onChange.mock.calls[1][1];
-      removedTags = onChange.mock.calls[1][2];
+      addedTags = onChange.mock.calls[1]![1];
+      removedTags = onChange.mock.calls[1]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
       expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toHaveProperty('metaTags');
       expect(removedTags.metaTags[0]).toBeDefined();
-      expect(removedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(removedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).not.toHaveProperty('linkTags');
     });
 
     it('does not accept nested Helmets', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         render(
@@ -330,7 +328,7 @@ describe('misc', () => {
 
     it('throws on invalid elements', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         render(
@@ -352,7 +350,7 @@ describe('misc', () => {
 
     it('throws on invalid self-closing elements', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         /* eslint-disable react/no-unknown-property */
@@ -377,7 +375,7 @@ describe('misc', () => {
 
     it('throws on invalid strings as children', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         render(
@@ -399,7 +397,7 @@ describe('misc', () => {
 
     it('throws on invalid children', () => {
       const consoleError = global.console.error;
-      global.console.error = vi.fn();
+      global.console.error = jest.fn();
 
       const renderInvalid = () => {
         render(
@@ -445,10 +443,10 @@ describe('misc', () => {
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag.getAttribute).toBeDefined();
+      expect(existingTag!.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'Test Description');
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('requestAnimationFrame works as expected', () => {

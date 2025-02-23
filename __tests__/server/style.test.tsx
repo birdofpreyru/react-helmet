@@ -1,9 +1,9 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
+import { renderContext, isArray } from '../../config/jest/utils';
+import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -33,15 +33,15 @@ describe('server', () => {
         />,
       );
 
-      expect(head.style).toBeDefined();
-      expect(head.style.toComponent).toBeDefined();
+      expect(head?.style).toBeDefined();
+      expect(head!.style.toComponent).toBeDefined();
 
-      const styleComponent = head.style.toComponent();
+      const styleComponent = head?.style.toComponent();
 
       expect(styleComponent).toEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
-      const markup = ReactServer.renderToStaticMarkup(styleComponent);
+      const markup = ReactServer.renderToStaticMarkup(styleComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -62,9 +62,9 @@ describe('server', () => {
         />,
       );
 
-      expect(head.style).toBeDefined();
-      expect(head.style.toString).toBeDefined();
-      expect(head.style.toString()).toMatchSnapshot();
+      expect(head?.style).toBeDefined();
+      expect(head!.style.toString).toBeDefined();
+      expect(head?.style.toString()).toMatchSnapshot();
     });
   });
 
@@ -77,15 +77,15 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.style).toBeDefined();
-      expect(head.style.toComponent).toBeDefined();
+      expect(head?.style).toBeDefined();
+      expect(head!.style.toComponent).toBeDefined();
 
-      const styleComponent = head.style.toComponent();
+      const styleComponent = head?.style.toComponent();
 
       expect(styleComponent).toEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
-      const markup = ReactServer.renderToStaticMarkup(styleComponent);
+      const markup = ReactServer.renderToStaticMarkup(styleComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -98,9 +98,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.style).toBeDefined();
-      expect(head.style.toString).toBeDefined();
-      expect(head.style.toString()).toMatchSnapshot();
+      expect(head?.style).toBeDefined();
+      expect(head!.style.toString).toBeDefined();
+      expect(head?.style.toString()).toMatchSnapshot();
     });
   });
 });

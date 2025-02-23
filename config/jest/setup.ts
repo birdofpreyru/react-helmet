@@ -1,5 +1,9 @@
-// TODO: Move into Jest setup script.
+// Polyfills requestAnimationFrame() in the test environment.
+import 'raf/polyfill';
 
+import '@testing-library/jest-dom';
+
+/*
 import '@testing-library/jest-dom';
 
 import { clearInstances } from '../src/HelmetData';
@@ -23,3 +27,5 @@ afterEach(() => {
 
   clearInstances();
 });
+
+*/

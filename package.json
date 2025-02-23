@@ -16,7 +16,6 @@
     "lint": "eslint",
     "test": "npm run lint && npm run typecheck && npm run jest",
     "typecheck": "tsc",
-    "types": "tsc src/index.tsx --jsx react --declaration --esModuleInterop --allowJs --emitDeclarationOnly --outDir lib",
     "jest": "jest --config config/jest/config.js"
   },
   "repository": {
@@ -42,6 +41,8 @@
     "shallowequal": "^1.1.0"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.26.8",
+    "@babel/eslint-plugin": "^7.25.9",
     "@babel/plugin-transform-runtime": "^7.26.9",
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
@@ -53,7 +54,6 @@
     "@tsconfig/recommended": "^1.0.8",
     "@types/invariant": "2.2.37",
     "@types/jest": "^29.5.14",
-    "@types/jsdom": "21.1.6",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@types/shallowequal": "1.1.5",
@@ -66,7 +66,6 @@
     "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "jsdom": "22.1.0",
     "raf": "^3.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

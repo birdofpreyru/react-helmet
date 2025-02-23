@@ -1,16 +1,13 @@
-import React from 'react';
-import type { MockedFunction } from 'vitest';
-
 import { Helmet } from '../src';
 
-import { render } from './utils';
-import './window';
+import { render } from '../config/jest/utils';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
     // pre-existing
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    __spy__: MockedFunction<any>;
+    __spy__: jest.Mock<any>;
   }
 }
 
@@ -18,7 +15,7 @@ describe.skip('deferred tags', () => {
   beforeEach(() => {
     Object.defineProperty(window, '__spy__', {
       configurable: true,
-      value: vi.fn(() => {}),
+      value: jest.fn(),
     });
   });
 
@@ -51,16 +48,14 @@ describe.skip('deferred tags', () => {
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
-      await vi.waitFor(
-        () => new Promise((resolve) => {
-          requestAnimationFrame(() => {
-            expect(window.__spy__).toHaveBeenCalledTimes(2);
-            expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          expect(window.__spy__).toHaveBeenCalledTimes(2);
+          expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-            resolve(true);
-          });
-        }),
-      );
+          resolve(true);
+        });
+      });
     });
   });
 
@@ -79,16 +74,14 @@ describe.skip('deferred tags', () => {
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
-      await vi.waitFor(
-        () => new Promise((resolve) => {
-          requestAnimationFrame(() => {
-            expect(window.__spy__).toHaveBeenCalledTimes(2);
-            expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          expect(window.__spy__).toHaveBeenCalledTimes(2);
+          expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-            resolve(true);
-          });
-        }),
-      );
+          resolve(true);
+        });
+      });
     });
   });
 });

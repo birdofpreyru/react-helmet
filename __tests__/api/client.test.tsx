@@ -1,8 +1,7 @@
-import React from 'react';
 import type { OnChangeClientStateT } from '../../src/types';
 
 import { Helmet } from '../../src';
-import { render } from '../utils';
+import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 

@@ -2,14 +2,12 @@ import { HELMET_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
 import type { Attributes, StateUpdate, TagList } from './types';
 import { flattenArray } from './utils';
 
-interface TagUpdates {
+type TagUpdates = {
   oldTags: HTMLElement[];
   newTags: HTMLElement[];
 }
 
-interface TagUpdateList {
-  [key: string]: TagUpdates;
-}
+type TagUpdateList = Record<string, TagUpdates>;
 
 const updateTags = (type: string, tags: HTMLElement[]) => {
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
@@ -18,23 +16,23 @@ const updateTags = (type: string, tags: HTMLElement[]) => {
   const newTags: HTMLElement[] = [];
   let indexToDelete: number;
 
-  if (tags && tags.length) {
+  if (tags?.length) {
     tags.forEach((tag) => {
       const newElement = document.createElement(type);
 
       for (const attribute in tag) {
         if (Object.prototype.hasOwnProperty.call(tag, attribute)) {
-          if (attribute === TAG_PROPERTIES.INNER_HTML) {
+          if (attribute === TAG_PROPERTIES.INNER_HTML as string) {
             newElement.innerHTML = tag.innerHTML;
-          } else if (attribute === TAG_PROPERTIES.CSS_TEXT) {
+          } else if (attribute === TAG_PROPERTIES.CSS_TEXT as string) {
             // This seems like a CSSImportRuleDeclaration?
             // @ts-expect-error "pre-existing"
             if (newElement.styleSheet) {
               // @ts-expect-error "pre-existing"
-              newElement.styleSheet.cssText = tag.cssText;
+              (newElement.styleSheet as CSSStyleDeclaration).cssText = (tag as CSSStyleDeclaration).cssText;
             } else {
               // @ts-expect-error "pre-existing"
-              newElement.appendChild(document.createTextNode(tag.cssText));
+              newElement.appendChild(document.createTextNode((tag as CSSStyleDeclaration).cssText));
             }
           } else {
             const attr = attribute as keyof HTMLElement;
@@ -82,13 +80,13 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   const attributeKeys = Object.keys(attributes);
 
   for (const attribute of attributeKeys) {
-    const value = attributes[attribute] || '';
+    const value = attributes[attribute] ?? '';
 
     if (elementTag.getAttribute(attribute) !== value) {
       elementTag.setAttribute(attribute, value);
     }
 
-    if (helmetAttributes.indexOf(attribute) === -1) {
+    if (!helmetAttributes.includes(attribute)) {
       helmetAttributes.push(attribute);
     }
 

@@ -1,9 +1,9 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
+import { renderContext, isArray } from '../../config/jest/utils';
+import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -33,10 +33,10 @@ describe('server', () => {
         />,
       );
 
-      expect(head.noscript).toBeDefined();
-      expect(head.noscript.toComponent).toBeDefined();
+      expect(head?.noscript).toBeDefined();
+      expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head.noscript.toComponent();
+      const noscriptComponent = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -45,7 +45,7 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(noscriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -60,10 +60,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.noscript).toBeDefined();
-      expect(head.noscript.toComponent).toBeDefined();
+      expect(head?.noscript).toBeDefined();
+      expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head.noscript.toComponent();
+      const noscriptComponent = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -72,7 +72,7 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(noscriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });

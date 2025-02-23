@@ -1,8 +1,8 @@
-import React, { type ReactNode, act, StrictMode } from 'react';
+import { type ReactNode, act, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 
-import Provider from '../src/Provider';
+import Provider, { type ContextT } from '../../src/Provider';
 
 let root: Root | null = null;
 
@@ -13,10 +13,10 @@ export const unmount = () => {
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const render = (node: ReactNode, context = {} as any) => {
+export const render = (node: ReactNode, context = {} as ContextT) => {
   if (!root) {
-    const elem = document.getElementById('mount') as HTMLElement;
+    const elem = document.getElementById('mount');
+    if (!elem) throw Error('Internal error');
     root = createRoot(elem);
   }
 
@@ -30,8 +30,7 @@ export const render = (node: ReactNode, context = {} as any) => {
 };
 
 export const renderContext = (node: ReactNode) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const context = {} as any;
+  const context = {} as ContextT;
   render(node, context);
   return context.helmet;
 };

@@ -1,11 +1,11 @@
 /** @jest-environment jsdom */
 
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
+import { renderContext, isArray } from '../../config/jest/utils';
+import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -33,19 +33,19 @@ describe('server', () => {
         />,
       );
 
-      expect(head.link).toBeDefined();
-      expect(head.link.toComponent).toBeDefined();
+      expect(head?.link).toBeDefined();
+      expect(head!.link.toComponent).toBeDefined();
 
-      const linkComponent = head.link.toComponent();
+      const linkComponent = head?.link.toComponent() as unknown as Element[];
 
       expect(linkComponent).toEqual(isArray);
       expect(linkComponent).toHaveLength(2);
 
-      linkComponent.forEach((link: Element) => {
+      linkComponent?.forEach((link: Element) => {
         expect(link).toEqual(expect.objectContaining({ type: 'link' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(linkComponent);
+      const markup = ReactServer.renderToStaticMarkup(linkComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -64,9 +64,9 @@ describe('server', () => {
         />,
       );
 
-      expect(head.link).toBeDefined();
-      expect(head.link.toString).toBeDefined();
-      expect(head.link.toString()).toMatchSnapshot();
+      expect(head?.link).toBeDefined();
+      expect(head!.link.toString).toBeDefined();
+      expect(head?.link.toString()).toMatchSnapshot();
     });
   });
 
@@ -79,10 +79,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.link).toBeDefined();
-      expect(head.link.toComponent).toBeDefined();
+      expect(head?.link).toBeDefined();
+      expect(head!.link.toComponent).toBeDefined();
 
-      const linkComponent = head.link.toComponent();
+      const linkComponent = head?.link.toComponent() as unknown as Element[];
 
       expect(linkComponent).toEqual(isArray);
       expect(linkComponent).toHaveLength(2);
@@ -91,7 +91,7 @@ describe('server', () => {
         expect(link).toEqual(expect.objectContaining({ type: 'link' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(linkComponent);
+      const markup = ReactServer.renderToStaticMarkup(linkComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -104,9 +104,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.link).toBeDefined();
-      expect(head.link.toString).toBeDefined();
-      expect(head.link.toString()).toMatchSnapshot();
+      expect(head?.link).toBeDefined();
+      expect(head!.link.toString).toBeDefined();
+      expect(head?.link.toString()).toMatchSnapshot();
     });
   });
 });

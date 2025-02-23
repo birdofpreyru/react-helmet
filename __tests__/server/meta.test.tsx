@@ -1,9 +1,9 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
+import { renderContext, isArray } from '../../config/jest/utils';
+import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -33,10 +33,10 @@ describe('server', () => {
         />,
       );
 
-      expect(head.meta).toBeDefined();
-      expect(head.meta.toComponent).toBeDefined();
+      expect(head?.meta).toBeDefined();
+      expect(head!.meta.toComponent).toBeDefined();
 
-      const metaComponent = head.meta.toComponent();
+      const metaComponent = head?.meta.toComponent() as unknown as Element[];
 
       expect(metaComponent).toEqual(isArray);
       expect(metaComponent).toHaveLength(5);
@@ -45,7 +45,7 @@ describe('server', () => {
         expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(metaComponent);
+      const markup = ReactServer.renderToStaticMarkup(metaComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -66,9 +66,9 @@ describe('server', () => {
         />,
       );
 
-      expect(head.meta).toBeDefined();
-      expect(head.meta.toString).toBeDefined();
-      expect(head.meta.toString()).toMatchSnapshot();
+      expect(head?.meta).toBeDefined();
+      expect(head!.meta.toString).toBeDefined();
+      expect(head?.meta.toString()).toMatchSnapshot();
     });
   });
 
@@ -87,10 +87,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.meta).toBeDefined();
-      expect(head.meta.toComponent).toBeDefined();
+      expect(head?.meta).toBeDefined();
+      expect(head!.meta.toComponent).toBeDefined();
 
-      const metaComponent = head.meta.toComponent();
+      const metaComponent = head?.meta.toComponent() as unknown as Element[];
 
       expect(metaComponent).toEqual(isArray);
       expect(metaComponent).toHaveLength(5);
@@ -99,7 +99,7 @@ describe('server', () => {
         expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(metaComponent);
+      const markup = ReactServer.renderToStaticMarkup(metaComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -118,9 +118,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.meta).toBeDefined();
-      expect(head.meta.toString).toBeDefined();
-      expect(head.meta.toString()).toMatchSnapshot();
+      expect(head?.meta).toBeDefined();
+      expect(head!.meta.toString).toBeDefined();
+      expect(head?.meta.toString()).toMatchSnapshot();
     });
   });
 });

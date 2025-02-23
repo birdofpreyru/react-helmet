@@ -1,9 +1,8 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext } from '../utils';
+import { renderContext } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 
@@ -23,7 +22,7 @@ describe('server', () => {
           <body lang="ga" className="myClassName" />
         </Helmet>,
       );
-      const attrs = head.bodyAttributes.toComponent();
+      const attrs = head?.bodyAttributes.toComponent();
 
       expect(attrs).toBeDefined();
 
@@ -39,9 +38,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(body.bodyAttributes).toBeDefined();
-      expect(body.bodyAttributes.toString).toBeDefined();
-      expect(body.bodyAttributes.toString()).toMatchSnapshot();
+      expect(body?.bodyAttributes).toBeDefined();
+      expect(body!.bodyAttributes.toString).toBeDefined();
+      expect(body?.bodyAttributes.toString()).toMatchSnapshot();
     });
   });
 });

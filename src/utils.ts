@@ -1,22 +1,14 @@
 import { TAG_NAMES, TAG_PROPERTIES, ATTRIBUTE_NAMES } from './constants';
 
-interface PropList {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type PropList = Record<string, any>;
 
 type PropsList = PropList[];
 type AttributeList = string[];
 
-interface SeenTags {
-  [key: string]: {
-    [key: string]: boolean;
-  };
-}
+type SeenTags = Record<string, Record<string, boolean>>;
 
-interface MatchProps {
-  [key: string]: string | AttributeList;
-}
+type MatchProps = Record<string, string | AttributeList>;
 
 const HELMET_PROPS = {
   DEFAULT_TITLE: 'defaultTitle',
@@ -32,7 +24,7 @@ const getInnermostProperty = (propsList: PropsList, property: string) => {
     const props = propsList[i]!;
 
     if (Object.prototype.hasOwnProperty.call(props, property)) {
-      return props[property];
+      return props[property] as string;
     }
   }
 
@@ -52,45 +44,55 @@ const getTitleFromPropsList = (propsList: PropsList) => {
 
   const innermostDefaultTitle = getInnermostProperty(propsList, HELMET_PROPS.DEFAULT_TITLE);
 
-  return innermostTitle || innermostDefaultTitle || undefined;
+  return innermostTitle ?? innermostDefaultTitle ?? undefined;
 };
 
 const getOnChangeClientState = (
   propsList: PropsList,
-) => getInnermostProperty(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) || (() => {});
+) => getInnermostProperty(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) ?? (() => undefined);
 
 const getAttributesFromPropsList = (
   tagType: string,
   propsList: PropsList,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 ) => propsList
   .filter((props) => typeof props[tagType] !== 'undefined')
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   .map((props) => props[tagType])
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   .reduce((tagAttrs, current) => ({ ...tagAttrs, ...current }), {});
 
 const getBaseTagFromPropsList = (
   primaryAttributes: AttributeList,
   propsList: PropsList,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
 ) => propsList
   .filter((props) => typeof props[TAG_NAMES.BASE] !== 'undefined')
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   .map((props) => props[TAG_NAMES.BASE])
   .reverse()
   .reduce((innermostBaseTag, tag) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     if (!innermostBaseTag.length) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       const keys = Object.keys(tag);
 
-      for (let i = 0; i < keys.length; i += 1) {
-        const attributeKey = keys[i];
-        const lowerCaseAttributeKey = attributeKey!.toLowerCase();
+      for (const attributeKey of keys) {
+        const lowerCaseAttributeKey = attributeKey.toLowerCase();
 
         if (
-          primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1
+          primaryAttributes.includes(lowerCaseAttributeKey)
+
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           && tag[lowerCaseAttributeKey]
         ) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
           return innermostBaseTag.concat(tag);
         }
       }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return innermostBaseTag;
   }, []);
 
@@ -104,6 +106,7 @@ const getTagsFromPropsList = (
   // Calculate list of tags, giving priority innermost component (end of the propslist)
   const approvedSeenTags: SeenTags = {};
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
   return propsList
     .filter((props) => {
       if (Array.isArray(props[tagName])) {
@@ -118,27 +121,31 @@ const getTagsFromPropsList = (
       }
       return false;
     })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map((props) => props[tagName])
     .reverse()
     .reduce((approvedTags, instanceTags) => {
       const instanceSeenTags: SeenTags = {};
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       instanceTags
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         .filter((tag: PropList) => {
           let primaryAttributeKey;
           const keys = Object.keys(tag);
-          for (let i = 0; i < keys.length; i += 1) {
-            const attributeKey = keys[i];
-            const lowerCaseAttributeKey = attributeKey!.toLowerCase();
+          for (const attributeKey of keys) {
+            const lowerCaseAttributeKey = attributeKey.toLowerCase();
 
             // Special rule with link tags, since rel and href are both primary tags, rel takes priority
             if (
-              primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1
+              primaryAttributes.includes(lowerCaseAttributeKey)
               && !(
                 primaryAttributeKey === TAG_PROPERTIES.REL
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                 && tag[primaryAttributeKey].toLowerCase() === 'canonical'
               ) && !(
-                lowerCaseAttributeKey === TAG_PROPERTIES.REL
+                lowerCaseAttributeKey === TAG_PROPERTIES.REL as string
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                 && tag[lowerCaseAttributeKey].toLowerCase() === 'stylesheet'
               )
             ) {
@@ -146,11 +153,11 @@ const getTagsFromPropsList = (
             }
             // Special case for innerHTML which doesn't work lowercased
             if (
-              primaryAttributes.indexOf(attributeKey!) !== -1
+              primaryAttributes.includes(attributeKey)
               && (
-                attributeKey === TAG_PROPERTIES.INNER_HTML
-                || attributeKey === TAG_PROPERTIES.CSS_TEXT
-                || attributeKey === TAG_PROPERTIES.ITEM_PROP
+                attributeKey === TAG_PROPERTIES.INNER_HTML as string
+                || attributeKey === TAG_PROPERTIES.CSS_TEXT as string
+                || attributeKey === TAG_PROPERTIES.ITEM_PROP as string
               )
             ) {
               primaryAttributeKey = attributeKey;
@@ -161,6 +168,7 @@ const getTagsFromPropsList = (
             return false;
           }
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           const value = tag[primaryAttributeKey].toLowerCase();
 
           if (!approvedSeenTags[primaryAttributeKey]) {
@@ -171,37 +179,41 @@ const getTagsFromPropsList = (
             instanceSeenTags[primaryAttributeKey] = {};
           }
 
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           if (!approvedSeenTags[primaryAttributeKey]![value]) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             instanceSeenTags[primaryAttributeKey]![value] = true;
             return true;
           }
 
           return false;
         })
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         .reverse()
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
         .forEach((tag: PropList) => approvedTags.push(tag));
 
       // Update seen tags with tags from this instance
       const keys = Object.keys(instanceSeenTags);
-      for (let i = 0; i < keys.length; i += 1) {
-        const attributeKey = keys[i];
+      for (const attributeKey of keys) {
         const tagUnion = {
-          ...approvedSeenTags[attributeKey!],
-          ...instanceSeenTags[attributeKey!],
+          ...approvedSeenTags[attributeKey],
+          ...instanceSeenTags[attributeKey],
         };
 
-        approvedSeenTags[attributeKey!] = tagUnion;
+        approvedSeenTags[attributeKey] = tagUnion;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return approvedTags;
     }, [])
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     .reverse();
 };
 
 const getAnyTrueFromPropsList = (propsList: PropsList, checkedTag: string) => {
   if (Array.isArray(propsList) && propsList.length) {
-    for (let index = 0; index < propsList.length; index += 1) {
-      const prop = propsList[index]!;
+    for (const prop of propsList) {
       if (prop[checkedTag]) {
         return true;
       }
@@ -211,16 +223,21 @@ const getAnyTrueFromPropsList = (propsList: PropsList, checkedTag: string) => {
 };
 
 const reducePropsToState = (propsList: PropsList) => ({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   baseTag: getBaseTagFromPropsList([TAG_PROPERTIES.HREF], propsList),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   bodyAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.BODY, propsList),
   defer: getInnermostProperty(propsList, HELMET_PROPS.DEFER),
   encode: getInnermostProperty(propsList, HELMET_PROPS.ENCODE_SPECIAL_CHARACTERS),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   htmlAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.HTML, propsList),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   linkTags: getTagsFromPropsList(
     TAG_NAMES.LINK,
     [TAG_PROPERTIES.REL, TAG_PROPERTIES.HREF],
     propsList,
   ),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   metaTags: getTagsFromPropsList(
     TAG_NAMES.META,
     [
@@ -232,15 +249,19 @@ const reducePropsToState = (propsList: PropsList) => ({
     ],
     propsList,
   ),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   noscriptTags: getTagsFromPropsList(TAG_NAMES.NOSCRIPT, [TAG_PROPERTIES.INNER_HTML], propsList),
   onChangeClientState: getOnChangeClientState(propsList),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   scriptTags: getTagsFromPropsList(
     TAG_NAMES.SCRIPT,
     [TAG_PROPERTIES.SRC, TAG_PROPERTIES.INNER_HTML],
     propsList,
   ),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   styleTags: getTagsFromPropsList(TAG_NAMES.STYLE, [TAG_PROPERTIES.CSS_TEXT], propsList),
   title: getTitleFromPropsList(propsList),
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   titleAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.TITLE, propsList),
   prioritizeSeoTags: getAnyTrueFromPropsList(propsList, HELMET_PROPS.PRIORITIZE_SEO_TAGS),
 });
@@ -253,9 +274,10 @@ export { reducePropsToState };
 
 const checkIfPropsMatch = (props: PropList, toMatch: MatchProps) => {
   const keys = Object.keys(props);
-  for (let i = 0; i < keys.length; i += 1) {
+  for (const key of keys) {
     // e.g. if rel exists in the list of allowed props [amphtml, alternate, etc]
-    if (toMatch[keys[i]!] && toMatch[keys[i]!]!.includes(props[keys[i]!])) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    if (toMatch[key]?.includes(props[key])) {
       return true;
     }
   }

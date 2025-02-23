@@ -73,7 +73,7 @@ export const HTML_TAG_MAP = Object.entries(REACT_TAG_MAP).reduce(
     carry[value] = key;
     return carry;
   },
-  {} as { [key: string]: string },
+  {} as Record<string, string>,
 );
 
 export const HELMET_ATTRIBUTE = 'data-rh';

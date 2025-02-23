@@ -12,11 +12,13 @@ const defaultValue = {};
 
 export const Context = createContext(defaultValue);
 
-interface ProviderProps {
+export type ContextT = {
+  helmet?: HelmetServerState;
+};
+
+type ProviderProps = {
   children?: ReactNode;
-  context?: {
-    helmet?: HelmetServerState;
-  };
+  context?: ContextT;
 }
 
 type HelmetProviderT = FunctionComponent<ProviderProps> & {

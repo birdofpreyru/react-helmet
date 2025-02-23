@@ -1,9 +1,9 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
+import { renderContext, isArray } from '../../config/jest/utils';
+import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -33,10 +33,10 @@ describe('server', () => {
         />,
       );
 
-      expect(head.script).toBeDefined();
-      expect(head.script.toComponent).toBeDefined();
+      expect(head?.script).toBeDefined();
+      expect(head!.script.toComponent).toBeDefined();
 
-      const scriptComponent = head.script.toComponent();
+      const scriptComponent = head?.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
@@ -45,7 +45,7 @@ describe('server', () => {
         expect(script).toEqual(expect.objectContaining({ type: 'script' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(scriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(scriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -66,9 +66,9 @@ describe('server', () => {
         />,
       );
 
-      expect(head.script).toBeDefined();
-      expect(head.script.toString).toBeDefined();
-      expect(head.script.toString()).toMatchSnapshot();
+      expect(head?.script).toBeDefined();
+      expect(head!.script.toString).toBeDefined();
+      expect(head?.script.toString()).toMatchSnapshot();
     });
   });
 
@@ -81,10 +81,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.script).toBeDefined();
-      expect(head.script.toComponent).toBeDefined();
+      expect(head?.script).toBeDefined();
+      expect(head!.script.toComponent).toBeDefined();
 
-      const scriptComponent = head.script.toComponent();
+      const scriptComponent = head?.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
@@ -93,7 +93,7 @@ describe('server', () => {
         expect(script).toEqual(expect.objectContaining({ type: 'script' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(scriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(scriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
@@ -106,9 +106,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.script).toBeDefined();
-      expect(head.script.toString).toBeDefined();
-      expect(head.script.toString()).toMatchSnapshot();
+      expect(head?.script).toBeDefined();
+      expect(head!.script.toString).toBeDefined();
+      expect(head?.script.toString()).toMatchSnapshot();
     });
   });
 });

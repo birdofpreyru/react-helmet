@@ -2,11 +2,9 @@ import type { Component, HTMLAttributes, JSX } from 'react';
 
 import type HelmetData from './HelmetData';
 
-export type Attributes = { [key: string]: string };
+export type Attributes = Record<string, string>;
 
-interface OtherElementAttributes {
-  [key: string]: string | number | boolean | null | undefined;
-}
+type OtherElementAttributes = Record<string, string | number | boolean | null | undefined>;
 
 export type HtmlProps = JSX.IntrinsicElements['html'] & OtherElementAttributes;
 
@@ -22,7 +20,7 @@ export type MetaProps = JSX.IntrinsicElements['meta'] & {
 
 export type TitleProps = HTMLAttributes<HTMLTitleElement>;
 
-export interface HelmetTags {
+export type HelmetTags = {
   baseTag: HTMLBaseElement[];
   linkTags: HTMLLinkElement[];
   metaTags: HTMLMetaElement[];
@@ -31,22 +29,22 @@ export interface HelmetTags {
   styleTags: HTMLStyleElement[];
 }
 
-export interface HelmetDatum {
+export type HelmetDatum = {
   toString(): string;
   toComponent(): Component;
 }
 
-export interface HelmetHTMLBodyDatum {
+export type HelmetHTMLBodyDatum = {
   toString(): string;
-  toComponent(): React.HTMLAttributes<HTMLBodyElement>;
+  toComponent(): HTMLAttributes<HTMLBodyElement>;
 }
 
-export interface HelmetHTMLElementDatum {
+export type HelmetHTMLElementDatum = {
   toString(): string;
-  toComponent(): React.HTMLAttributes<HTMLHtmlElement>;
+  toComponent(): HTMLAttributes<HTMLHtmlElement>;
 }
 
-export interface HelmetServerState {
+export type HelmetServerState = {
   base: HelmetDatum;
   bodyAttributes: HelmetHTMLBodyDatum;
   htmlAttributes: HelmetHTMLElementDatum;
@@ -56,15 +54,13 @@ export interface HelmetServerState {
   script: HelmetDatum;
   style: HelmetDatum;
   title: HelmetDatum;
-  titleAttributes: HelmetDatum;
+  titleAttributes?: HelmetDatum;
   priority: HelmetDatum;
 }
 
-export interface TagList {
-  [key: string]: HTMLElement[];
-}
+export type TagList = Record<string, HTMLElement[]>;
 
-export interface StateUpdate extends HelmetTags {
+export type StateUpdate = HelmetTags & {
   bodyAttributes: BodyProps;
   defer: boolean;
   htmlAttributes: HtmlProps;
@@ -79,7 +75,7 @@ export type OnChangeClientStateT = (
   removedTags: HelmetTags
 ) => void;
 
-export interface HelmetProps {
+export type HelmetProps = {
   async?: boolean;
   base?: Attributes; // {"target": "_blank", "href": "http://mysite.com/"}
   bodyAttributes?: BodyProps; // {"className": "root"}

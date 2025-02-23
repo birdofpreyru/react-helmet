@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
+import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 
@@ -285,9 +283,7 @@ describe('meta tags', () => {
 
       expect(console.warn).toHaveBeenCalled();
 
-      // This is a pre-existing typing.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      expect((console.warn as MockedFunction<any>).mock.calls[0][0]).toMatchSnapshot();
+      expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0]).toMatchSnapshot();
 
       global.console = originalConsole;
     });

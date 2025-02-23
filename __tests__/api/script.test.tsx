@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
+import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 
@@ -110,16 +108,16 @@ describe('script tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {
@@ -135,10 +133,10 @@ describe('script tags', () => {
         />,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`) as Element;
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {
@@ -260,16 +258,16 @@ describe('script tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {
@@ -279,10 +277,10 @@ describe('script tags', () => {
         </Helmet>,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`) as Element;
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {

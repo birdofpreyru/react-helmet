@@ -26,7 +26,7 @@ const encodeSpecialCharacters = (str: string, encode = true) => {
     .replace(/'/g, '&#x27;');
 };
 
-type Attributes = { [key: string]: string | number | boolean };
+type Attributes = Record<string, string | number | boolean>;
 
 const generateElementAttributesAsString = (
   attributes: Attributes,
@@ -62,7 +62,7 @@ const generateTagsAsString = (
   const tag = t as unknown as Attributes;
   const attributeHtml = Object.keys(tag)
     .filter(
-      (attribute) => !(attribute === TAG_PROPERTIES.INNER_HTML || attribute === TAG_PROPERTIES.CSS_TEXT),
+      (attribute) => !(attribute === TAG_PROPERTIES.INNER_HTML as string || attribute === TAG_PROPERTIES.CSS_TEXT as string),
     )
     .reduce((string, attribute) => {
       const attr = typeof tag[attribute] === 'undefined'
@@ -71,9 +71,9 @@ const generateTagsAsString = (
       return string ? `${string} ${attr}` : attr;
     }, '');
 
-  const tagContent = tag.innerHTML || tag.cssText || '';
+  const tagContent = tag.innerHTML ?? tag.cssText ?? '';
 
-  const isSelfClosing = SELF_CLOSING_TAGS.indexOf(type) === -1;
+  const isSelfClosing = !SELF_CLOSING_TAGS.includes(type);
 
   return `${str}<${type} ${HELMET_ATTRIBUTE}="true" ${attributeHtml}${
     isSelfClosing ? '/>' : `>${tagContent}</${type}>`
@@ -106,22 +106,24 @@ const generateTagsAsReactComponent = (
   tags: any[],
 ) => tags.map((tag, i) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const mappedTag: { [key: string]: any } = {
+  const mappedTag: Record<string, any> = {
     key: i,
     [HELMET_ATTRIBUTE]: true,
   };
 
-  Object.keys(tag).forEach((attribute) => {
+  Object.keys(tag as string).forEach((attribute) => {
     const mapped = (REACT_TAG_MAP as Attributes)[attribute] as string;
     const mappedAttribute = mapped || attribute;
 
     if (
-      mappedAttribute === TAG_PROPERTIES.INNER_HTML
-      || mappedAttribute === TAG_PROPERTIES.CSS_TEXT
+      mappedAttribute === TAG_PROPERTIES.INNER_HTML as string
+      || mappedAttribute === TAG_PROPERTIES.CSS_TEXT as string
     ) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const content = tag.innerHTML || tag.cssText;
-      mappedTag.dangerouslySetInnerHTML = { __html: content };
+      mappedTag.dangerouslySetInnerHTML = { __html: content as string };
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       mappedTag[mappedAttribute] = tag[attribute];
     }
   });
@@ -132,26 +134,33 @@ const generateTagsAsReactComponent = (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getMethodsForTag = (type: string, tags: any, encode = true) => {
   switch (type) {
-    case TAG_NAMES.TITLE:
+    case TAG_NAMES.TITLE as string:
       return {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         toComponent: () => generateTitleAsReactComponent(type, tags.title, tags.titleAttributes),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
         toString: () => generateTitleAsString(type, tags.title, tags.titleAttributes, encode),
       };
-    case ATTRIBUTE_NAMES.BODY:
-    case ATTRIBUTE_NAMES.HTML:
+    case ATTRIBUTE_NAMES.BODY as string:
+    case ATTRIBUTE_NAMES.HTML as string:
       return {
-        toComponent: () => convertElementAttributesToReactProps(tags),
-        toString: () => generateElementAttributesAsString(tags),
+        toComponent: () => convertElementAttributesToReactProps(tags as Attributes),
+        toString: () => generateElementAttributesAsString(tags as Attributes),
       };
     default:
       return {
-        toComponent: () => generateTagsAsReactComponent(type, tags),
-        toString: () => generateTagsAsString(type, tags, encode),
+        toComponent: () => generateTagsAsReactComponent(type, tags as HTMLElement[]),
+        toString: () => generateTagsAsString(type, tags as HTMLElement[], encode),
       };
   }
 };
 
-const getPriorityMethods = ({ metaTags, linkTags, scriptTags, encode }: MappedServerState) => {
+const getPriorityMethods = ({
+  metaTags,
+  linkTags,
+  scriptTags,
+  encode,
+}: MappedServerState) => {
   const meta = prioritizer(metaTags, SEO_PRIORITY_TAGS.meta);
   const link = prioritizer(linkTags, SEO_PRIORITY_TAGS.link);
   const script = prioritizer(scriptTags, SEO_PRIORITY_TAGS.script);
@@ -164,11 +173,11 @@ const getPriorityMethods = ({ metaTags, linkTags, scriptTags, encode }: MappedSe
       ...generateTagsAsReactComponent(TAG_NAMES.SCRIPT, script.priority),
     ],
     // generate all the tags as strings and concatenate them
-    toString: () => `${getMethodsForTag(TAG_NAMES.META, meta.priority, encode)} ${getMethodsForTag(
+    toString: () => `${getMethodsForTag(TAG_NAMES.META, meta.priority, encode).toString()} ${getMethodsForTag(
       TAG_NAMES.LINK,
       link.priority,
       encode,
-    )} ${getMethodsForTag(TAG_NAMES.SCRIPT, script.priority, encode)}`,
+    ).toString()} ${getMethodsForTag(TAG_NAMES.SCRIPT, script.priority, encode).toString()}`,
   };
 
   return {
@@ -193,11 +202,17 @@ const mapStateOnServer = (props: MappedServerState) => {
   } = props;
   let { linkTags, metaTags, scriptTags } = props;
   let priorityMethods = {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     toComponent: () => {},
     toString: () => '',
   };
   if (prioritizeSeoTags) {
-    ({ priorityMethods, linkTags, metaTags, scriptTags } = getPriorityMethods(props));
+    ({
+      priorityMethods,
+      linkTags,
+      metaTags,
+      scriptTags,
+    } = getPriorityMethods(props));
   }
   return {
     priority: priorityMethods,

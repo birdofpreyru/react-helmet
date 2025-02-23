@@ -1,3 +1,4 @@
+/*
 import { build } from 'esbuild';
 
 import { dependencies, peerDependencies } from './package.json';
@@ -19,3 +20,4 @@ build({
   outfile: 'lib/index.esm.js',
   format: 'esm',
 });
+*/

@@ -1,8 +1,6 @@
-import React from 'react';
-
 import { Helmet } from '../src';
 
-import { render } from './utils';
+import { render } from '../config/jest/utils';
 
 // TODO: This is confusing
 Helmet.defaultProps.defer = false;

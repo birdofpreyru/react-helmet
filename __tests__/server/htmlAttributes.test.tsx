@@ -1,9 +1,8 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
-import { renderContext } from '../utils';
+import { renderContext } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 
@@ -27,7 +26,7 @@ describe('server', () => {
         />,
       );
 
-      const attrs = head.htmlAttributes.toComponent();
+      const attrs = head?.htmlAttributes.toComponent();
 
       expect(attrs).toBeDefined();
 
@@ -46,9 +45,9 @@ describe('server', () => {
         />,
       );
 
-      expect(head.htmlAttributes).toBeDefined();
-      expect(head.htmlAttributes.toString).toBeDefined();
-      expect(head.htmlAttributes.toString()).toMatchSnapshot();
+      expect(head?.htmlAttributes).toBeDefined();
+      expect(head!.htmlAttributes.toString).toBeDefined();
+      expect(head?.htmlAttributes.toString()).toMatchSnapshot();
     });
   });
 
@@ -60,7 +59,7 @@ describe('server', () => {
         </Helmet>,
       );
 
-      const attrs = head.htmlAttributes.toComponent();
+      const attrs = head?.htmlAttributes.toComponent();
 
       expect(attrs).toBeDefined();
 
@@ -76,9 +75,9 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head.htmlAttributes).toBeDefined();
-      expect(head.htmlAttributes.toString).toBeDefined();
-      expect(head.htmlAttributes.toString()).toMatchSnapshot();
+      expect(head?.htmlAttributes).toBeDefined();
+      expect(head!.htmlAttributes.toString).toBeDefined();
+      expect(head?.htmlAttributes.toString()).toMatchSnapshot();
     });
   });
 });

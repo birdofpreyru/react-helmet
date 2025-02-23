@@ -8,19 +8,17 @@ export function clearInstances() {
   instances.length = 0;
 }
 
-interface HelmetDataContext {
+type HelmetDataContext = {
   helmet: HelmetServerState;
 }
 
-export interface HelmetDataType {
+export type HelmetDataType = {
   instances: HelmetDispatcher[];
   context: HelmetDataContext;
 }
 
 export const isDocument: boolean = !!(
   typeof window !== 'undefined'
-
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
   && window.document.createElement
 );
 
@@ -47,10 +45,9 @@ export default class HelmetData implements HelmetDataType {
     },
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(context: any, canUseDOM?: boolean) {
+  constructor(context: HelmetDataContext, canUseDOM?: boolean) {
     this.context = context;
-    this.canUseDOM = canUseDOM || false;
+    this.canUseDOM = canUseDOM ?? false;
 
     if (!canUseDOM) {
       context.helmet = mapStateOnServer({

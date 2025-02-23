@@ -1,10 +1,8 @@
-import React from 'react';
-
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
+import Provider, { type ContextT } from '../../src/Provider';
 import HelmetData from '../../src/HelmetData';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
+import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 
@@ -70,8 +68,7 @@ describe('Helmet Data', () => {
     });
 
     it('works with the same context object but separate HelmetData instances', () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const context = {} as any;
+      const context = {} as ContextT;
 
       render(
         <div>
@@ -86,9 +83,9 @@ describe('Helmet Data', () => {
 
       const head = context.helmet;
 
-      expect(head.base).toBeDefined();
-      expect(head.base.toString).toBeDefined();
-      expect(head.base.toString()).toMatchSnapshot();
+      expect(head?.base).toBeDefined();
+      expect(head!.base.toString).toBeDefined();
+      expect(head?.base.toString()).toMatchSnapshot();
     });
   });
 
@@ -107,9 +104,9 @@ describe('Helmet Data', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('renders declarative without context', () => {
@@ -128,9 +125,9 @@ describe('Helmet Data', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets base tag based on deepest nested component', () => {
@@ -154,9 +151,9 @@ describe('Helmet Data', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://mysite.com/public');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
   });
 });

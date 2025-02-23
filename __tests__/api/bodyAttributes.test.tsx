@@ -1,9 +1,7 @@
-import React from 'react';
-
 import type { BodyProps } from '../../src';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
-import { render } from '../utils';
+import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
 

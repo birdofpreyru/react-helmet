@@ -7,7 +7,9 @@ import { reducePropsToState } from './utils';
 import Provider from './Provider';
 import type { HelmetServerState } from './types';
 
-interface DispatcherProps {
+type DispatcherProps = {
+  // TODO: Temporarily
+  // eslint-disable-next-line no-use-before-define
   context: DispatcherContextProp;
 }
 
@@ -70,7 +72,7 @@ export default class HelmetDispatcher extends Component<DispatcherProps> {
   }
 }
 
-export interface DispatcherContextProp {
+export type DispatcherContextProp = {
   setHelmet: (newState: HelmetServerState) => void;
   helmetInstances: {
     get: () => HelmetDispatcher[];

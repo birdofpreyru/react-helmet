@@ -18,7 +18,7 @@ export { default as HelmetData } from './HelmetData';
 export { default as HelmetProvider } from './Provider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Props = { [key: string]: any };
+type Props = Record<string, any>;
 
 export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
   static defaultProps = {
@@ -47,10 +47,13 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
         return {
           cssText: nestedChildren,
         };
-      default:
+      default: {
         throw new Error(
-          `<${child.type} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
+          `<${typeof child.type === 'string'
+            ? child.type
+            : 'N/A'} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
         );
+      }
     }
   }
 
@@ -58,17 +61,17 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     child: ReactElement<any, any>,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    arrayTypeChildren: { [key: string]: ReactElement<any, any>[] },
+    arrayTypeChildren: Record<string, ReactElement<any, any>[]>,
     newChildProps: Props,
     nestedChildren: ReactNode,
   ) {
     return {
       ...arrayTypeChildren,
       [child.type]: [
-        ...arrayTypeChildren[child.type] || [],
+        ...arrayTypeChildren[child.type as string] ?? [],
         {
           ...newChildProps,
-          ...this.mapNestedChildrenToProps(child, nestedChildren),
+          ...this.mapNestedChildrenToProps(child as ReactElement, nestedChildren),
         },
       ],
     };
@@ -109,7 +112,7 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mapArrayTypeChildrenToProps(arrayTypeChildren: { [key: string]: ReactElement<any, any> }, newProps: Props) {
+  mapArrayTypeChildrenToProps(arrayTypeChildren: Record<string, ReactElement<any, any>>, newProps: Props) {
     let newFlattenedProps = { ...newProps };
 
     Object.keys(arrayTypeChildren).forEach((arrayChildName) => {
@@ -152,16 +155,14 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     React.Children.forEach(children as ReactElement<any, any>, (child: ReactElement) => {
-      if (!child || !child.props) {
-        return;
-      }
+      if (!child?.props) return;
 
       // @ts-expect-error "pre-existing"
       const { children: nestedChildren, ...childProps } = child.props;
       // convert React props to HTML attributes
       const newChildProps = Object.keys(childProps).reduce((obj: Props, key) => {
         // @ts-expect-error "pre-existing"
-        obj[HTML_TAG_MAP[key] || key] = childProps[key];
+        obj[HTML_TAG_MAP[key] ?? key] = childProps[key]; // eslint-disable-line @typescript-eslint/no-unsafe-assignment
         return obj;
       }, {});
 
@@ -169,12 +170,12 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
       if (typeof type === 'symbol') {
         type = (type as 'symbol').toString();
       } else {
-        this.warnOnInvalidChildren(child, nestedChildren);
+        this.warnOnInvalidChildren(child, nestedChildren as ReactNode);
       }
 
       switch (type) {
         case TAG_NAMES.FRAGMENT:
-          newProps = this.mapChildrenToProps(nestedChildren, newProps);
+          newProps = this.mapChildrenToProps(nestedChildren as ReactNode, newProps);
           break;
 
         case TAG_NAMES.LINK:
@@ -186,12 +187,12 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
             child,
             arrayTypeChildren,
             newChildProps,
-            nestedChildren,
+            nestedChildren as ReactNode,
           );
           break;
 
         default:
-          newProps = this.mapObjectTypeChildren(child, newProps, newChildProps, nestedChildren);
+          newProps = this.mapObjectTypeChildren(child, newProps, newChildProps, nestedChildren as ReactNode);
           break;
       }
     });
