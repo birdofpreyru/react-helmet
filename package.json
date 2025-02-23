@@ -12,10 +12,10 @@
   },
   "scripts": {
     "clean": "rimraf lib",
-    "build": "yarn run clean && NODE_ENV=production tsx build.ts && yarn types",
+    "build": "npm run clean && NODE_ENV=production tsx build.ts && npm run types",
     "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint --report-unused-disable-directives .",
-    "test": "yarn lint && yarn typecheck && yarn vitest",
-    "typecheck": "yarn tsc",
+    "test": "npm run lint && npm run typecheck && npm run vitest",
+    "typecheck": "npm run tsc",
     "types": "tsc src/index.tsx --jsx react --declaration --esModuleInterop --allowJs --emitDeclarationOnly --outDir lib",
     "vitest": "vitest run"
   },
@@ -64,6 +64,5 @@
   },
   "peerDependencies": {
     "react": "19"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }
