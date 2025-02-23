@@ -1,4 +1,4 @@
-import type { HTMLAttributes, JSX } from 'react';
+import type { Component, HTMLAttributes, JSX } from 'react';
 
 import type HelmetData from './HelmetData';
 
@@ -33,9 +33,7 @@ export interface HelmetTags {
 
 export interface HelmetDatum {
   toString(): string;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  toComponent(): React.Component<any>;
+  toComponent(): Component;
 }
 
 export interface HelmetHTMLBodyDatum {
@@ -62,8 +60,6 @@ export interface HelmetServerState {
   priority: HelmetDatum;
 }
 
-export type MappedServerState = HelmetProps & HelmetTags & { encode?: boolean };
-
 export interface TagList {
   [key: string]: HTMLElement[];
 }
@@ -77,6 +73,12 @@ export interface StateUpdate extends HelmetTags {
   titleAttributes: TitleProps;
 }
 
+export type OnChangeClientStateT = (
+  newState: StateUpdate,
+  addedTags: HelmetTags,
+  removedTags: HelmetTags
+) => void;
+
 export interface HelmetProps {
   async?: boolean;
   base?: Attributes; // {"target": "_blank", "href": "http://mysite.com/"}
@@ -87,11 +89,7 @@ export interface HelmetProps {
   helmetData?: HelmetData;
   htmlAttributes?: HtmlProps; // {"lang": "en", "amp": undefined}
   // "(newState) => console.log(newState)"
-  onChangeClientState?: (
-    newState: StateUpdate,
-    addedTags: HelmetTags,
-    removedTags: HelmetTags
-  ) => void;
+  onChangeClientState?: OnChangeClientStateT;
   link?: LinkProps[]; // [{"rel": "canonical", "href": "http://mysite.com/example"}]
   meta?: MetaProps[]; // [{"name": "description", "content": "Test description"}]
   noscript?: Attributes[]; // [{"innerHTML": "<img src='http://mysite.com/js/test.js'"}]
@@ -102,3 +100,5 @@ export interface HelmetProps {
   titleTemplate?: string; // "MySite.com - %s"
   prioritizeSeoTags?: boolean; // Default: false
 }
+
+export type MappedServerState = HelmetProps & HelmetTags & { encode?: boolean };

@@ -85,7 +85,7 @@ const convertElementAttributesToReactProps = (
   initProps = {},
 ) => Object.keys(attributes).reduce((obj: Attributes, key: string) => {
   const mapped = (REACT_TAG_MAP as Attributes)[key] as string;
-  obj[mapped || key] = attributes[key];
+  obj[mapped || key] = attributes[key]!;
   return obj;
 }, initProps);
 

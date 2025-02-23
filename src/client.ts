@@ -99,7 +99,7 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   }
 
   for (let i = attributesToRemove.length - 1; i >= 0; i -= 1) {
-    elementTag.removeAttribute(attributesToRemove[i]);
+    elementTag.removeAttribute(attributesToRemove[i]!);
   }
 
   if (helmetAttributes.length === attributesToRemove.length) {
@@ -151,13 +151,13 @@ const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
   const removedTags: TagList = {};
 
   Object.keys(tagUpdates).forEach((tagType) => {
-    const { newTags, oldTags } = tagUpdates[tagType];
+    const { newTags, oldTags } = tagUpdates[tagType]!;
 
     if (newTags.length) {
       addedTags[tagType] = newTags;
     }
     if (oldTags.length) {
-      removedTags[tagType] = tagUpdates[tagType].oldTags;
+      removedTags[tagType] = tagUpdates[tagType]!.oldTags;
     }
   });
 
@@ -171,9 +171,7 @@ const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
 let _helmetCallback: number | null = null;
 
 const handleStateChangeOnClient = (newState: StateUpdate) => {
-  if (_helmetCallback) {
-    cancelAnimationFrame(_helmetCallback);
-  }
+  if (_helmetCallback) cancelAnimationFrame(_helmetCallback);
 
   if (newState.defer) {
     _helmetCallback = requestAnimationFrame(() => {

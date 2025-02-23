@@ -8,18 +8,19 @@ export function clearInstances() {
   instances.length = 0;
 }
 
+interface HelmetDataContext {
+  helmet: HelmetServerState;
+}
+
 export interface HelmetDataType {
   instances: HelmetDispatcher[];
   context: HelmetDataContext;
 }
 
-interface HelmetDataContext {
-  helmet: HelmetServerState;
-}
-
-export const isDocument = !!(
+export const isDocument: boolean = !!(
   typeof window !== 'undefined'
-  && window.document
+
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   && window.document.createElement
 );
 

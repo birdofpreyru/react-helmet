@@ -47,7 +47,7 @@ describe('body attributes', () => {
 
         const bodyTag = document.body;
 
-        const reactCompatAttr = HTML_TAG_MAP[attribute] || attribute;
+        const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
 
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
         expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, reactCompatAttr);

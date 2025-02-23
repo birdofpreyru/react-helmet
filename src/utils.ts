@@ -29,7 +29,7 @@ const HELMET_PROPS = {
 
 const getInnermostProperty = (propsList: PropsList, property: string) => {
   for (let i = propsList.length - 1; i >= 0; i -= 1) {
-    const props = propsList[i];
+    const props = propsList[i]!;
 
     if (Object.prototype.hasOwnProperty.call(props, property)) {
       return props[property];
@@ -80,7 +80,7 @@ const getBaseTagFromPropsList = (
 
       for (let i = 0; i < keys.length; i += 1) {
         const attributeKey = keys[i];
-        const lowerCaseAttributeKey = attributeKey.toLowerCase();
+        const lowerCaseAttributeKey = attributeKey!.toLowerCase();
 
         if (
           primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1
@@ -129,7 +129,7 @@ const getTagsFromPropsList = (
           const keys = Object.keys(tag);
           for (let i = 0; i < keys.length; i += 1) {
             const attributeKey = keys[i];
-            const lowerCaseAttributeKey = attributeKey.toLowerCase();
+            const lowerCaseAttributeKey = attributeKey!.toLowerCase();
 
             // Special rule with link tags, since rel and href are both primary tags, rel takes priority
             if (
@@ -146,7 +146,7 @@ const getTagsFromPropsList = (
             }
             // Special case for innerHTML which doesn't work lowercased
             if (
-              primaryAttributes.indexOf(attributeKey) !== -1
+              primaryAttributes.indexOf(attributeKey!) !== -1
               && (
                 attributeKey === TAG_PROPERTIES.INNER_HTML
                 || attributeKey === TAG_PROPERTIES.CSS_TEXT
@@ -171,8 +171,8 @@ const getTagsFromPropsList = (
             instanceSeenTags[primaryAttributeKey] = {};
           }
 
-          if (!approvedSeenTags[primaryAttributeKey][value]) {
-            instanceSeenTags[primaryAttributeKey][value] = true;
+          if (!approvedSeenTags[primaryAttributeKey]![value]) {
+            instanceSeenTags[primaryAttributeKey]![value] = true;
             return true;
           }
 
@@ -186,11 +186,11 @@ const getTagsFromPropsList = (
       for (let i = 0; i < keys.length; i += 1) {
         const attributeKey = keys[i];
         const tagUnion = {
-          ...approvedSeenTags[attributeKey],
-          ...instanceSeenTags[attributeKey],
+          ...approvedSeenTags[attributeKey!],
+          ...instanceSeenTags[attributeKey!],
         };
 
-        approvedSeenTags[attributeKey] = tagUnion;
+        approvedSeenTags[attributeKey!] = tagUnion;
       }
 
       return approvedTags;
@@ -201,7 +201,7 @@ const getTagsFromPropsList = (
 const getAnyTrueFromPropsList = (propsList: PropsList, checkedTag: string) => {
   if (Array.isArray(propsList) && propsList.length) {
     for (let index = 0; index < propsList.length; index += 1) {
-      const prop = propsList[index];
+      const prop = propsList[index]!;
       if (prop[checkedTag]) {
         return true;
       }
@@ -255,7 +255,7 @@ const checkIfPropsMatch = (props: PropList, toMatch: MatchProps) => {
   const keys = Object.keys(props);
   for (let i = 0; i < keys.length; i += 1) {
     // e.g. if rel exists in the list of allowed props [amphtml, alternate, etc]
-    if (toMatch[keys[i]] && toMatch[keys[i]].includes(props[keys[i]])) {
+    if (toMatch[keys[i]!] && toMatch[keys[i]!]!.includes(props[keys[i]!])) {
       return true;
     }
   }

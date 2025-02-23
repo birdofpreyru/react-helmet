@@ -1,31 +1,41 @@
-import type { PropsWithChildren } from 'react';
-import React, { Component } from 'react';
+import {
+  type FunctionComponent,
+  type ReactNode,
+  createContext,
+  useRef,
+} from 'react';
 
 import HelmetData, { isDocument } from './HelmetData';
 import type { HelmetServerState } from './types';
 
 const defaultValue = {};
 
-export const Context = React.createContext(defaultValue);
+export const Context = createContext(defaultValue);
 
 interface ProviderProps {
+  children?: ReactNode;
   context?: {
     helmet?: HelmetServerState;
   };
 }
 
-export default class HelmetProvider extends Component<PropsWithChildren<ProviderProps>> {
-  static canUseDOM = isDocument;
+type HelmetProviderT = FunctionComponent<ProviderProps> & {
+  canUseDOM: boolean;
+};
 
-  helmetData: HelmetData;
+const HelmetProvider = (({
+  children,
+  context,
+}) => {
+  const helmetDataRef = useRef<HelmetData>(null);
 
-  constructor(props: PropsWithChildren<ProviderProps>) {
-    super(props);
-
-    this.helmetData = new HelmetData(this.props.context || {}, HelmetProvider.canUseDOM);
+  if (!helmetDataRef.current) {
+    helmetDataRef.current = new HelmetData(context ?? {}, HelmetProvider.canUseDOM);
   }
 
-  render() {
-    return <Context.Provider value={this.helmetData.value}>{this.props.children}</Context.Provider>;
-  }
-}
+  return <Context value={helmetDataRef.current.value}>{children}</Context>;
+}) as HelmetProviderT;
+
+HelmetProvider.canUseDOM = isDocument;
+
+export default HelmetProvider;

@@ -55,9 +55,10 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
+
       expect(firstTag).toHaveAttribute('href', 'http://mysite.com/public');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
@@ -133,9 +134,11 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+
+      expect(firstTag!.getAttribute).toBeDefined();
+
       expect(firstTag).toHaveAttribute('href', 'http://mysite.com/public');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {

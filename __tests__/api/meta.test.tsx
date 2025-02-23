@@ -1,5 +1,4 @@
 import React from 'react';
-import type { MockedFunction } from 'vitest';
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
@@ -112,21 +111,21 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(3);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('charset', 'utf-8');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag.getAttribute).toBeDefined();
+      expect(thirdTag!.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('name', 'keywords');
       expect(thirdTag).toHaveAttribute('content', 'test,meta,tags');
-      expect(thirdTag.outerHTML).toMatchSnapshot();
+      expect(thirdTag?.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate meta tags if specified in the same component', () => {
@@ -152,16 +151,16 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Test description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Duplicate description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate meta tags with single meta tag in a nested component', () => {
@@ -197,10 +196,10 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single meta tag with duplicate meta tags in a nested component', () => {
@@ -236,16 +235,16 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner duplicate description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
@@ -268,7 +267,7 @@ describe('meta tags', () => {
 
     it('fails gracefully when meta is wrong shape', () => {
       const originalConsole = global.console;
-      global.console.warn = vi.fn();
+      global.console.warn = jest.fn();
 
       render(
         <Helmet
@@ -379,21 +378,21 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(3);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('charset', 'utf-8');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag.getAttribute).toBeDefined();
+      expect(thirdTag!.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('name', 'keywords');
       expect(thirdTag).toHaveAttribute('content', 'test,meta,tags');
-      expect(thirdTag.outerHTML).toMatchSnapshot();
+      expect(thirdTag?.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate meta tags if specified in the same component', () => {
@@ -411,16 +410,16 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Test description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Duplicate description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate meta tags with single meta tag in a nested component', () => {
@@ -443,10 +442,10 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single meta tag with duplicate meta tags in a nested component', () => {
@@ -469,16 +468,16 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner duplicate description');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {

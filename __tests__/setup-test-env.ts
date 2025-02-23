@@ -1,3 +1,5 @@
+// TODO: Move into Jest setup script.
+
 import '@testing-library/jest-dom';
 
 import { clearInstances } from '../src/HelmetData';

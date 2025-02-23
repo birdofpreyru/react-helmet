@@ -1,3 +1,5 @@
+/** @jest-environment jsdom */
+
 import React from 'react';
 import ReactServer from 'react-dom/server';
 

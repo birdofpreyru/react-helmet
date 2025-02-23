@@ -1,6 +1,6 @@
-{ 
+{
   "extends": "@tsconfig/recommended",
-  "include": ["src"],
+  "include": [".."],
   "compilerOptions": {
     "jsx": "react-jsx",
     "module": "Preserve",
