@@ -13,6 +13,7 @@ export const unmount = () => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const render = (node: ReactNode, context = {} as any) => {
   if (!root) {
     const elem = document.getElementById('mount') as HTMLElement;
@@ -23,17 +24,19 @@ export const render = (node: ReactNode, context = {} as any) => {
     root?.render(
       <StrictMode>
         <Provider context={context}>{node}</Provider>
-      </StrictMode>
+      </StrictMode>,
     );
   });
 };
 
 export const renderContext = (node: ReactNode) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const context = {} as any;
   render(node, context);
   return context.helmet;
 };
 
 export const isArray = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asymmetricMatch: (actual: any) => Array.isArray(actual),
 };

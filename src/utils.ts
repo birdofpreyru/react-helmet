@@ -1,6 +1,7 @@
 import { TAG_NAMES, TAG_PROPERTIES, ATTRIBUTE_NAMES } from './constants';
 
 interface PropList {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -54,52 +55,57 @@ const getTitleFromPropsList = (propsList: PropsList) => {
   return innermostTitle || innermostDefaultTitle || undefined;
 };
 
-const getOnChangeClientState = (propsList: PropsList) =>
-  getInnermostProperty(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) || (() => {});
+const getOnChangeClientState = (
+  propsList: PropsList,
+) => getInnermostProperty(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) || (() => {});
 
-const getAttributesFromPropsList = (tagType: string, propsList: PropsList) =>
-  propsList
-    .filter(props => typeof props[tagType] !== 'undefined')
-    .map(props => props[tagType])
-    .reduce((tagAttrs, current) => ({ ...tagAttrs, ...current }), {});
+const getAttributesFromPropsList = (
+  tagType: string,
+  propsList: PropsList,
+) => propsList
+  .filter((props) => typeof props[tagType] !== 'undefined')
+  .map((props) => props[tagType])
+  .reduce((tagAttrs, current) => ({ ...tagAttrs, ...current }), {});
 
-const getBaseTagFromPropsList = (primaryAttributes: AttributeList, propsList: PropsList) =>
-  propsList
-    .filter(props => typeof props[TAG_NAMES.BASE] !== 'undefined')
-    .map(props => props[TAG_NAMES.BASE])
-    .reverse()
-    .reduce((innermostBaseTag, tag) => {
-      if (!innermostBaseTag.length) {
-        const keys = Object.keys(tag);
+const getBaseTagFromPropsList = (
+  primaryAttributes: AttributeList,
+  propsList: PropsList,
+) => propsList
+  .filter((props) => typeof props[TAG_NAMES.BASE] !== 'undefined')
+  .map((props) => props[TAG_NAMES.BASE])
+  .reverse()
+  .reduce((innermostBaseTag, tag) => {
+    if (!innermostBaseTag.length) {
+      const keys = Object.keys(tag);
 
-        for (let i = 0; i < keys.length; i += 1) {
-          const attributeKey = keys[i];
-          const lowerCaseAttributeKey = attributeKey.toLowerCase();
+      for (let i = 0; i < keys.length; i += 1) {
+        const attributeKey = keys[i];
+        const lowerCaseAttributeKey = attributeKey.toLowerCase();
 
-          if (
-            primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1 &&
-            tag[lowerCaseAttributeKey]
-          ) {
-            return innermostBaseTag.concat(tag);
-          }
+        if (
+          primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1
+          && tag[lowerCaseAttributeKey]
+        ) {
+          return innermostBaseTag.concat(tag);
         }
       }
+    }
 
-      return innermostBaseTag;
-    }, []);
+    return innermostBaseTag;
+  }, []);
 
 const warn = (msg: string) => console && typeof console.warn === 'function' && console.warn(msg);
 
 const getTagsFromPropsList = (
   tagName: string,
   primaryAttributes: AttributeList,
-  propsList: PropsList
+  propsList: PropsList,
 ) => {
   // Calculate list of tags, giving priority innermost component (end of the propslist)
   const approvedSeenTags: SeenTags = {};
 
   return propsList
-    .filter(props => {
+    .filter((props) => {
       if (Array.isArray(props[tagName])) {
         return true;
       }
@@ -107,12 +113,12 @@ const getTagsFromPropsList = (
         warn(
           `Helmet: ${tagName} should be of type "Array". Instead found type "${typeof props[
             tagName
-          ]}"`
+          ]}"`,
         );
       }
       return false;
     })
-    .map(props => props[tagName])
+    .map((props) => props[tagName])
     .reverse()
     .reduce((approvedTags, instanceTags) => {
       const instanceSeenTags: SeenTags = {};
@@ -127,24 +133,25 @@ const getTagsFromPropsList = (
 
             // Special rule with link tags, since rel and href are both primary tags, rel takes priority
             if (
-              primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1 &&
-              !(
-                primaryAttributeKey === TAG_PROPERTIES.REL &&
-                tag[primaryAttributeKey].toLowerCase() === 'canonical'
-              ) &&
-              !(
-                lowerCaseAttributeKey === TAG_PROPERTIES.REL &&
-                tag[lowerCaseAttributeKey].toLowerCase() === 'stylesheet'
+              primaryAttributes.indexOf(lowerCaseAttributeKey) !== -1
+              && !(
+                primaryAttributeKey === TAG_PROPERTIES.REL
+                && tag[primaryAttributeKey].toLowerCase() === 'canonical'
+              ) && !(
+                lowerCaseAttributeKey === TAG_PROPERTIES.REL
+                && tag[lowerCaseAttributeKey].toLowerCase() === 'stylesheet'
               )
             ) {
               primaryAttributeKey = lowerCaseAttributeKey;
             }
             // Special case for innerHTML which doesn't work lowercased
             if (
-              primaryAttributes.indexOf(attributeKey) !== -1 &&
-              (attributeKey === TAG_PROPERTIES.INNER_HTML ||
-                attributeKey === TAG_PROPERTIES.CSS_TEXT ||
-                attributeKey === TAG_PROPERTIES.ITEM_PROP)
+              primaryAttributes.indexOf(attributeKey) !== -1
+              && (
+                attributeKey === TAG_PROPERTIES.INNER_HTML
+                || attributeKey === TAG_PROPERTIES.CSS_TEXT
+                || attributeKey === TAG_PROPERTIES.ITEM_PROP
+              )
             ) {
               primaryAttributeKey = attributeKey;
             }
@@ -212,7 +219,7 @@ const reducePropsToState = (propsList: PropsList) => ({
   linkTags: getTagsFromPropsList(
     TAG_NAMES.LINK,
     [TAG_PROPERTIES.REL, TAG_PROPERTIES.HREF],
-    propsList
+    propsList,
   ),
   metaTags: getTagsFromPropsList(
     TAG_NAMES.META,
@@ -223,14 +230,14 @@ const reducePropsToState = (propsList: PropsList) => ({
       TAG_PROPERTIES.PROPERTY,
       TAG_PROPERTIES.ITEM_PROP,
     ],
-    propsList
+    propsList,
   ),
   noscriptTags: getTagsFromPropsList(TAG_NAMES.NOSCRIPT, [TAG_PROPERTIES.INNER_HTML], propsList),
   onChangeClientState: getOnChangeClientState(propsList),
   scriptTags: getTagsFromPropsList(
     TAG_NAMES.SCRIPT,
     [TAG_PROPERTIES.SRC, TAG_PROPERTIES.INNER_HTML],
-    propsList
+    propsList,
   ),
   styleTags: getTagsFromPropsList(TAG_NAMES.STYLE, [TAG_PROPERTIES.CSS_TEXT], propsList),
   title: getTitleFromPropsList(propsList),
@@ -238,8 +245,9 @@ const reducePropsToState = (propsList: PropsList) => ({
   prioritizeSeoTags: getAnyTrueFromPropsList(propsList, HELMET_PROPS.PRIORITIZE_SEO_TAGS),
 });
 
-export const flattenArray = (possibleArray: string[] | string) =>
-  Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray;
+export const flattenArray = (possibleArray: string[] | string) => (
+  Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray
+);
 
 export { reducePropsToState };
 
@@ -265,7 +273,7 @@ export const prioritizer = (elementsList: HTMLElement[], propsToMatch: MatchProp
         }
         return acc;
       },
-      { priority: [] as HTMLElement[], default: [] as HTMLElement[] }
+      { priority: [] as HTMLElement[], default: [] as HTMLElement[] },
     );
   }
   return { default: elementsList, priority: [] };

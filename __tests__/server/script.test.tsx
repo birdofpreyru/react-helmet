@@ -30,7 +30,7 @@ describe('server', () => {
               type: 'text/javascript',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.script).toBeDefined();
@@ -63,7 +63,7 @@ describe('server', () => {
               type: 'text/javascript',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.script).toBeDefined();
@@ -78,7 +78,7 @@ describe('server', () => {
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.script).toBeDefined();
@@ -103,7 +103,7 @@ describe('server', () => {
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.script).toBeDefined();

@@ -22,7 +22,7 @@ describe('link tags', () => {
               type: 'text/css',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -30,12 +30,14 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('href') === 'http://localhost/style.css' &&
-            tag.getAttribute('rel') === 'stylesheet' &&
-            tag.getAttribute('type') === 'text/css') ||
-          (tag.getAttribute('href') === 'http://localhost/helmet' &&
-            tag.getAttribute('rel') === 'canonical')
+        (tag) => (
+          tag.getAttribute('href') === 'http://localhost/style.css'
+          && tag.getAttribute('rel') === 'stylesheet'
+          && tag.getAttribute('type') === 'text/css'
+        ) || (
+          tag.getAttribute('href') === 'http://localhost/helmet'
+          && tag.getAttribute('rel') === 'canonical'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(2);
@@ -50,7 +52,7 @@ describe('link tags', () => {
               rel: 'canonical',
             },
           ]}
-        />
+        />,
       );
 
       render(<Helmet />);
@@ -62,9 +64,9 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' or 'rel' are not accepted, even if they are valid for other tags", () => {
-      // @ts-ignore
-      render(<Helmet link={[{ 'http-equiv': "won't work" }]} />);
+    it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
+      // @ts-expect-error "pre-existing"
+      render(<Helmet link={[{ 'http-equiv': 'won\'t work' }]} />);
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
@@ -73,7 +75,7 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags 'rel' and 'href' properly use 'rel' as the primary identification for this tag, regardless of ordering", () => {
+    it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
       render(
         <div>
           <Helmet
@@ -100,7 +102,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -116,7 +118,7 @@ describe('link tags', () => {
       expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
-    it("tags with rel='stylesheet' uses the href as the primary identification of the tag, regardless of ordering", () => {
+    it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
       render(
         <div>
           <Helmet
@@ -139,7 +141,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -196,7 +198,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -241,7 +243,7 @@ describe('link tags', () => {
               href: 'http://localhost/helmet/component',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -286,7 +288,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -325,7 +327,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -351,14 +353,14 @@ describe('link tags', () => {
       render(
         <Helmet
           link={[
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             { rel: 'icon', sizes: '192x192', href: null },
             {
               rel: 'canonical',
               href: 'http://localhost/helmet/component',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -381,7 +383,7 @@ describe('link tags', () => {
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -389,12 +391,14 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('href') === 'http://localhost/style.css' &&
-            tag.getAttribute('rel') === 'stylesheet' &&
-            tag.getAttribute('type') === 'text/css') ||
-          (tag.getAttribute('href') === 'http://localhost/helmet' &&
-            tag.getAttribute('rel') === 'canonical')
+        (tag) => (
+          tag.getAttribute('href') === 'http://localhost/style.css'
+          && tag.getAttribute('rel') === 'stylesheet'
+          && tag.getAttribute('type') === 'text/css'
+        ) || (
+          tag.getAttribute('href') === 'http://localhost/helmet'
+          && tag.getAttribute('rel') === 'canonical'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(2);
@@ -404,7 +408,7 @@ describe('link tags', () => {
       render(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
-        </Helmet>
+        </Helmet>,
       );
 
       render(<Helmet />);
@@ -416,14 +420,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' or 'rel' are not accepted, even if they are valid for other tags", () => {
+    it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
       render(
         <Helmet>
           <link
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             httpEquiv="won't work"
           />
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
@@ -433,7 +437,7 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags 'rel' and 'href' properly use 'rel' as the primary identification for this tag, regardless of ordering", () => {
+    it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
       render(
         <div>
           <Helmet>
@@ -445,7 +449,7 @@ describe('link tags', () => {
           <Helmet>
             <link href="http://localhost/helmet/newest" rel="canonical" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -461,7 +465,7 @@ describe('link tags', () => {
       expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
-    it("tags with rel='stylesheet' uses the href as the primary identification of the tag, regardless of ordering", () => {
+    it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
       render(
         <div>
           <Helmet>
@@ -470,7 +474,7 @@ describe('link tags', () => {
           <Helmet>
             <link rel="stylesheet" href="http://localhost/inner.css" type="text/css" media="all" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -507,7 +511,7 @@ describe('link tags', () => {
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
             <link href="http://localhost/inner.css" rel="stylesheet" type="text/css" media="all" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -544,7 +548,7 @@ describe('link tags', () => {
         <Helmet>
           <link rel="canonical" href="http://localhost/helmet" />
           <link rel="canonical" href="http://localhost/helmet/component" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -576,7 +580,7 @@ describe('link tags', () => {
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -602,7 +606,7 @@ describe('link tags', () => {
             <link rel="canonical" href="http://localhost/helmet/component" />
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -630,11 +634,11 @@ describe('link tags', () => {
           <link
             rel="icon"
             sizes="192x192"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             href={null}
           />
           <link rel="canonical" href="http://localhost/helmet/component" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];

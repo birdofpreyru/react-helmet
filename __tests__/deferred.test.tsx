@@ -8,6 +8,8 @@ import './window';
 
 declare global {
   interface Window {
+    // pre-existing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     __spy__: MockedFunction<any>;
   }
 }
@@ -21,7 +23,7 @@ describe.skip('deferred tags', () => {
   });
 
   afterEach(() => {
-    // @ts-ignore
+    // @ts-expect-error "pre-existing"
     delete window.__spy__;
   });
 
@@ -33,34 +35,31 @@ describe.skip('deferred tags', () => {
             defer={false}
             script={[
               {
-                innerHTML: `window.__spy__(1)`,
+                innerHTML: 'window.__spy__(1)',
               },
             ]}
           />
           <Helmet
             script={[
               {
-                innerHTML: `window.__spy__(2)`,
+                innerHTML: 'window.__spy__(2)',
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
       await vi.waitFor(
-        () =>
-          new Promise(resolve => {
-            requestAnimationFrame(() => {
-              // @ts-ignore
-              expect(window.__spy__).toHaveBeenCalledTimes(2);
-              // @ts-ignore
-              expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+        () => new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            expect(window.__spy__).toHaveBeenCalledTimes(2);
+            expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-              resolve(true);
-            });
-          })
+            resolve(true);
+          });
+        }),
       );
     });
   });
@@ -75,21 +74,20 @@ describe.skip('deferred tags', () => {
           <Helmet>
             <script>window.__spy__(2)</script>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
       await vi.waitFor(
-        () =>
-          new Promise(resolve => {
-            requestAnimationFrame(() => {
-              expect(window.__spy__).toHaveBeenCalledTimes(2);
-              expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+        () => new Promise((resolve) => {
+          requestAnimationFrame(() => {
+            expect(window.__spy__).toHaveBeenCalledTimes(2);
+            expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-              resolve(true);
-            });
-          })
+            resolve(true);
+          });
+        }),
       );
     });
   });

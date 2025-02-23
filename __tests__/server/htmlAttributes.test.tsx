@@ -24,7 +24,7 @@ describe('server', () => {
             lang: 'ga',
             className: 'myClassName',
           }}
-        />
+        />,
       );
 
       const attrs = head.htmlAttributes.toComponent();
@@ -43,7 +43,7 @@ describe('server', () => {
             lang: 'ga',
             class: 'myClassName',
           }}
-        />
+        />,
       );
 
       expect(head.htmlAttributes).toBeDefined();
@@ -57,7 +57,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <html lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
 
       const attrs = head.htmlAttributes.toComponent();
@@ -73,7 +73,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <html lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.htmlAttributes).toBeDefined();

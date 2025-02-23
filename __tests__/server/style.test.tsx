@@ -23,14 +23,14 @@ describe('server', () => {
           style={[
             {
               type: 'text/css',
-              cssText: `body {background-color: green;}`,
+              cssText: 'body {background-color: green;}',
             },
             {
               type: 'text/css',
-              cssText: `p {font-size: 12px;}`,
+              cssText: 'p {font-size: 12px;}',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.style).toBeDefined();
@@ -52,14 +52,14 @@ describe('server', () => {
           style={[
             {
               type: 'text/css',
-              cssText: `body {background-color: green;}`,
+              cssText: 'body {background-color: green;}',
             },
             {
               type: 'text/css',
-              cssText: `p {font-size: 12px;}`,
+              cssText: 'p {font-size: 12px;}',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.style).toBeDefined();
@@ -72,9 +72,9 @@ describe('server', () => {
     it('renders style tags as React components', () => {
       const head = renderContext(
         <Helmet>
-          <style type="text/css">{`body {background-color: green;}`}</style>
-          <style type="text/css">{`p {font-size: 12px;}`}</style>
-        </Helmet>
+          <style type="text/css">{'body {background-color: green;}'}</style>
+          <style type="text/css">{'p {font-size: 12px;}'}</style>
+        </Helmet>,
       );
 
       expect(head.style).toBeDefined();
@@ -93,9 +93,9 @@ describe('server', () => {
     it('renders style tags as string', () => {
       const head = renderContext(
         <Helmet>
-          <style type="text/css">{`body {background-color: green;}`}</style>
-          <style type="text/css">{`p {font-size: 12px;}`}</style>
-        </Helmet>
+          <style type="text/css">{'body {background-color: green;}'}</style>
+          <style type="text/css">{'p {font-size: 12px;}'}</style>
+        </Helmet>,
       );
 
       expect(head.style).toBeDefined();

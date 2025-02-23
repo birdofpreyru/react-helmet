@@ -16,7 +16,7 @@ describe('fragments', () => {
           <title>{title}</title>
           <meta charSet="utf-8" />
         </>
-      </Helmet>
+      </Helmet>,
     );
 
     expect(document.title).toBe(title);
@@ -33,7 +33,7 @@ describe('fragments', () => {
             <title>{title}</title>
           </>
         </>
-      </Helmet>
+      </Helmet>,
     );
 
     expect(document.title).toBe(title);

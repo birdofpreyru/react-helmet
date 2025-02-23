@@ -41,19 +41,19 @@ export default class HelmetDispatcher extends Component<DispatcherProps> {
     const { helmetInstances, setHelmet } = this.props.context;
     let serverState = null;
     const state = reducePropsToState(
-      helmetInstances.get().map(instance => {
+      helmetInstances.get().map((instance) => {
         const props = { ...instance.props };
-        // @ts-ignore
+        // @ts-expect-error "pre-existing"
         delete props.context;
         return props;
-      })
+      }),
     );
     if (Provider.canUseDOM) {
       handleStateChangeOnClient(state);
     } else if (mapStateOnServer) {
       serverState = mapStateOnServer(state);
     }
-    // @ts-ignore
+    // @ts-expect-error "pre-existing"
     setHelmet(serverState);
   }
 

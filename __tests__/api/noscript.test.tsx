@@ -14,10 +14,10 @@ describe('noscript tags', () => {
           noscript={[
             {
               id: 'bar',
-              innerHTML: `<link rel="stylesheet" type="text/css" href="foo.css" />`,
+              innerHTML: '<link rel="stylesheet" type="text/css" href="foo.css" />',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.getElementsByTagName('noscript')];
@@ -40,8 +40,8 @@ describe('noscript tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'innerHTML' are not accepted", () => {
-      render(<Helmet noscript={[{ property: "won't work" }]} />);
+    it('tags without \'innerHTML\' are not accepted', () => {
+      render(<Helmet noscript={[{ property: 'won\'t work' }]} />);
 
       const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
 
@@ -54,11 +54,11 @@ describe('noscript tags', () => {
         <Helmet
           noscript={[
             {
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               innerHTML: undefined,
             },
           ]}
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
@@ -72,8 +72,8 @@ describe('noscript tags', () => {
     it('updates noscript tags', () => {
       render(
         <Helmet>
-          <noscript id="bar">{`<link rel="stylesheet" type="text/css" href="foo.css" />`}</noscript>
-        </Helmet>
+          <noscript id="bar">{'<link rel="stylesheet" type="text/css" href="foo.css" />'}</noscript>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.getElementsByTagName('noscript')];
@@ -89,7 +89,7 @@ describe('noscript tags', () => {
       render(
         <Helmet>
           <noscript id="bar" />
-        </Helmet>
+        </Helmet>,
       );
 
       render(<Helmet />);
@@ -100,12 +100,14 @@ describe('noscript tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'innerHTML' are not accepted", () => {
+    it('tags without \'innerHTML\' are not accepted', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <noscript property="won't work" />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
 
@@ -117,7 +119,7 @@ describe('noscript tags', () => {
       render(
         <Helmet>
           <noscript>{undefined}</noscript>
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);

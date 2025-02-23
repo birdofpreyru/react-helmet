@@ -19,7 +19,7 @@ describe('misc', () => {
               content: 'This is "quoted" text and & and \'.',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -43,7 +43,7 @@ describe('misc', () => {
           meta={[{ name: 'description', content: 'Test description' }]}
           title="Test Title"
           onChangeClientState={onChange}
-        />
+        />,
       );
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -52,7 +52,7 @@ describe('misc', () => {
           meta={[{ name: 'description', content: 'Test description' }]}
           title="Test Title"
           onChangeClientState={onChange}
-        />
+        />,
       );
 
       expect(onChange).toBeCalledTimes(1);
@@ -71,7 +71,7 @@ describe('misc', () => {
             },
           ]}
           onChangeClientState={onChange}
-        />
+        />,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -97,7 +97,7 @@ describe('misc', () => {
           ]}
           meta={[{ name: 'description', content: 'Test description' }]}
           onChangeClientState={onChange}
-        />
+        />,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -130,7 +130,7 @@ describe('misc', () => {
           ]}
           meta={[{ name: 'description', content: 'New description' }]}
           onChangeClientState={onChange}
-        />
+        />,
       );
 
       expect(onChange).toBeCalledTimes(2);
@@ -157,13 +157,13 @@ describe('misc', () => {
       const renderInvalid = () => {
         render(
           <Helmet title="Test Title">
-            <Helmet title={"Title you'll never see"} />
-          </Helmet>
+            <Helmet title={'Title you\'ll never see'} />
+          </Helmet>,
         );
       };
 
       expect(renderInvalid).toThrow(
-        'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.'
+        'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -186,8 +186,8 @@ describe('misc', () => {
     });
 
     it('requestAnimationFrame works as expected', () => {
-      return new Promise(resolve => {
-        requestAnimationFrame(cb => {
+      return new Promise((resolve) => {
+        requestAnimationFrame((cb) => {
           expect(cb).toBeDefined();
           expect(typeof cb).toBe('number');
 
@@ -202,7 +202,7 @@ describe('misc', () => {
       render(
         <Helmet>
           <meta name="description" content={'This is "quoted" text and & and \'.'} />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -223,7 +223,7 @@ describe('misc', () => {
         <Helmet onChangeClientState={onChange}>
           <meta name="description" content="Test description" />
           <title>Test Title</title>
-        </Helmet>
+        </Helmet>,
       );
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -231,7 +231,7 @@ describe('misc', () => {
         <Helmet onChangeClientState={onChange}>
           <meta name="description" content="Test description" />
           <title>Test Title</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(onChange).toBeCalledTimes(1);
@@ -244,7 +244,7 @@ describe('misc', () => {
       render(
         <Helmet onChangeClientState={onChange}>
           <script src="http://localhost/test.js" type="text/javascript" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -264,7 +264,7 @@ describe('misc', () => {
         <Helmet onChangeClientState={onChange}>
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
           <meta name="description" content="Test description" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -286,7 +286,7 @@ describe('misc', () => {
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
           <link href="http://localhost/style2.css" rel="stylesheet" type="text/css" />
           <meta name="description" content="New description" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(onChange).toBeCalledTimes(2);
@@ -317,12 +317,12 @@ describe('misc', () => {
             <Helmet>
               <title>Title you will never see</title>
             </Helmet>
-          </Helmet>
+          </Helmet>,
         );
       };
 
       expect(renderInvalid).toThrow(
-        'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.'
+        'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -339,12 +339,12 @@ describe('misc', () => {
             <div>
               <title>Title you will never see</title>
             </div>
-          </Helmet>
+          </Helmet>,
         );
       };
 
       expect(renderInvalid).toThrow(
-        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.'
+        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -355,19 +355,21 @@ describe('misc', () => {
       global.console.error = vi.fn();
 
       const renderInvalid = () => {
+        /* eslint-disable react/no-unknown-property */
         render(
           <Helmet>
             <title>Test Title</title>
             <div
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               customAttribute
             />
-          </Helmet>
+          </Helmet>,
         );
+        /* eslint-enable react/no-unknown-property */
       };
 
       expect(renderInvalid).toThrow(
-        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.'
+        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -384,12 +386,12 @@ describe('misc', () => {
             <link href="http://localhost/helmet" rel="canonical">
               test
             </link>
-          </Helmet>
+          </Helmet>,
         );
       };
 
       expect(renderInvalid).toThrow(
-        '<link /> elements are self-closing and can not contain children. Refer to our API for more information.'
+        '<link /> elements are self-closing and can not contain children. Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -406,12 +408,12 @@ describe('misc', () => {
             <script>
               <title>Title you will never see</title>
             </script>
-          </Helmet>
+          </Helmet>,
         );
       };
 
       expect(renderInvalid).toThrow(
-        'Helmet expects a string as a child of <script>. Did you forget to wrap your children in braces? ( <script>{``}</script> ) Refer to our API for more information.'
+        'Helmet expects a string as a child of <script>. Did you forget to wrap your children in braces? ( <script>{``}</script> ) Refer to our API for more information.',
       );
 
       global.console.error = consoleError;
@@ -424,7 +426,7 @@ describe('misc', () => {
         <Helmet>
           {charSet && <meta charSet={charSet} />}
           <title>Test Title</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toBe('Test Title');
@@ -434,7 +436,7 @@ describe('misc', () => {
       render(
         <Helmet>
           <meta content="Test Description" name="description" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -450,8 +452,8 @@ describe('misc', () => {
     });
 
     it('requestAnimationFrame works as expected', () => {
-      return new Promise(resolve => {
-        requestAnimationFrame(cb => {
+      return new Promise((resolve) => {
+        requestAnimationFrame((cb) => {
           expect(cb).toBeDefined();
           expect(typeof cb).toBe('number');
           resolve(true);

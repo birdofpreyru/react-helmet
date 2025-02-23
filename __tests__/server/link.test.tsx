@@ -28,7 +28,7 @@ describe('server', () => {
               type: 'text/css',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.link).toBeDefined();
@@ -59,7 +59,7 @@ describe('server', () => {
               type: 'text/css',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.link).toBeDefined();
@@ -74,7 +74,7 @@ describe('server', () => {
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.link).toBeDefined();
@@ -99,7 +99,7 @@ describe('server', () => {
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.link).toBeDefined();

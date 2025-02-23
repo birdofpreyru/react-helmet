@@ -30,7 +30,7 @@ describe('server', () => {
             { property: 'og:type', content: 'article' },
             { itemprop: 'name', content: 'Test name itemprop' },
           ]}
-        />
+        />,
       );
 
       expect(head.meta).toBeDefined();
@@ -63,7 +63,7 @@ describe('server', () => {
             { property: 'og:type', content: 'article' },
             { itemprop: 'name', content: 'Test name itemprop' },
           ]}
-        />
+        />,
       );
 
       expect(head.meta).toBeDefined();
@@ -84,7 +84,7 @@ describe('server', () => {
           <meta httpEquiv="content-type" content="text/html" />
           <meta property="og:type" content="article" />
           <meta itemProp="name" content="Test name itemprop" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.meta).toBeDefined();
@@ -115,7 +115,7 @@ describe('server', () => {
           <meta httpEquiv="content-type" content="text/html" />
           <meta property="og:type" content="article" />
           <meta itemProp="name" content="Test name itemprop" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.meta).toBeDefined();

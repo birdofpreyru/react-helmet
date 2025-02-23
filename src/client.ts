@@ -19,7 +19,7 @@ const updateTags = (type: string, tags: HTMLElement[]) => {
   let indexToDelete: number;
 
   if (tags && tags.length) {
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
       const newElement = document.createElement(type);
 
       for (const attribute in tag) {
@@ -28,12 +28,12 @@ const updateTags = (type: string, tags: HTMLElement[]) => {
             newElement.innerHTML = tag.innerHTML;
           } else if (attribute === TAG_PROPERTIES.CSS_TEXT) {
             // This seems like a CSSImportRuleDeclaration?
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             if (newElement.styleSheet) {
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               newElement.styleSheet.cssText = tag.cssText;
             } else {
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               newElement.appendChild(document.createTextNode(tag.cssText));
             }
           } else {
@@ -61,7 +61,7 @@ const updateTags = (type: string, tags: HTMLElement[]) => {
   }
 
   oldTags.forEach((tag: Node) => tag.parentNode?.removeChild(tag));
-  newTags.forEach(tag => headElement.appendChild(tag));
+  newTags.forEach((tag) => headElement.appendChild(tag));
 
   return {
     oldTags,
@@ -150,7 +150,7 @@ const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
   const addedTags: TagList = {};
   const removedTags: TagList = {};
 
-  Object.keys(tagUpdates).forEach(tagType => {
+  Object.keys(tagUpdates).forEach((tagType) => {
     const { newTags, oldTags } = tagUpdates[tagType];
 
     if (newTags.length) {

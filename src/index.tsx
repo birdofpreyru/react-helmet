@@ -17,6 +17,7 @@ export * from './types';
 export { default as HelmetData } from './HelmetData';
 export { default as HelmetProvider } from './Provider';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = { [key: string]: any };
 
 export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
@@ -48,21 +49,23 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
         };
       default:
         throw new Error(
-          `<${child.type} /> elements are self-closing and can not contain children. Refer to our API for more information.`
+          `<${child.type} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
         );
     }
   }
 
   flattenArrayTypeChildren(
-    child: JSX.Element,
-    arrayTypeChildren: { [key: string]: JSX.Element[] },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    child: ReactElement<any, any>,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    arrayTypeChildren: { [key: string]: ReactElement<any, any>[] },
     newChildProps: Props,
-    nestedChildren: ReactNode
+    nestedChildren: ReactNode,
   ) {
     return {
       ...arrayTypeChildren,
       [child.type]: [
-        ...(arrayTypeChildren[child.type] || []),
+        ...arrayTypeChildren[child.type] || [],
         {
           ...newChildProps,
           ...this.mapNestedChildrenToProps(child, nestedChildren),
@@ -72,10 +75,11 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
   }
 
   mapObjectTypeChildren(
-    child: JSX.Element,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    child: ReactElement<any, any>,
     newProps: Props,
     newChildProps: Props,
-    nestedChildren: ReactNode
+    nestedChildren: ReactNode,
   ) {
     switch (child.type) {
       case TAG_NAMES.TITLE:
@@ -104,10 +108,11 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
     }
   }
 
-  mapArrayTypeChildrenToProps(arrayTypeChildren: { [key: string]: JSX.Element }, newProps: Props) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mapArrayTypeChildrenToProps(arrayTypeChildren: { [key: string]: ReactElement<any, any> }, newProps: Props) {
     let newFlattenedProps = { ...newProps };
 
-    Object.keys(arrayTypeChildren).forEach(arrayChildName => {
+    Object.keys(arrayTypeChildren).forEach((arrayChildName) => {
       newFlattenedProps = {
         ...newFlattenedProps,
         [arrayChildName]: arrayTypeChildren[arrayChildName],
@@ -117,24 +122,26 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
     return newFlattenedProps;
   }
 
-  warnOnInvalidChildren(child: JSX.Element, nestedChildren: ReactNode) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  warnOnInvalidChildren(child: ReactElement<any, any>, nestedChildren: ReactNode) {
     invariant(
-      VALID_TAG_NAMES.some(name => child.type === name),
+      VALID_TAG_NAMES.some((name) => child.type === name),
       typeof child.type === 'function'
-        ? `You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.`
+        ? 'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.'
         : `Only elements types ${VALID_TAG_NAMES.join(
-            ', '
-          )} are allowed. Helmet does not support rendering <${
-            child.type
-          }> elements. Refer to our API for more information.`
+          ', ',
+        )} are allowed. Helmet does not support rendering <${
+          child.type
+        }> elements. Refer to our API for more information.`,
     );
 
     invariant(
-      !nestedChildren ||
-        typeof nestedChildren === 'string' ||
-        (Array.isArray(nestedChildren) &&
-          !nestedChildren.some(nestedChild => typeof nestedChild !== 'string')),
-      `Helmet expects a string as a child of <${child.type}>. Did you forget to wrap your children in braces? ( <${child.type}>{\`\`}</${child.type}> ) Refer to our API for more information.`
+      !nestedChildren
+      || typeof nestedChildren === 'string'
+      || (
+        Array.isArray(nestedChildren)
+        && !nestedChildren.some((nestedChild) => typeof nestedChild !== 'string')),
+      `Helmet expects a string as a child of <${child.type}>. Did you forget to wrap your children in braces? ( <${child.type}>{\`\`}</${child.type}> ) Refer to our API for more information.`,
     );
 
     return true;
@@ -143,14 +150,17 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
   mapChildrenToProps(children: ReactNode, newProps: Props) {
     let arrayTypeChildren = {};
 
-    React.Children.forEach(children as JSX.Element, (child: ReactElement) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    React.Children.forEach(children as ReactElement<any, any>, (child: ReactElement) => {
       if (!child || !child.props) {
         return;
       }
 
+      // @ts-expect-error "pre-existing"
       const { children: nestedChildren, ...childProps } = child.props;
       // convert React props to HTML attributes
       const newChildProps = Object.keys(childProps).reduce((obj: Props, key) => {
+        // @ts-expect-error "pre-existing"
         obj[HTML_TAG_MAP[key] || key] = childProps[key];
         return obj;
       }, {});
@@ -176,7 +186,7 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
             child,
             arrayTypeChildren,
             newChildProps,
-            nestedChildren
+            nestedChildren,
           );
           break;
 
@@ -204,12 +214,12 @@ export class Helmet extends Component<PropsWithChildren<HelmetProps>> {
       delete newProps.helmetData;
     }
 
-    return helmetData ? (
-      <Dispatcher {...newProps} context={helmetData.value} />
-    ) : (
-      <Context.Consumer>
-        {context => <Dispatcher {...newProps} context={context as DispatcherContextProp} />}
-      </Context.Consumer>
-    );
+    return helmetData
+      ? <Dispatcher {...newProps} context={helmetData.value} />
+      : (
+        <Context.Consumer>
+          {(context) => <Dispatcher {...newProps} context={context as DispatcherContextProp} />}
+        </Context.Consumer>
+      );
   }
 }

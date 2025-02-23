@@ -8,18 +8,19 @@ const { window } = jsdom;
 
 function copyProps(src: DOMWindow, target: typeof globalThis) {
   const props = Object.getOwnPropertyNames(src)
-    // @ts-ignore
-    .filter(prop => typeof target[prop] === 'undefined')
+    // @ts-expect-error "pre-existing"
+    .filter((prop) => typeof target[prop] === 'undefined')
     .reduce(
       (result, prop) => ({
         ...result,
         [prop]: Object.getOwnPropertyDescriptor(src, prop),
       }),
-      {}
+      {},
     );
   Object.defineProperties(target, props);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 global.window = window as any;
 global.document = window.document;
 

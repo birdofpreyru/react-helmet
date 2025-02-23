@@ -29,7 +29,7 @@ describe('style tags', () => {
             cssText: cssText2,
           },
         ]}
-      />
+      />,
     );
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
@@ -63,7 +63,7 @@ describe('style tags', () => {
             cssText,
           },
         ]}
-      />
+      />,
     );
 
     render(<Helmet />);
@@ -74,8 +74,8 @@ describe('style tags', () => {
     expect(existingTags).toHaveLength(0);
   });
 
-  it("tags without 'cssText' are not accepted", () => {
-    render(<Helmet style={[{ property: "won't work" }]} />);
+  it('tags without \'cssText\' are not accepted', () => {
+    render(<Helmet style={[{ property: 'won\'t work' }]} />);
 
     const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
@@ -88,11 +88,11 @@ describe('style tags', () => {
       <Helmet
         style={[
           {
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             cssText: undefined,
           },
         ]}
-      />
+      />,
     );
 
     const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
@@ -119,7 +119,7 @@ describe('Declarative API', () => {
       <Helmet>
         <style type="text/css">{cssText1}</style>
         <style>{cssText2}</style>
-      </Helmet>
+      </Helmet>,
     );
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
@@ -148,7 +148,7 @@ describe('Declarative API', () => {
     render(
       <Helmet>
         <style type="text/css">{cssText}</style>
-      </Helmet>
+      </Helmet>,
     );
 
     render(<Helmet />);
@@ -159,12 +159,14 @@ describe('Declarative API', () => {
     expect(existingTags).toHaveLength(0);
   });
 
-  it("tags without 'cssText' are not accepted", () => {
+  it('tags without \'cssText\' are not accepted', () => {
+    /* eslint-disable react/no-unknown-property */
     render(
       <Helmet>
         <style property="won't work" />
-      </Helmet>
+      </Helmet>,
     );
+    /* eslint-enable react/no-unknown-property */
 
     const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
@@ -176,7 +178,7 @@ describe('Declarative API', () => {
     render(
       <Helmet>
         <style>{undefined}</style>
-      </Helmet>
+      </Helmet>,
     );
 
     const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);

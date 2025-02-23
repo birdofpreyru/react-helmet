@@ -13,7 +13,7 @@
   "scripts": {
     "clean": "rimraf lib",
     "build": "npm run clean && NODE_ENV=production tsx build.ts && npm run types",
-    "lint": "eslint --cache --cache-location ./node_modules/.cache/eslint --report-unused-disable-directives .",
+    "lint": "eslint",
     "test": "npm run lint && npm run typecheck && npm run vitest",
     "typecheck": "tsc",
     "types": "tsc src/index.tsx --jsx react --declaration --esModuleInterop --allowJs --emitDeclarationOnly --outDir lib",
@@ -41,10 +41,10 @@
     "shallowequal": "^1.1.0"
   },
   "devDependencies": {
-    "@remix-run/eslint-config": "2.3.1",
-    "@testing-library/jest-dom": "6.1.5",
-    "@testing-library/react": "14.1.2",
-    "@types/eslint": "8.44.8",
+    "@eslint/js": "^9.21.0",
+    "@stylistic/eslint-plugin-js": "^4.0.1",
+    "@testing-library/jest-dom": "6.6.3",
+    "@testing-library/react": "16.2.0",
     "@types/invariant": "2.2.37",
     "@types/jsdom": "21.1.6",
     "@types/react": "^19.0.10",
@@ -52,7 +52,10 @@
     "@types/shallowequal": "1.1.5",
     "@vitejs/plugin-react": "4.2.0",
     "esbuild": "0.19.8",
-    "eslint": "8.54.0",
+    "eslint": "^9.21.0",
+    "eslint-plugin-react": "^7.37.4",
+    "eslint-plugin-react-hooks": "^5.1.0",
+    "globals": "^16.0.0",
     "jsdom": "22.1.0",
     "raf": "3.4.1",
     "react": "19.0.0",
@@ -60,6 +63,7 @@
     "rimraf": "6.0.1",
     "tsx": "4.6.1",
     "typescript": "5.7.3",
+    "typescript-eslint": "^8.24.1",
     "vite": "4.5.0",
     "vitest": "0.34.6"
   },

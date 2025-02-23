@@ -18,14 +18,16 @@ interface HelmetDataContext {
 }
 
 export const isDocument = !!(
-  typeof window !== 'undefined' &&
-  window.document &&
-  window.document.createElement
+  typeof window !== 'undefined'
+  && window.document
+  && window.document.createElement
 );
 
 export default class HelmetData implements HelmetDataType {
   instances = [];
+
   canUseDOM = isDocument;
+
   context: HelmetDataContext;
 
   value = {
@@ -44,6 +46,7 @@ export default class HelmetData implements HelmetDataType {
     },
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(context: any, canUseDOM?: boolean) {
     this.context = context;
     this.canUseDOM = canUseDOM || false;

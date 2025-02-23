@@ -4,7 +4,7 @@ import { clearInstances } from '../src/HelmetData';
 
 import { unmount } from './utils';
 
-// @ts-ignore
+// @ts-expect-error "pre-existing"
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 let headElement: HTMLHeadElement;

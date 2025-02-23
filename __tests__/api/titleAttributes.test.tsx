@@ -8,7 +8,7 @@ Helmet.defaultProps.defer = false;
 
 describe('title attributes', () => {
   beforeEach(() => {
-    document.head.innerHTML = `<title>Test Title</title>`;
+    document.head.innerHTML = '<title>Test Title</title>';
   });
 
   describe('API', () => {
@@ -18,7 +18,7 @@ describe('title attributes', () => {
           titleAttributes={{
             itemprop: 'name',
           }}
-        />
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -33,7 +33,7 @@ describe('title attributes', () => {
           <Helmet
             titleAttributes={{
               lang: 'en',
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               hidden: undefined,
             }}
           />
@@ -42,7 +42,7 @@ describe('title attributes', () => {
               lang: 'ja',
             }}
           />
-        </div>
+        </div>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -56,10 +56,10 @@ describe('title attributes', () => {
       render(
         <Helmet
           titleAttributes={{
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             hidden: undefined,
           }}
-        />
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -73,10 +73,10 @@ describe('title attributes', () => {
         <Helmet
           titleAttributes={{
             lang: 'en',
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             hidden: undefined,
           }}
-        />
+        />,
       );
 
       render(<Helmet />);
@@ -94,7 +94,7 @@ describe('title attributes', () => {
       render(
         <Helmet>
           <title itemProp="name" />
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -112,7 +112,7 @@ describe('title attributes', () => {
           <Helmet>
             <title lang="ja" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -126,7 +126,7 @@ describe('title attributes', () => {
       render(
         <Helmet>
           <title hidden />
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -139,7 +139,7 @@ describe('title attributes', () => {
       render(
         <Helmet>
           <title lang="en" hidden />
-        </Helmet>
+        </Helmet>,
       );
 
       render(<Helmet />);

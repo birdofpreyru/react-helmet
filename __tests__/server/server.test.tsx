@@ -107,11 +107,11 @@ describe('server', () => {
           script={[
             {
               src: 'foo.js',
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               async: undefined,
             },
           ]}
-        />
+        />,
       );
 
       expect(head.script.toString()).toMatchSnapshot();
@@ -216,7 +216,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <script src="foo.js" async={undefined} />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.script.toString()).toMatchSnapshot();
@@ -228,17 +228,17 @@ describe('server', () => {
           <link rel="notImportant" href="https://www.chipotle.com" />
           <link rel="canonical" href="https://www.tacobell.com" />
           <meta property="og:title" content="A very important title" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.priority.toString()).toContain('rel="canonical" href="https://www.tacobell.com"');
       expect(head.link.toString()).not.toContain('rel="canonical" href="https://www.tacobell.com"');
 
       expect(head.priority.toString()).toContain(
-        'property="og:title" content="A very important title"'
+        'property="og:title" content="A very important title"',
       );
       expect(head.meta.toString()).not.toContain(
-        'property="og:title" content="A very important title"'
+        'property="og:title" content="A very important title"',
       );
     });
 
@@ -248,19 +248,19 @@ describe('server', () => {
           <link rel="notImportant" href="https://www.chipotle.com" />
           <link rel="canonical" href="https://www.tacobell.com" />
           <meta property="og:title" content="A very important title" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.priority.toString()).not.toContain(
-        'rel="canonical" href="https://www.tacobell.com"'
+        'rel="canonical" href="https://www.tacobell.com"',
       );
       expect(head.link.toString()).toContain('rel="canonical" href="https://www.tacobell.com"');
 
       expect(head.priority.toString()).not.toContain(
-        'property="og:title" content="A very important title"'
+        'property="og:title" content="A very important title"',
       );
       expect(head.meta.toString()).toContain(
-        'property="og:title" content="A very important title"'
+        'property="og:title" content="A very important title"',
       );
     });
   });

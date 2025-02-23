@@ -21,7 +21,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <body lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
       const attrs = head.bodyAttributes.toComponent();
 
@@ -36,7 +36,7 @@ describe('server', () => {
       const body = renderContext(
         <Helmet>
           <body lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(body.bodyAttributes).toBeDefined();

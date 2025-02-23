@@ -22,7 +22,7 @@ describe('Helmet Data', () => {
       const helmetData = new HelmetData({});
 
       render(
-        <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />
+        <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />,
       );
 
       const head = helmetData.context.helmet;
@@ -38,7 +38,7 @@ describe('Helmet Data', () => {
       render(
         <Helmet helmetData={helmetData}>
           <base target="_blank" href="http://localhost/" />
-        </Helmet>
+        </Helmet>,
       );
 
       const head = helmetData.context.helmet;
@@ -59,7 +59,7 @@ describe('Helmet Data', () => {
           <Helmet helmetData={helmetData}>
             <base href="http://mysite.com/public" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const head = helmetData.context.helmet;
@@ -70,6 +70,7 @@ describe('Helmet Data', () => {
     });
 
     it('works with the same context object but separate HelmetData instances', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const context = {} as any;
 
       render(
@@ -80,7 +81,7 @@ describe('Helmet Data', () => {
           <Helmet helmetData={new HelmetData(context)}>
             <base href="http://mysite.com/public" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const head = context.helmet;
@@ -96,7 +97,7 @@ describe('Helmet Data', () => {
       const helmetData = new HelmetData({});
 
       render(
-        <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />
+        <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -117,7 +118,7 @@ describe('Helmet Data', () => {
       render(
         <Helmet helmetData={helmetData}>
           <base target="_blank" href="http://localhost/" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -143,7 +144,7 @@ describe('Helmet Data', () => {
           <Helmet helmetData={helmetData}>
             <base href="http://mysite.com/public" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];

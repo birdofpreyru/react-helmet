@@ -19,7 +19,7 @@ describe('title', () => {
           <Helmet title="Test Title" />
           <Helmet title="Child One Title" />
           <Helmet title="Child Two Title" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -30,7 +30,7 @@ describe('title', () => {
         <div>
           <Helmet title="Main Title" />
           <Helmet title="Nested Title" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -41,7 +41,7 @@ describe('title', () => {
         <div>
           <Helmet title="Main Title" />
           <Helmet />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -53,7 +53,7 @@ describe('title', () => {
           defaultTitle="Fallback"
           title=""
           titleTemplate="This is a %s of the titleTemplate feature"
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -65,7 +65,7 @@ describe('title', () => {
           defaultTitle="Fallback"
           title="Test"
           titleTemplate="This is a %s of the titleTemplate feature"
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -76,7 +76,7 @@ describe('title', () => {
         <Helmet
           title="Test"
           titleTemplate="This is a %s of the titleTemplate feature. Another %s."
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -87,7 +87,7 @@ describe('title', () => {
         <div>
           <Helmet title="Test" titleTemplate="This is a %s of the titleTemplate feature" />
           <Helmet title="Second Test" titleTemplate="A %s using nested titleTemplate attributes" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -98,7 +98,7 @@ describe('title', () => {
         <div>
           <Helmet title="Test" titleTemplate="This is a %s of the titleTemplate feature" />
           <Helmet title="Second Test" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -118,7 +118,7 @@ describe('title', () => {
       render(
         <div>
           <Helmet title={chineseTitle} />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -130,7 +130,7 @@ describe('title', () => {
           defaultTitle="Fallback"
           title="Test Title with itemProp"
           titleAttributes={{ itemprop: 'name' }}
-        />
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -145,7 +145,7 @@ describe('title', () => {
       render(
         <Helmet defaultTitle="Fallback">
           <title>Test Title</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -157,7 +157,7 @@ describe('title', () => {
       render(
         <Helmet>
           <title>Title: {someValue}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -175,7 +175,7 @@ describe('title', () => {
           <Helmet>
             <title>Child Two Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -190,7 +190,7 @@ describe('title', () => {
           <Helmet>
             <title>Nested Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -203,7 +203,7 @@ describe('title', () => {
             <title>Main Title</title>
           </Helmet>
           <Helmet />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -213,7 +213,7 @@ describe('title', () => {
       render(
         <Helmet defaultTitle="Fallback" titleTemplate="This is a %s of the titleTemplate feature">
           <title />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -223,7 +223,7 @@ describe('title', () => {
       render(
         <Helmet defaultTitle="Fallback" titleTemplate="This is a %s of the titleTemplate feature">
           <title>Test</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -233,7 +233,7 @@ describe('title', () => {
       render(
         <Helmet titleTemplate="This is a %s of the titleTemplate feature. Another %s.">
           <title>Test</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -248,7 +248,7 @@ describe('title', () => {
           <Helmet titleTemplate="A %s using nested titleTemplate attributes">
             <title>Second Test</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -263,7 +263,7 @@ describe('title', () => {
           <Helmet>
             <title>Second Test</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -275,7 +275,7 @@ describe('title', () => {
       render(
         <Helmet titleTemplate="This is a %s">
           <title>{dollarTitle}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -287,7 +287,7 @@ describe('title', () => {
       render(
         <Helmet>
           <title>{chineseTitle}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -297,7 +297,7 @@ describe('title', () => {
       render(
         <Helmet defaultTitle="Fallback">
           <title itemProp="name">Test Title with itemProp</title>
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -307,12 +307,12 @@ describe('title', () => {
     });
 
     it('retains existing title tag when no title tag is defined', () => {
-      document.head.innerHTML = `<title>Existing Title</title>`;
+      document.head.innerHTML = '<title>Existing Title</title>';
 
       render(
         <Helmet>
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -323,7 +323,7 @@ describe('title', () => {
         <Helmet>
           <title>Existing Title</title>
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -332,7 +332,7 @@ describe('title', () => {
         <Helmet>
           <title />
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toBe('');

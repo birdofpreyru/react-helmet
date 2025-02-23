@@ -50,7 +50,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <base target="_blank" href="http://localhost/" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.base).toBeDefined();
@@ -74,7 +74,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <base target="_blank" href="http://localhost/" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.base).toBeDefined();

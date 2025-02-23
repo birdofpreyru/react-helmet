@@ -18,20 +18,20 @@ describe('body attributes', () => {
       dir: 'rtl',
       draggable: 'true',
       dropzone: 'copy',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       hidden: 'true',
       id: 'test',
       lang: 'fr',
       spellcheck: 'true',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       style: 'color: green',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       tabIndex: '-1',
       title: 'test',
       translate: 'no',
     };
 
-    Object.keys(attributeList).forEach(attribute => {
+    Object.keys(attributeList).forEach((attribute) => {
       it(`${attribute}`, () => {
         const attrValue = attributeList[attribute];
 
@@ -42,7 +42,7 @@ describe('body attributes', () => {
         render(
           <Helmet>
             <body {...attr} />
-          </Helmet>
+          </Helmet>,
         );
 
         const bodyTag = document.body;
@@ -59,7 +59,7 @@ describe('body attributes', () => {
     render(
       <Helmet>
         <body className="myClassName" tabIndex={-1} />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -78,7 +78,7 @@ describe('body attributes', () => {
         <Helmet>
           <body lang="ja" />
         </Helmet>
-      </div>
+      </div>,
     );
 
     const bodyTag = document.body;
@@ -91,7 +91,7 @@ describe('body attributes', () => {
     render(
       <Helmet>
         <body hidden />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -104,7 +104,7 @@ describe('body attributes', () => {
     render(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
     render(<Helmet />);
@@ -120,13 +120,13 @@ describe('body attributes', () => {
     render(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
     render(
       <Helmet>
         <body lang="ja" id="body-tag" title="body tag" />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -142,13 +142,13 @@ describe('body attributes', () => {
     render(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
     render(
       <Helmet>
         <body id="body-tag" title="body tag" />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -176,14 +176,16 @@ describe('body attributes', () => {
     });
 
     it('attributes are overwritten if specified in helmet', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <body
-            // @ts-ignore
+            // @ts-expect-error "pre-existing expection"
             test="helmet-attr"
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const bodyTag = document.body;
 
@@ -192,14 +194,16 @@ describe('body attributes', () => {
     });
 
     it('attributes are cleared once managed in helmet', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <body
-            // @ts-ignore
+            // @ts-expect-error "pre-existing expection"
             test="helmet-attr"
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       render(<Helmet />);
 

@@ -37,7 +37,7 @@ describe('server', () => {
 
     it('opts out of string encoding', () => {
       const head = renderContext(
-        <Helmet encodeSpecialCharacters={false} title={"This is text and & and '."} />
+        <Helmet encodeSpecialCharacters={false} title={'This is text and & and \'.'} />,
       );
 
       expect(head.title).toBeDefined();
@@ -67,7 +67,7 @@ describe('server', () => {
 
     it('renders title with itemprop name as React component', () => {
       const head = renderContext(
-        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />
+        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
       );
 
       expect(head.title).toBeDefined();
@@ -97,7 +97,7 @@ describe('server', () => {
 
     it('renders title with itemprop name as string', () => {
       const head = renderContext(
-        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />
+        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
       );
 
       expect(head.title).toBeDefined();
@@ -114,7 +114,7 @@ describe('server', () => {
       const head = renderContext(
         <div>
           <Helmet title={chineseTitle} />
-        </div>
+        </div>,
       );
 
       expect(head.title).toBeDefined();
@@ -127,8 +127,8 @@ describe('server', () => {
     it('encodes special characters in title', () => {
       const head = renderContext(
         <Helmet>
-          <title>{`Dangerous <script> include`}</title>
-        </Helmet>
+          <title>{'Dangerous <script> include'}</title>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -139,8 +139,8 @@ describe('server', () => {
     it('opts out of string encoding', () => {
       const head = renderContext(
         <Helmet encodeSpecialCharacters={false}>
-          <title>This is text and & and '.</title>
-        </Helmet>
+          <title>This is text and & and &apos;.</title>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -151,8 +151,8 @@ describe('server', () => {
     it('renders title as React component', () => {
       const head = renderContext(
         <Helmet>
-          <title>{`Dangerous <script> include`}</title>
-        </Helmet>
+          <title>{'Dangerous <script> include'}</title>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -176,7 +176,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <title itemProp="name">Title with Itemprop</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -200,7 +200,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -214,7 +214,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <title>Title: {someValue}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -226,7 +226,7 @@ describe('server', () => {
       const head = renderContext(
         <Helmet>
           <title itemProp="name">Title with Itemprop</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -245,7 +245,7 @@ describe('server', () => {
           <Helmet>
             <title>{chineseTitle}</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(head.title).toBeDefined();
@@ -258,8 +258,8 @@ describe('server', () => {
     it('does html encode title', () => {
       const head = renderContext(
         <Helmet>
-          <title>{`Dangerous <script> include`}</title>
-        </Helmet>
+          <title>{'Dangerous <script> include'}</title>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();
@@ -270,8 +270,8 @@ describe('server', () => {
     it('renders title as React component', () => {
       const head = renderContext(
         <Helmet>
-          <title>{`Dangerous <script> include`}</title>
-        </Helmet>
+          <title>{'Dangerous <script> include'}</title>
+        </Helmet>,
       );
 
       expect(head.title).toBeDefined();

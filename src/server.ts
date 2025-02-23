@@ -28,62 +28,66 @@ const encodeSpecialCharacters = (str: string, encode = true) => {
 
 type Attributes = { [key: string]: string | number | boolean };
 
-const generateElementAttributesAsString = (attributes: Attributes) =>
-  Object.keys(attributes).reduce((str, key) => {
-    const attr = typeof attributes[key] !== 'undefined' ? `${key}="${attributes[key]}"` : `${key}`;
-    return str ? `${str} ${attr}` : attr;
-  }, '');
+const generateElementAttributesAsString = (
+  attributes: Attributes,
+) => Object.keys(attributes).reduce((str, key) => {
+  const attr = typeof attributes[key] !== 'undefined' ? `${key}="${attributes[key]}"` : `${key}`;
+  return str ? `${str} ${attr}` : attr;
+}, '');
 
 const generateTitleAsString = (
   type: string,
   title: string,
   attributes: Attributes,
-  encode: boolean
+  encode: boolean,
 ) => {
   const attributeString = generateElementAttributesAsString(attributes);
   const flattenedTitle = flattenArray(title);
   return attributeString
     ? `<${type} ${HELMET_ATTRIBUTE}="true" ${attributeString}>${encodeSpecialCharacters(
-        flattenedTitle,
-        encode
-      )}</${type}>`
+      flattenedTitle,
+      encode,
+    )}</${type}>`
     : `<${type} ${HELMET_ATTRIBUTE}="true">${encodeSpecialCharacters(
-        flattenedTitle,
-        encode
-      )}</${type}>`;
+      flattenedTitle,
+      encode,
+    )}</${type}>`;
 };
 
-const generateTagsAsString = (type: string, tags: HTMLElement[], encode = true) =>
-  tags.reduce((str, t) => {
-    const tag = t as unknown as Attributes;
-    const attributeHtml = Object.keys(tag)
-      .filter(
-        attribute =>
-          !(attribute === TAG_PROPERTIES.INNER_HTML || attribute === TAG_PROPERTIES.CSS_TEXT)
-      )
-      .reduce((string, attribute) => {
-        const attr =
-          typeof tag[attribute] === 'undefined'
-            ? attribute
-            : `${attribute}="${encodeSpecialCharacters(tag[attribute] as string, encode)}"`;
-        return string ? `${string} ${attr}` : attr;
-      }, '');
+const generateTagsAsString = (
+  type: string,
+  tags: HTMLElement[],
+  encode = true,
+) => tags.reduce((str, t) => {
+  const tag = t as unknown as Attributes;
+  const attributeHtml = Object.keys(tag)
+    .filter(
+      (attribute) => !(attribute === TAG_PROPERTIES.INNER_HTML || attribute === TAG_PROPERTIES.CSS_TEXT),
+    )
+    .reduce((string, attribute) => {
+      const attr = typeof tag[attribute] === 'undefined'
+        ? attribute
+        : `${attribute}="${encodeSpecialCharacters(tag[attribute] as string, encode)}"`;
+      return string ? `${string} ${attr}` : attr;
+    }, '');
 
-    const tagContent = tag.innerHTML || tag.cssText || '';
+  const tagContent = tag.innerHTML || tag.cssText || '';
 
-    const isSelfClosing = SELF_CLOSING_TAGS.indexOf(type) === -1;
+  const isSelfClosing = SELF_CLOSING_TAGS.indexOf(type) === -1;
 
-    return `${str}<${type} ${HELMET_ATTRIBUTE}="true" ${attributeHtml}${
-      isSelfClosing ? `/>` : `>${tagContent}</${type}>`
-    }`;
-  }, '');
+  return `${str}<${type} ${HELMET_ATTRIBUTE}="true" ${attributeHtml}${
+    isSelfClosing ? '/>' : `>${tagContent}</${type}>`
+  }`;
+}, '');
 
-const convertElementAttributesToReactProps = (attributes: Attributes, initProps = {}) =>
-  Object.keys(attributes).reduce((obj: Attributes, key: string) => {
-    const mapped = (REACT_TAG_MAP as Attributes)[key] as string;
-    obj[mapped || key] = attributes[key];
-    return obj;
-  }, initProps);
+const convertElementAttributesToReactProps = (
+  attributes: Attributes,
+  initProps = {},
+) => Object.keys(attributes).reduce((obj: Attributes, key: string) => {
+  const mapped = (REACT_TAG_MAP as Attributes)[key] as string;
+  obj[mapped || key] = attributes[key];
+  return obj;
+}, initProps);
 
 const generateTitleAsReactComponent = (_type: string, title: string, attributes: Attributes) => {
   // assigning into an array to define toString function on it
@@ -96,31 +100,36 @@ const generateTitleAsReactComponent = (_type: string, title: string, attributes:
   return [React.createElement(TAG_NAMES.TITLE, props, title)];
 };
 
-const generateTagsAsReactComponent = (type: string, tags: any[]) =>
-  tags.map((tag, i) => {
-    const mappedTag: { [key: string]: any } = {
-      key: i,
-      [HELMET_ATTRIBUTE]: true,
-    };
+const generateTagsAsReactComponent = (
+  type: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  tags: any[],
+) => tags.map((tag, i) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mappedTag: { [key: string]: any } = {
+    key: i,
+    [HELMET_ATTRIBUTE]: true,
+  };
 
-    Object.keys(tag).forEach(attribute => {
-      const mapped = (REACT_TAG_MAP as Attributes)[attribute] as string;
-      const mappedAttribute = mapped || attribute;
+  Object.keys(tag).forEach((attribute) => {
+    const mapped = (REACT_TAG_MAP as Attributes)[attribute] as string;
+    const mappedAttribute = mapped || attribute;
 
-      if (
-        mappedAttribute === TAG_PROPERTIES.INNER_HTML ||
-        mappedAttribute === TAG_PROPERTIES.CSS_TEXT
-      ) {
-        const content = tag.innerHTML || tag.cssText;
-        mappedTag.dangerouslySetInnerHTML = { __html: content };
-      } else {
-        mappedTag[mappedAttribute] = tag[attribute];
-      }
-    });
-
-    return React.createElement(type, mappedTag);
+    if (
+      mappedAttribute === TAG_PROPERTIES.INNER_HTML
+      || mappedAttribute === TAG_PROPERTIES.CSS_TEXT
+    ) {
+      const content = tag.innerHTML || tag.cssText;
+      mappedTag.dangerouslySetInnerHTML = { __html: content };
+    } else {
+      mappedTag[mappedAttribute] = tag[attribute];
+    }
   });
 
+  return React.createElement(type, mappedTag);
+});
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const getMethodsForTag = (type: string, tags: any, encode = true) => {
   switch (type) {
     case TAG_NAMES.TITLE:
@@ -154,13 +163,12 @@ const getPriorityMethods = ({ metaTags, linkTags, scriptTags, encode }: MappedSe
       ...generateTagsAsReactComponent(TAG_NAMES.LINK, link.priority),
       ...generateTagsAsReactComponent(TAG_NAMES.SCRIPT, script.priority),
     ],
-    toString: () =>
-      // generate all the tags as strings and concatenate them
-      `${getMethodsForTag(TAG_NAMES.META, meta.priority, encode)} ${getMethodsForTag(
-        TAG_NAMES.LINK,
-        link.priority,
-        encode
-      )} ${getMethodsForTag(TAG_NAMES.SCRIPT, script.priority, encode)}`,
+    // generate all the tags as strings and concatenate them
+    toString: () => `${getMethodsForTag(TAG_NAMES.META, meta.priority, encode)} ${getMethodsForTag(
+      TAG_NAMES.LINK,
+      link.priority,
+      encode,
+    )} ${getMethodsForTag(TAG_NAMES.SCRIPT, script.priority, encode)}`,
   };
 
   return {

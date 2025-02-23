@@ -30,7 +30,7 @@ describe('server', () => {
               innerHTML: '<link rel="stylesheet" type="text/css" href="/style2.css" />',
             },
           ]}
-        />
+        />,
       );
 
       expect(head.noscript).toBeDefined();
@@ -55,9 +55,9 @@ describe('server', () => {
     it('renders noscript tags as React components', () => {
       const head = renderContext(
         <Helmet>
-          <noscript id="foo">{`<link rel="stylesheet" type="text/css" href="/style.css" />`}</noscript>
-          <noscript id="bar">{`<link rel="stylesheet" type="text/css" href="/style2.css" />`}</noscript>
-        </Helmet>
+          <noscript id="foo">{'<link rel="stylesheet" type="text/css" href="/style.css" />'}</noscript>
+          <noscript id="bar">{'<link rel="stylesheet" type="text/css" href="/style2.css" />'}</noscript>
+        </Helmet>,
       );
 
       expect(head.noscript).toBeDefined();

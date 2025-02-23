@@ -16,7 +16,7 @@ describe('base tag', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag => tag.getAttribute('href') === 'http://mysite.com/'
+        (tag) => tag.getAttribute('href') === 'http://mysite.com/',
       );
 
       expect(filteredTags).toHaveLength(1);
@@ -32,8 +32,8 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' are not accepted", () => {
-      render(<Helmet base={{ property: "won't work" }} />);
+    it('tags without \'href\' are not accepted', () => {
+      render(<Helmet base={{ property: 'won\'t work' }} />);
       const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
@@ -45,7 +45,7 @@ describe('base tag', () => {
         <div>
           <Helmet base={{ href: 'http://mysite.com/' }} />
           <Helmet base={{ href: 'http://mysite.com/public' }} />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -61,7 +61,7 @@ describe('base tag', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      // @ts-ignore
+      // @ts-expect-error "pre-existing test"
       render(<Helmet base={{ href: undefined }} />);
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -75,7 +75,7 @@ describe('base tag', () => {
       render(
         <Helmet>
           <base href="http://mysite.com/" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -83,7 +83,7 @@ describe('base tag', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag => tag.getAttribute('href') === 'http://mysite.com/'
+        (tag) => tag.getAttribute('href') === 'http://mysite.com/',
       );
 
       expect(filteredTags).toHaveLength(1);
@@ -99,12 +99,14 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' are not accepted", () => {
+    it('tags without \'href\' are not accepted', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <base property="won't work" />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
@@ -121,7 +123,7 @@ describe('base tag', () => {
           <Helmet>
             <base href="http://mysite.com/public" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -140,7 +142,7 @@ describe('base tag', () => {
       render(
         <Helmet>
           <base href={undefined} />
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);

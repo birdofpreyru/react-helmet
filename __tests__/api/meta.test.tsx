@@ -28,7 +28,7 @@ describe('meta tags', () => {
               content: 'Test name itemprop',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -36,14 +36,17 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          tag.getAttribute('charset') === 'utf-8' ||
-          (tag.getAttribute('name') === 'description' &&
-            tag.getAttribute('content') === 'Test description') ||
-          (tag.getAttribute('http-equiv') === 'content-type' &&
-            tag.getAttribute('content') === 'text/html') ||
-          (tag.getAttribute('itemprop') === 'name' &&
-            tag.getAttribute('content') === 'Test name itemprop')
+        (tag) => tag.getAttribute('charset') === 'utf-8'
+        || (
+          tag.getAttribute('name') === 'description'
+          && tag.getAttribute('content') === 'Test description'
+        ) || (
+          tag.getAttribute('http-equiv') === 'content-type'
+          && tag.getAttribute('content') === 'text/html'
+        ) || (
+          tag.getAttribute('itemprop') === 'name'
+          && tag.getAttribute('content') === 'Test name itemprop'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(4);
@@ -60,16 +63,16 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'name', 'http-equiv', 'property', 'charset', or 'itemprop' are not accepted", () => {
+    it('tags without \'name\', \'http-equiv\', \'property\', \'charset\', or \'itemprop\' are not accepted', () => {
       render(
         <Helmet
           meta={[
             {
-              // @ts-ignore
-              href: "won't work",
+              // @ts-expect-error "pre-existing"
+              href: 'won\'t work',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -99,7 +102,7 @@ describe('meta tags', () => {
               { name: 'keywords', content: 'test,meta,tags' },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -139,7 +142,7 @@ describe('meta tags', () => {
               content: 'Duplicate description',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -184,7 +187,7 @@ describe('meta tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -223,7 +226,7 @@ describe('meta tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -254,7 +257,7 @@ describe('meta tags', () => {
               content: 'Inner duplicate description',
             },
           ]}
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -270,10 +273,10 @@ describe('meta tags', () => {
       render(
         <Helmet
           meta={
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             { name: 'title', content: 'some title' }
           }
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -283,6 +286,8 @@ describe('meta tags', () => {
 
       expect(console.warn).toHaveBeenCalled();
 
+      // This is a pre-existing typing.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       expect((console.warn as MockedFunction<any>).mock.calls[0][0]).toMatchSnapshot();
 
       global.console = originalConsole;
@@ -298,7 +303,7 @@ describe('meta tags', () => {
           <meta httpEquiv="content-type" content="text/html" />
           <meta property="og:type" content="article" />
           <meta itemProp="name" content="Test name itemprop" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -306,14 +311,17 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          tag.getAttribute('charset') === 'utf-8' ||
-          (tag.getAttribute('name') === 'description' &&
-            tag.getAttribute('content') === 'Test description') ||
-          (tag.getAttribute('http-equiv') === 'content-type' &&
-            tag.getAttribute('content') === 'text/html') ||
-          (tag.getAttribute('itemprop') === 'name' &&
-            tag.getAttribute('content') === 'Test name itemprop')
+        (tag) => tag.getAttribute('charset') === 'utf-8'
+        || (
+          tag.getAttribute('name') === 'description'
+          && tag.getAttribute('content') === 'Test description'
+        ) || (
+          tag.getAttribute('http-equiv') === 'content-type'
+          && tag.getAttribute('content') === 'text/html'
+        ) || (
+          tag.getAttribute('itemprop') === 'name'
+          && tag.getAttribute('content') === 'Test name itemprop'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(4);
@@ -323,7 +331,7 @@ describe('meta tags', () => {
       render(
         <Helmet>
           <meta name="description" content="Test description" />
-        </Helmet>
+        </Helmet>,
       );
 
       render(<Helmet />);
@@ -334,14 +342,14 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'name', 'http-equiv', 'property', 'charset', or 'itemprop' are not accepted", () => {
+    it('tags without \'name\', \'http-equiv\', \'property\', \'charset\', or \'itemprop\' are not accepted', () => {
       render(
         <Helmet>
           <meta
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             href="won't work"
           />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
@@ -361,7 +369,7 @@ describe('meta tags', () => {
             <meta name="description" content="Inner description" />
             <meta name="keywords" content="test,meta,tags" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -393,7 +401,7 @@ describe('meta tags', () => {
         <Helmet>
           <meta name="description" content="Test description" />
           <meta name="description" content="Duplicate description" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -425,7 +433,7 @@ describe('meta tags', () => {
           <Helmet>
             <meta name="description" content="Inner description" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -451,7 +459,7 @@ describe('meta tags', () => {
             <meta name="description" content="Inner description" />
             <meta name="description" content="Inner duplicate description" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
@@ -477,7 +485,7 @@ describe('meta tags', () => {
       render(
         <Helmet>
           <meta name={undefined} content="Inner duplicate description" />
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);

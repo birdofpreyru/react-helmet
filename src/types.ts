@@ -33,6 +33,8 @@ export interface HelmetTags {
 
 export interface HelmetDatum {
   toString(): string;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   toComponent(): React.Component<any>;
 }
 

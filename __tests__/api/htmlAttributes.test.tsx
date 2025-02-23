@@ -15,7 +15,7 @@ describe('html attributes', () => {
             class: 'myClassName',
             lang: 'en',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -38,7 +38,7 @@ describe('html attributes', () => {
               lang: 'ja',
             }}
           />
-        </div>
+        </div>,
       );
 
       const htmlTag = document.documentElement;
@@ -53,7 +53,7 @@ describe('html attributes', () => {
           htmlAttributes={{
             amp: undefined,
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -69,7 +69,7 @@ describe('html attributes', () => {
             lang: 'en',
             amp: undefined,
           }}
-        />
+        />,
       );
 
       render(<Helmet />);
@@ -88,7 +88,7 @@ describe('html attributes', () => {
             lang: 'en',
             amp: undefined,
           }}
-        />
+        />,
       );
 
       render(
@@ -98,7 +98,7 @@ describe('html attributes', () => {
             id: 'html-tag',
             title: 'html tag',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -117,7 +117,7 @@ describe('html attributes', () => {
             lang: 'en',
             amp: undefined,
           }}
-        />
+        />,
       );
 
       render(
@@ -126,7 +126,7 @@ describe('html attributes', () => {
             id: 'html-tag',
             title: 'html tag',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -159,7 +159,7 @@ describe('html attributes', () => {
             htmlAttributes={{
               test: 'helmet-attr',
             }}
-          />
+          />,
         );
 
         const htmlTag = document.documentElement;
@@ -174,7 +174,7 @@ describe('html attributes', () => {
             htmlAttributes={{
               test: 'helmet-attr',
             }}
-          />
+          />,
         );
 
         render(<Helmet />);
@@ -192,7 +192,7 @@ describe('html attributes', () => {
       render(
         <Helmet>
           <html className="myClassName" lang="en" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -211,7 +211,7 @@ describe('html attributes', () => {
           <Helmet>
             <html lang="ja" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const htmlTag = document.documentElement;
@@ -221,14 +221,16 @@ describe('html attributes', () => {
     });
 
     it('handles valueless attributes', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <html
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const htmlTag = document.documentElement;
 
@@ -237,15 +239,17 @@ describe('html attributes', () => {
     });
 
     it('clears html attributes that are handled within helmet', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       render(<Helmet />);
 
@@ -257,20 +261,22 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       render(
         <Helmet>
           <html lang="ja" id="html-tag" title="html tag" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -283,20 +289,22 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - all new', () => {
+      /* eslint-disable react/no-unknown-property */
       render(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       render(
         <Helmet>
           <html id="html-tag" title="html tag" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -324,14 +332,16 @@ describe('html attributes', () => {
       });
 
       it('overwritten if specified in helmet', () => {
+        /* eslint-disable react/no-unknown-property */
         render(
           <Helmet>
             <html
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               test="helmet-attr"
             />
-          </Helmet>
+          </Helmet>,
         );
+        /* eslint-enable react/no-unknown-property */
 
         const htmlTag = document.documentElement;
 
@@ -340,14 +350,16 @@ describe('html attributes', () => {
       });
 
       it('cleared once it is managed in helmet', () => {
+        /* eslint-disable react/no-unknown-property */
         render(
           <Helmet>
             <html
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               test="helmet-attr"
             />
-          </Helmet>
+          </Helmet>,
         );
+        /* eslint-enable react/no-unknown-property */
 
         render(<Helmet />);
 

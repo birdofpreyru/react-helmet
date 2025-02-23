@@ -33,7 +33,7 @@ describe('onChangeClientState', () => {
             title="Main Title"
             onChangeClientState={onChange}
           />
-        </div>
+        </div>,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -46,20 +46,20 @@ describe('onChangeClientState', () => {
       expect(newState.baseTag[0]).toEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
-        })
+        }),
       );
       expect(newState.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
       expect(newState.linkTags[0]).toEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
-        })
+        }),
       );
       expect(newState.scriptTags[0]).toEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
-        })
+        }),
       );
 
       expect(addedTags.baseTag).toBeDefined();
@@ -112,7 +112,7 @@ describe('onChangeClientState', () => {
             <script src="http://localhost/test.js" type="text/javascript" />
             <title>Main Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(onChange).toHaveBeenCalled();
@@ -125,20 +125,20 @@ describe('onChangeClientState', () => {
       expect(newState.baseTag[0]).toEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
-        })
+        }),
       );
       expect(newState.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
       expect(newState.linkTags[0]).toEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
-        })
+        }),
       );
       expect(newState.scriptTags[0]).toEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
-        })
+        }),
       );
 
       expect(addedTags.baseTag).toBeDefined();
