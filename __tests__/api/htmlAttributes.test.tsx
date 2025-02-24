@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -20,7 +20,7 @@ describe('html attributes', () => {
 
       expect(htmlTag).toHaveAttribute('class', 'myClassName');
       expect(htmlTag).toHaveAttribute('lang', 'en');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,lang');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,lang');
     });
 
     it('sets attributes based on the deepest nested component', () => {
@@ -42,7 +42,7 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('lang', 'ja');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
     });
 
     it('handles valueless attributes', () => {
@@ -57,7 +57,7 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('amp', '');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'amp');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'amp');
     });
 
     it('clears html attributes that are handled within helmet', () => {
@@ -76,7 +76,7 @@ describe('html attributes', () => {
 
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).not.toHaveAttribute('amp');
-      expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
@@ -105,7 +105,7 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
@@ -133,7 +133,7 @@ describe('html attributes', () => {
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
     });
 
     describe('initialized outside of helmet', () => {
@@ -148,7 +148,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
       });
 
       it('attributes are overwritten if specified in helmet', () => {
@@ -163,7 +163,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'helmet-attr');
-        expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
+        expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
       });
 
       it('attributes are cleared once managed in helmet', () => {
@@ -180,7 +180,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).not.toHaveAttribute('test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
       });
     });
   });
@@ -197,7 +197,7 @@ describe('html attributes', () => {
 
       expect(htmlTag).toHaveAttribute('class', 'myClassName');
       expect(htmlTag).toHaveAttribute('lang', 'en');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,lang');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,lang');
     });
 
     it('sets attributes based on the deepest nested component', () => {
@@ -215,7 +215,7 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('lang', 'ja');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
     });
 
     it('handles valueless attributes', () => {
@@ -233,7 +233,7 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('amp', 'true');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'amp');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'amp');
     });
 
     it('clears html attributes that are handled within helmet', () => {
@@ -255,7 +255,7 @@ describe('html attributes', () => {
 
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).not.toHaveAttribute('amp');
-      expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
@@ -283,7 +283,7 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
@@ -311,7 +311,7 @@ describe('html attributes', () => {
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
     });
 
     describe('initialized outside of helmet', () => {
@@ -326,7 +326,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
       });
 
       it('overwritten if specified in helmet', () => {
@@ -344,7 +344,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'helmet-attr');
-        expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
+        expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
       });
 
       it('cleared once it is managed in helmet', () => {
@@ -364,7 +364,7 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).not.toHaveAttribute('test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
       });
     });
   });

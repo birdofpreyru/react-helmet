@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -64,7 +64,7 @@ describe('script tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -73,7 +73,7 @@ describe('script tags', () => {
     it('tags without \'src\' are not accepted', () => {
       render(<Helmet script={[{ property: 'won\'t work' }]} />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -101,7 +101,7 @@ describe('script tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -133,7 +133,7 @@ describe('script tags', () => {
         />,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTag = document.head.querySelector(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
       expect(existingTag?.outerHTML).toMatchSnapshot();
@@ -152,7 +152,7 @@ describe('script tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -170,7 +170,7 @@ describe('script tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -220,7 +220,7 @@ describe('script tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -235,7 +235,7 @@ describe('script tags', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -251,7 +251,7 @@ describe('script tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -277,7 +277,7 @@ describe('script tags', () => {
         </Helmet>,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTag = document.head.querySelector(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
       expect(existingTag?.outerHTML).toMatchSnapshot();
@@ -290,7 +290,7 @@ describe('script tags', () => {
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -308,7 +308,7 @@ describe('script tags', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);

@@ -1,4 +1,4 @@
-import type { Component, HTMLAttributes, JSX } from 'react';
+import type { HTMLAttributes, JSX, ReactNode } from 'react';
 
 import type HelmetData from './HelmetData';
 
@@ -29,20 +29,13 @@ export type HelmetTags = {
   styleTags: HTMLStyleElement[];
 }
 
-export type HelmetDatum = {
+export type HelmetDatum<T = ReactNode> = {
   toString(): string;
-  toComponent(): Component;
+  toComponent(): T;
 }
 
-export type HelmetHTMLBodyDatum = {
-  toString(): string;
-  toComponent(): HTMLAttributes<HTMLBodyElement>;
-}
-
-export type HelmetHTMLElementDatum = {
-  toString(): string;
-  toComponent(): HTMLAttributes<HTMLHtmlElement>;
-}
+export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;
+export type HelmetHTMLElementDatum = HelmetDatum<HTMLAttributes<HTMLHtmlElement>>;
 
 export type HelmetServerState = {
   base: HelmetDatum;
@@ -54,7 +47,10 @@ export type HelmetServerState = {
   script: HelmetDatum;
   style: HelmetDatum;
   title: HelmetDatum;
+
+  // TODO: Why is it needed? Can't it be a part of `title` value?
   titleAttributes?: HelmetDatum;
+
   priority: HelmetDatum;
 }
 
@@ -69,7 +65,7 @@ export type StateUpdate = HelmetTags & {
   titleAttributes: TitleProps;
 }
 
-export type OnChangeClientStateT = (
+export type OnChangeClientState = (
   newState: StateUpdate,
   addedTags: HelmetTags,
   removedTags: HelmetTags
@@ -85,7 +81,7 @@ export type HelmetProps = {
   helmetData?: HelmetData;
   htmlAttributes?: HtmlProps; // {"lang": "en", "amp": undefined}
   // "(newState) => console.log(newState)"
-  onChangeClientState?: OnChangeClientStateT;
+  onChangeClientState?: OnChangeClientState;
   link?: LinkProps[]; // [{"rel": "canonical", "href": "http://mysite.com/example"}]
   meta?: MetaProps[]; // [{"name": "description", "content": "Test description"}]
   noscript?: Attributes[]; // [{"innerHTML": "<img src='http://mysite.com/js/test.js'"}]

@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -22,7 +22,7 @@ describe('title attributes', () => {
       const titleTag = document.getElementsByTagName('title')[0];
 
       expect(titleTag).toHaveAttribute('itemprop', 'name');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'itemprop');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'itemprop');
     });
 
     it('sets attributes based on the deepest nested component', () => {
@@ -47,7 +47,7 @@ describe('title attributes', () => {
 
       expect(titleTag).toHaveAttribute('lang', 'ja');
       expect(titleTag).toHaveAttribute('hidden', '');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,hidden');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,hidden');
     });
 
     it('handles valueless attributes', () => {
@@ -63,7 +63,7 @@ describe('title attributes', () => {
       const titleTag = document.getElementsByTagName('title')[0];
 
       expect(titleTag).toHaveAttribute('hidden', '');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'hidden');
     });
 
     it('clears title attributes that are handled within helmet', () => {
@@ -83,7 +83,7 @@ describe('title attributes', () => {
 
       expect(titleTag).not.toHaveAttribute('lang');
       expect(titleTag).not.toHaveAttribute('hidden');
-      expect(titleTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(titleTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
   });
 
@@ -98,7 +98,7 @@ describe('title attributes', () => {
       const titleTag = document.getElementsByTagName('title')[0];
 
       expect(titleTag).toHaveAttribute('itemprop', 'name');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'itemprop');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'itemprop');
     });
 
     it('sets attributes based on the deepest nested component', () => {
@@ -117,7 +117,7 @@ describe('title attributes', () => {
 
       expect(titleTag).toHaveAttribute('lang', 'ja');
       expect(titleTag).toHaveAttribute('hidden', 'true');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,hidden');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,hidden');
     });
 
     it('handles valueless attributes', () => {
@@ -130,7 +130,7 @@ describe('title attributes', () => {
       const titleTag = document.getElementsByTagName('title')[0];
 
       expect(titleTag).toHaveAttribute('hidden', 'true');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
+      expect(titleTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'hidden');
     });
 
     it('clears title attributes that are handled within helmet', () => {
@@ -146,7 +146,7 @@ describe('title attributes', () => {
 
       expect(titleTag).not.toHaveAttribute('lang');
       expect(titleTag).not.toHaveAttribute('hidden');
-      expect(titleTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(titleTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
   });
 });

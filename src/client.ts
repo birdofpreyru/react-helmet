@@ -1,4 +1,4 @@
-import { HELMET_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
+import { HELMET_DATA_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
 import type { Attributes, StateUpdate, TagList } from './types';
 import { flattenArray } from './utils';
 
@@ -11,7 +11,7 @@ type TagUpdateList = Record<string, TagUpdates>;
 
 const updateTags = (type: string, tags: HTMLElement[]) => {
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
-  const tagNodes = headElement.querySelectorAll(`${type}[${HELMET_ATTRIBUTE}]`);
+  const tagNodes = headElement.querySelectorAll(`${type}[${HELMET_DATA_ATTRIBUTE}]`);
   const oldTags: HTMLElement[] = [].slice.call(tagNodes);
   const newTags: HTMLElement[] = [];
   let indexToDelete: number;
@@ -42,7 +42,7 @@ const updateTags = (type: string, tags: HTMLElement[]) => {
         }
       }
 
-      newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
+      newElement.setAttribute(HELMET_DATA_ATTRIBUTE, 'true');
 
       // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
       if (
@@ -74,7 +74,7 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
     return;
   }
 
-  const helmetAttributeString = elementTag.getAttribute(HELMET_ATTRIBUTE);
+  const helmetAttributeString = elementTag.getAttribute(HELMET_DATA_ATTRIBUTE);
   const helmetAttributes = helmetAttributeString ? helmetAttributeString.split(',') : [];
   const attributesToRemove = [...helmetAttributes];
   const attributeKeys = Object.keys(attributes);
@@ -101,9 +101,9 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   }
 
   if (helmetAttributes.length === attributesToRemove.length) {
-    elementTag.removeAttribute(HELMET_ATTRIBUTE);
-  } else if (elementTag.getAttribute(HELMET_ATTRIBUTE) !== attributeKeys.join(',')) {
-    elementTag.setAttribute(HELMET_ATTRIBUTE, attributeKeys.join(','));
+    elementTag.removeAttribute(HELMET_DATA_ATTRIBUTE);
+  } else if (elementTag.getAttribute(HELMET_DATA_ATTRIBUTE) !== attributeKeys.join(',')) {
+    elementTag.setAttribute(HELMET_DATA_ATTRIBUTE, attributeKeys.join(','));
   }
 };
 

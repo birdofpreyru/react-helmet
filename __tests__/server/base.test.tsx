@@ -3,7 +3,6 @@ import ReactServer from 'react-dom/server';
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
 import { renderContext, isArray } from '../../config/jest/utils';
-import type { ReactNode } from 'react';
 
 Helmet.defaultProps.defer = false;
 
@@ -32,7 +31,7 @@ describe('server', () => {
         expect(base).toEqual(expect.objectContaining({ type: 'base' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(baseComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(baseComponent);
 
       expect(markup).toMatchSnapshot();
     });
@@ -65,7 +64,7 @@ describe('server', () => {
         expect(base).toEqual(expect.objectContaining({ type: 'base' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(baseComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(baseComponent);
 
       expect(markup).toMatchSnapshot();
     });

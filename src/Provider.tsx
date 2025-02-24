@@ -5,20 +5,15 @@ import {
   useRef,
 } from 'react';
 
-import HelmetData, { isDocument } from './HelmetData';
-import type { HelmetServerState } from './types';
+import HelmetData, { isDocument, type HelmetDataContext } from './HelmetData';
 
 const defaultValue = {};
 
 export const Context = createContext(defaultValue);
 
-export type ContextT = {
-  helmet?: HelmetServerState;
-};
-
 type ProviderProps = {
   children?: ReactNode;
-  context?: ContextT;
+  context?: Partial<HelmetDataContext>;
 }
 
 type HelmetProviderT = FunctionComponent<ProviderProps> & {

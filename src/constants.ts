@@ -17,6 +17,10 @@ export enum ATTRIBUTE_NAMES {
   TITLE = 'titleAttributes',
 }
 
+/**
+ * TODO: Do we really need it?
+ * I guess, at least as of React 19, all these can be rendered directly as JSX.
+ */
 export enum TAG_NAMES {
   BASE = 'base',
   BODY = 'body',
@@ -57,7 +61,11 @@ export const SEO_PRIORITY_TAGS = {
 
 export const VALID_TAG_NAMES = Object.values(TAG_NAMES);
 
-export const REACT_TAG_MAP = {
+/**
+ * The mapping of HTML attribute names to the corresponding element properties,
+ * for the names that do not match their corresponding properties.
+ */
+export const REACT_TAG_MAP: Record<string, string> = {
   accesskey: 'accessKey',
   charset: 'charSet',
   class: 'className',
@@ -76,4 +84,4 @@ export const HTML_TAG_MAP = Object.entries(REACT_TAG_MAP).reduce(
   {} as Record<string, string>,
 );
 
-export const HELMET_ATTRIBUTE = 'data-rh';
+export const HELMET_DATA_ATTRIBUTE = 'data-rh';

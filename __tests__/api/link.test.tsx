@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -23,7 +23,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -55,7 +55,7 @@ describe('link tags', () => {
 
       render(<Helmet />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -66,7 +66,7 @@ describe('link tags', () => {
       // @ts-expect-error "pre-existing"
       render(<Helmet link={[{ 'http-equiv': 'won\'t work' }]} />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -103,7 +103,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -142,7 +142,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -199,7 +199,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -244,7 +244,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -289,7 +289,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -328,7 +328,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -361,7 +361,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -384,7 +384,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -411,7 +411,7 @@ describe('link tags', () => {
 
       render(<Helmet />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -428,7 +428,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -450,7 +450,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -475,7 +475,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -512,7 +512,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -549,7 +549,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -581,7 +581,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -607,7 +607,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -639,7 +639,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();

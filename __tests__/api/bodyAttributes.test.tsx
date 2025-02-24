@@ -1,6 +1,6 @@
 import type { BodyProps } from '../../src';
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -48,7 +48,7 @@ describe('body attributes', () => {
         const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
 
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
-        expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, reactCompatAttr);
+        expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, reactCompatAttr);
       });
     });
   });
@@ -64,7 +64,7 @@ describe('body attributes', () => {
 
     expect(bodyTag).toHaveAttribute('class', 'myClassName');
     expect(bodyTag).toHaveAttribute('tabindex', '-1');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,tabindex');
+    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,tabindex');
   });
 
   it('sets attributes based on the deepest nested component', () => {
@@ -82,7 +82,7 @@ describe('body attributes', () => {
     const bodyTag = document.body;
 
     expect(bodyTag).toHaveAttribute('lang', 'ja');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
+    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
   });
 
   it('handles valueless attributes', () => {
@@ -95,7 +95,7 @@ describe('body attributes', () => {
     const bodyTag = document.body;
 
     expect(bodyTag).toHaveAttribute('hidden', 'true');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
+    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'hidden');
   });
 
   it('clears body attributes that are handled within helmet', () => {
@@ -111,7 +111,7 @@ describe('body attributes', () => {
 
     expect(bodyTag).not.toHaveAttribute('lang');
     expect(bodyTag).not.toHaveAttribute('hidden');
-    expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+    expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
   });
 
   it('updates with multiple additions and removals - overwrite and new', () => {
@@ -133,7 +133,7 @@ describe('body attributes', () => {
     expect(bodyTag).toHaveAttribute('lang', 'ja');
     expect(bodyTag).toHaveAttribute('id', 'body-tag');
     expect(bodyTag).toHaveAttribute('title', 'body tag');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
   });
 
   it('updates with multiple additions and removals - all new', () => {
@@ -155,7 +155,7 @@ describe('body attributes', () => {
     expect(bodyTag).not.toHaveAttribute('lang');
     expect(bodyTag).toHaveAttribute('id', 'body-tag');
     expect(bodyTag).toHaveAttribute('title', 'body tag');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
+    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
   });
 
   describe('initialized outside of helmet', () => {
@@ -170,7 +170,7 @@ describe('body attributes', () => {
       const bodyTag = document.body;
 
       expect(bodyTag).toHaveAttribute('test', 'test');
-      expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
 
     it('attributes are overwritten if specified in helmet', () => {
@@ -188,7 +188,7 @@ describe('body attributes', () => {
       const bodyTag = document.body;
 
       expect(bodyTag).toHaveAttribute('test', 'helmet-attr');
-      expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
+      expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
     });
 
     it('attributes are cleared once managed in helmet', () => {
@@ -208,7 +208,7 @@ describe('body attributes', () => {
       const bodyTag = document.body;
 
       expect(bodyTag).not.toHaveAttribute('test');
-      expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
+      expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
     });
   });
 });

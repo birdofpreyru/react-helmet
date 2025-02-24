@@ -8,7 +8,7 @@ export function clearInstances() {
   instances.length = 0;
 }
 
-type HelmetDataContext = {
+export type HelmetDataContext = {
   helmet: HelmetServerState;
 }
 

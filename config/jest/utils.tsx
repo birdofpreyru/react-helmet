@@ -2,7 +2,8 @@ import { type ReactNode, act, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 
-import Provider, { type ContextT } from '../../src/Provider';
+import Provider from '../../src/Provider';
+import type { HelmetDataContext } from '../../src/HelmetData';
 
 let root: Root | null = null;
 
@@ -13,7 +14,7 @@ export const unmount = () => {
   });
 };
 
-export const render = (node: ReactNode, context = {} as ContextT) => {
+export const render = (node: ReactNode, context = {}) => {
   if (!root) {
     const elem = document.getElementById('mount');
     if (!elem) throw Error('Internal error');
@@ -30,7 +31,7 @@ export const render = (node: ReactNode, context = {} as ContextT) => {
 };
 
 export const renderContext = (node: ReactNode) => {
-  const context = {} as ContextT;
+  const context = {} as Partial<HelmetDataContext>;
   render(node, context);
   return context.helmet;
 };

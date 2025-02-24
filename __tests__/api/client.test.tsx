@@ -1,4 +1,4 @@
-import type { OnChangeClientStateT } from '../../src/types';
+import type { OnChangeClientState } from '../../src/types';
 
 import { Helmet } from '../../src';
 import { render } from '../../config/jest/utils';
@@ -8,7 +8,7 @@ Helmet.defaultProps.defer = false;
 describe('onChangeClientState', () => {
   describe('API', () => {
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<void, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
       render(
         <div>
           <Helmet
@@ -102,7 +102,7 @@ describe('onChangeClientState', () => {
 
   describe('Declarative API', () => {
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<void, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
       render(
         <div>
           <Helmet onChangeClientState={onChange}>

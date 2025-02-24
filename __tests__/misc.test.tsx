@@ -1,5 +1,5 @@
-import { Helmet, type OnChangeClientStateT } from '../src';
-import { HELMET_ATTRIBUTE } from '../src/constants';
+import { Helmet, type OnChangeClientState } from '../src';
+import { HELMET_DATA_ATTRIBUTE } from '../src/constants';
 
 import { render } from '../config/jest/utils';
 
@@ -20,7 +20,7 @@ describe('misc', () => {
         />,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -57,9 +57,9 @@ describe('misc', () => {
     });
 
     it('does not write the DOM if the client and server are identical', () => {
-      document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
+      document.head.innerHTML = `<script ${HELMET_DATA_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       render(
         <Helmet
           script={[
@@ -81,7 +81,7 @@ describe('misc', () => {
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       let addedTags;
       let removedTags;
       render(
@@ -170,7 +170,7 @@ describe('misc', () => {
     it('recognizes valid tags regardless of attribute ordering', () => {
       render(<Helmet meta={[{ content: 'Test Description', name: 'description' }]} />);
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -203,7 +203,7 @@ describe('misc', () => {
         </Helmet>,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -236,9 +236,9 @@ describe('misc', () => {
     });
 
     it('does not write the DOM if the client and server are identical', () => {
-      document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
+      document.head.innerHTML = `<script ${HELMET_DATA_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       render(
         <Helmet onChangeClientState={onChange}>
           <script src="http://localhost/test.js" type="text/javascript" />
@@ -254,7 +254,7 @@ describe('misc', () => {
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientStateT>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       let addedTags;
       let removedTags;
 
@@ -437,7 +437,7 @@ describe('misc', () => {
         </Helmet>,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();

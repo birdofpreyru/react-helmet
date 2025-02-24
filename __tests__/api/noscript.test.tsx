@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -23,8 +23,8 @@ describe('noscript tags', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      expect(firstTag.id).toBe('bar');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.id).toBe('bar');
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('clears all noscripts tags if none are specified', () => {
@@ -32,7 +32,7 @@ describe('noscript tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -41,7 +41,7 @@ describe('noscript tags', () => {
     it('tags without \'innerHTML\' are not accepted', () => {
       render(<Helmet noscript={[{ property: 'won\'t work' }]} />);
 
-      const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`noscript[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -59,7 +59,7 @@ describe('noscript tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -79,8 +79,8 @@ describe('noscript tags', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      expect(firstTag.id).toBe('bar');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.id).toBe('bar');
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('clears all noscripts tags if none are specified', () => {
@@ -92,7 +92,7 @@ describe('noscript tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -107,7 +107,7 @@ describe('noscript tags', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`noscript[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -120,7 +120,7 @@ describe('noscript tags', () => {
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);

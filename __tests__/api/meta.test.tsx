@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
 import { render } from '../../config/jest/utils';
 
 Helmet.defaultProps.defer = false;
@@ -28,7 +28,7 @@ describe('meta tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -54,7 +54,7 @@ describe('meta tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -72,7 +72,7 @@ describe('meta tags', () => {
         />,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -102,7 +102,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -142,7 +142,7 @@ describe('meta tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -187,7 +187,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -226,7 +226,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -257,7 +257,7 @@ describe('meta tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -276,7 +276,7 @@ describe('meta tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -301,7 +301,7 @@ describe('meta tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -331,7 +331,7 @@ describe('meta tags', () => {
 
       render(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -347,7 +347,7 @@ describe('meta tags', () => {
         </Helmet>,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -367,7 +367,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -399,7 +399,7 @@ describe('meta tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -431,7 +431,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -457,7 +457,7 @@ describe('meta tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -483,7 +483,7 @@ describe('meta tags', () => {
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
