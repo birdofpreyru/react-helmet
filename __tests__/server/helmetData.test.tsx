@@ -1,10 +1,10 @@
+/** @jest-environment jsdom */
+
 import { Helmet } from '../../src';
 import Provider from '../../src/Provider';
 import HelmetData, { type HelmetDataContext } from '../../src/HelmetData';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
-
-Helmet.defaultProps.defer = false;
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('Helmet Data', () => {
   describe('server', () => {
@@ -17,9 +17,9 @@ describe('Helmet Data', () => {
     });
 
     it('renders without context', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />,
       );
 
@@ -31,9 +31,9 @@ describe('Helmet Data', () => {
     });
 
     it('renders declarative without context', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <Helmet helmetData={helmetData}>
           <base target="_blank" href="http://localhost/" />
         </Helmet>,
@@ -47,9 +47,9 @@ describe('Helmet Data', () => {
     });
 
     it('sets base tag based on deepest nested component', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <div>
           <Helmet helmetData={helmetData}>
             <base href="http://mysite.com" />
@@ -70,7 +70,7 @@ describe('Helmet Data', () => {
     it('works with the same context object but separate HelmetData instances', () => {
       const context = {} as HelmetDataContext;
 
-      render(
+      renderClient(
         <div>
           <Helmet helmetData={new HelmetData(context)}>
             <base href="http://mysite.com" />
@@ -84,20 +84,20 @@ describe('Helmet Data', () => {
       const head = context.helmet;
 
       expect(head?.base).toBeDefined();
-      expect(head.base.toString).toBeDefined();
+      expect(head?.base.toString).toBeDefined();
       expect(head?.base.toString()).toMatchSnapshot();
     });
   });
 
   describe('browser', () => {
     it('renders without context', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -110,15 +110,15 @@ describe('Helmet Data', () => {
     });
 
     it('renders declarative without context', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <Helmet helmetData={helmetData}>
           <base target="_blank" href="http://localhost/" />
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -131,9 +131,9 @@ describe('Helmet Data', () => {
     });
 
     it('sets base tag based on deepest nested component', () => {
-      const helmetData = new HelmetData({} as HelmetDataContext);
+      const helmetData = new HelmetData({});
 
-      render(
+      renderClient(
         <div>
           <Helmet helmetData={helmetData}>
             <base href="http://mysite.com" />
@@ -144,7 +144,7 @@ describe('Helmet Data', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();

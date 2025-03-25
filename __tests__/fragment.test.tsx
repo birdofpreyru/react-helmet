@@ -1,14 +1,13 @@
+/** @jest-environment jsdom */
+
 import { Helmet } from '../src';
 
-import { render } from '../config/jest/utils';
-
-// TODO: This is confusing
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../config/jest/utils';
 
 describe('fragments', () => {
   it('parses Fragments', () => {
     const title = 'Hello';
-    render(
+    renderClient(
       <Helmet>
         <>
           <title>{title}</title>
@@ -22,7 +21,7 @@ describe('fragments', () => {
 
   it('parses nested Fragments', () => {
     const title = 'Baz';
-    render(
+    renderClient(
       <Helmet>
         <>
           <title>Foo</title>

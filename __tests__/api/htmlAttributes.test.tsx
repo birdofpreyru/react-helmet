@@ -1,13 +1,13 @@
-import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
+/** @jest-environment jsdom */
 
-Helmet.defaultProps.defer = false;
+import { Helmet } from '../../src';
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('html attributes', () => {
   describe('API', () => {
     it('updates html attributes', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             class: 'myClassName',
@@ -20,11 +20,11 @@ describe('html attributes', () => {
 
       expect(htmlTag).toHaveAttribute('class', 'myClassName');
       expect(htmlTag).toHaveAttribute('lang', 'en');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,lang');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,lang');
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             htmlAttributes={{
@@ -42,11 +42,11 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('lang', 'ja');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
     });
 
     it('handles valueless attributes', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             amp: undefined,
@@ -57,11 +57,11 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('amp', '');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'amp');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'amp');
     });
 
     it('clears html attributes that are handled within helmet', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
@@ -70,17 +70,17 @@ describe('html attributes', () => {
         />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const htmlTag = document.documentElement;
 
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).not.toHaveAttribute('amp');
-      expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+      expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
@@ -89,7 +89,7 @@ describe('html attributes', () => {
         />,
       );
 
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'ja',
@@ -105,11 +105,11 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
@@ -118,7 +118,7 @@ describe('html attributes', () => {
         />,
       );
 
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             id: 'html-tag',
@@ -133,7 +133,7 @@ describe('html attributes', () => {
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
     });
 
     describe('initialized outside of helmet', () => {
@@ -143,16 +143,16 @@ describe('html attributes', () => {
       });
 
       it('attributes are not cleared', () => {
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
       });
 
       it('attributes are overwritten if specified in helmet', () => {
-        render(
+        renderClient(
           <Helmet
             htmlAttributes={{
               test: 'helmet-attr',
@@ -163,11 +163,11 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'helmet-attr');
-        expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
+        expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
       });
 
       it('attributes are cleared once managed in helmet', () => {
-        render(
+        renderClient(
           <Helmet
             htmlAttributes={{
               test: 'helmet-attr',
@@ -175,19 +175,19 @@ describe('html attributes', () => {
           />,
         );
 
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
         expect(htmlTag).not.toHaveAttribute('test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
       });
     });
   });
 
   describe('Declarative API', () => {
     it('updates html attributes', () => {
-      render(
+      renderClient(
         <Helmet>
           <html className="myClassName" lang="en" />
         </Helmet>,
@@ -197,11 +197,11 @@ describe('html attributes', () => {
 
       expect(htmlTag).toHaveAttribute('class', 'myClassName');
       expect(htmlTag).toHaveAttribute('lang', 'en');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,lang');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,lang');
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <html lang="en" />
@@ -215,12 +215,12 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('lang', 'ja');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
     });
 
     it('handles valueless attributes', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <html
             // @ts-expect-error "pre-existing"
@@ -233,12 +233,12 @@ describe('html attributes', () => {
       const htmlTag = document.documentElement;
 
       expect(htmlTag).toHaveAttribute('amp', 'true');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'amp');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'amp');
     });
 
     it('clears html attributes that are handled within helmet', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <html
             lang="en"
@@ -249,18 +249,18 @@ describe('html attributes', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const htmlTag = document.documentElement;
 
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).not.toHaveAttribute('amp');
-      expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+      expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <html
             lang="en"
@@ -271,7 +271,7 @@ describe('html attributes', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      render(
+      renderClient(
         <Helmet>
           <html lang="ja" id="html-tag" title="html tag" />
         </Helmet>,
@@ -283,12 +283,12 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <html
             lang="en"
@@ -299,7 +299,7 @@ describe('html attributes', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      render(
+      renderClient(
         <Helmet>
           <html id="html-tag" title="html tag" />
         </Helmet>,
@@ -311,7 +311,7 @@ describe('html attributes', () => {
       expect(htmlTag).not.toHaveAttribute('lang');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
     });
 
     describe('initialized outside of helmet', () => {
@@ -321,17 +321,17 @@ describe('html attributes', () => {
       });
 
       it('are not cleared', () => {
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
       });
 
       it('overwritten if specified in helmet', () => {
         /* eslint-disable react/no-unknown-property */
-        render(
+        renderClient(
           <Helmet>
             <html
               // @ts-expect-error "pre-existing"
@@ -344,12 +344,12 @@ describe('html attributes', () => {
         const htmlTag = document.documentElement;
 
         expect(htmlTag).toHaveAttribute('test', 'helmet-attr');
-        expect(htmlTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
+        expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
       });
 
       it('cleared once it is managed in helmet', () => {
         /* eslint-disable react/no-unknown-property */
-        render(
+        renderClient(
           <Helmet>
             <html
               // @ts-expect-error "pre-existing"
@@ -359,12 +359,12 @@ describe('html attributes', () => {
         );
         /* eslint-enable react/no-unknown-property */
 
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
         expect(htmlTag).not.toHaveAttribute('test');
-        expect(htmlTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+        expect(htmlTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
       });
     });
   });

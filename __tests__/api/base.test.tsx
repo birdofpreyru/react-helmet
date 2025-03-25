@@ -1,15 +1,15 @@
-import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
+/** @jest-environment jsdom */
 
-Helmet.defaultProps.defer = false;
+import { Helmet } from '../../src';
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('base tag', () => {
   describe('API', () => {
     it('updates base tag', () => {
-      render(<Helmet base={{ href: 'http://mysite.com/' }} />);
+      renderClient(<Helmet base={{ href: 'http://mysite.com/' }} />);
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -21,32 +21,32 @@ describe('base tag', () => {
     });
 
     it('clears the base tag if one is not specified', () => {
-      render(<Helmet base={{ href: 'http://mysite.com/' }} />);
-      render(<Helmet />);
+      renderClient(<Helmet base={{ href: 'http://mysite.com/' }} />);
+      renderClient(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('tags without \'href\' are not accepted', () => {
-      render(<Helmet base={{ property: 'won\'t work' }} />);
-      const existingTags = document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`);
+      renderClient(<Helmet base={{ property: 'won\'t work' }} />);
+      const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('sets base tag based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet base={{ href: 'http://mysite.com/' }} />
           <Helmet base={{ href: 'http://mysite.com/public' }} />
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -61,9 +61,9 @@ describe('base tag', () => {
 
     it('does not render tag when primary attribute is null', () => {
       // @ts-expect-error "pre-existing test"
-      render(<Helmet base={{ href: undefined }} />);
+      renderClient(<Helmet base={{ href: undefined }} />);
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
 
       expect(existingTags).toHaveLength(0);
     });
@@ -71,13 +71,13 @@ describe('base tag', () => {
 
   describe('Declarative API', () => {
     it('updates base tag', () => {
-      render(
+      renderClient(
         <Helmet>
           <base href="http://mysite.com/" />
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -89,10 +89,10 @@ describe('base tag', () => {
     });
 
     it('clears the base tag if one is not specified', () => {
-      render(<Helmet base={{ href: 'http://mysite.com/' }} />);
-      render(<Helmet />);
+      renderClient(<Helmet base={{ href: 'http://mysite.com/' }} />);
+      renderClient(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -100,21 +100,21 @@ describe('base tag', () => {
 
     it('tags without \'href\' are not accepted', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <base property="won't work" />
         </Helmet>,
       );
       /* eslint-enable react/no-unknown-property */
 
-      const existingTags = document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('sets base tag based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <base href="http://mysite.com" />
@@ -125,7 +125,7 @@ describe('base tag', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -140,13 +140,13 @@ describe('base tag', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <base href={undefined} />
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`base[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);

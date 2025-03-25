@@ -1,7 +1,7 @@
 {
   "name": "@dr.pogodin/react-helmet",
-  "version": "2.1.0",
-  "description": "Thread-safe Helmet for React 16+ and friends",
+  "version": "2.1.0-alpha.1",
+  "description": "Thread-safe Helmet for React 19+ and friends",
   "main": "./lib/index.js",
   "module": "./lib/index.esm.js",
   "types": "./lib/index.d.ts",
@@ -35,10 +35,7 @@
   },
   "homepage": "https://github.com/birdofpreyru/react-helmet#readme",
   "dependencies": {
-    "@babel/runtime": "^7.26.9",
-    "invariant": "^2.2.4",
-    "react-fast-compare": "^3.2.2",
-    "shallowequal": "^1.1.0"
+    "@babel/runtime": "^7.26.9"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.26.8",
@@ -48,21 +45,19 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@eslint/js": "^9.21.0",
-    "@stylistic/eslint-plugin-js": "^4.0.1",
+    "@stylistic/eslint-plugin": "^4.1.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",
     "@tsconfig/recommended": "^1.0.8",
-    "@types/invariant": "2.2.37",
     "@types/jest": "^29.5.14",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
-    "@types/shallowequal": "1.1.5",
     "eslint": "^9.21.0",
     "eslint-import-resolver-typescript": "^3.8.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jest": "^28.11.0",
     "eslint-plugin-react": "^7.37.4",
-    "eslint-plugin-react-hooks": "^5.1.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "globals": "^16.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -70,10 +65,11 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "rimraf": "6.0.1",
-    "typescript": "5.7.3",
-    "typescript-eslint": "^8.24.1"
+    "typescript": "5.7",
+    "typescript-eslint": "^8.25.0"
   },
   "peerDependencies": {
     "react": "19"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

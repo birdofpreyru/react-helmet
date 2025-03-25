@@ -1,24 +1,37 @@
-import { type Key, type ReactNode, createElement } from 'react';
+import { type HTMLAttributes, type Key, type ReactNode, createElement } from 'react';
 
 import {
-  HELMET_DATA_ATTRIBUTE,
+  HELMET_ATTRIBUTE,
   TAG_NAMES,
   REACT_TAG_MAP,
   TAG_PROPERTIES,
-  SEO_PRIORITY_TAGS,
+  HTML_TAG_MAP,
+  // SEO_PRIORITY_TAGS,
 } from './constants';
 
-import { flattenArray, prioritizer } from './utils';
-
 import type {
-  BodyProps,
-  HelmetDatum,
-  HelmetHTMLBodyDatum,
-  HelmetHTMLElementDatum,
+  // Attributes,
+  // BodyProps,
+  // HelmetDatum,
+  // HelmetHTMLBodyDatum,
+  // HelmetHTMLElementDatum,
+  // HtmlProps,
+  // MappedServerState,
+  ContextValue,
+  HelmetProviderHeap,
   HelmetServerState,
-  HtmlProps,
-  MappedServerState,
+  TitleProps,
 } from './types';
+
+import {
+  calcAggregatedState,
+  findBaseAttributes_OLD,
+  flattenArray,
+  getTagsFromPropsList_OLD,
+  getTitleFromPropsList_OLD,
+  mergeAttributes,
+  propToAttr,
+} from './utils';
 
 const SELF_CLOSING_TAGS: string[] = [TAG_NAMES.NOSCRIPT, TAG_NAMES.SCRIPT, TAG_NAMES.STYLE];
 
@@ -37,11 +50,14 @@ const encodeSpecialCharacters = (str: string, encode = true) => {
 
 type Attributes = Record<string, string | null | number | boolean | undefined>;
 
-function generateElementAttributesAsString(attrs: Attributes): string {
+function generateElementAttributesAsString<T>(
+  attrs: HTMLAttributes<T>,
+): string {
   let res: string = '';
 
   for (const [name, value] of Object.entries(attrs)) {
-    const neu = value === undefined ? name : `${name}="${value}"`;
+    const attr = propToAttr(name);
+    const neu = value === undefined ? attr : `${attr}="${value}"`;
     if (neu && res) res += ' ';
     res += neu;
   }
@@ -51,7 +67,7 @@ function generateElementAttributesAsString(attrs: Attributes): string {
 
 const generateTitleAsString = (
   title: string,
-  attrs: Attributes,
+  attrs: TitleProps,
   encode: boolean,
 ) => {
   let attrsStr = generateElementAttributesAsString(attrs);
@@ -59,49 +75,56 @@ const generateTitleAsString = (
 
   const flattenedTitle = flattenArray(title);
 
-  return `<title ${HELMET_DATA_ATTRIBUTE}="true"${attrsStr}>${
+  return `<title ${HELMET_ATTRIBUTE}="true"${attrsStr}>${
     encodeSpecialCharacters(flattenedTitle, encode)
   }</title>`;
 };
 
-// TODO: Refactor!
-const generateTagsAsString = (
+function generateTagsAsString<T>(
   type: string,
-  tags: HTMLElement[],
-  encode = true,
-) => tags.reduce((str, t) => {
-  const tag = t as unknown as Attributes;
-  const attributeHtml = Object.keys(tag)
-    .filter(
-      (attribute) => !(attribute === TAG_PROPERTIES.INNER_HTML as string || attribute === TAG_PROPERTIES.CSS_TEXT as string),
-    )
-    .reduce((string, attribute) => {
-      const attr = typeof tag[attribute] === 'undefined'
-        ? attribute
-        : `${attribute}="${encodeSpecialCharacters(tag[attribute] as string, encode)}"`;
-      return string ? `${string} ${attr}` : attr;
-    }, '');
+  tags: HTMLAttributes<T>[],
+  encode: boolean,
+): string {
+  let res = '';
 
-  const tagContent = tag.innerHTML ?? tag.cssText ?? '';
+  for (const tag of tags) {
+    let attributeHtml = '';
 
-  const isSelfClosing = !SELF_CLOSING_TAGS.includes(type);
+    const entries = Object.entries(tag);
+    for (let i = 0; i < entries.length; ++i) {
+      const [name, value] = entries[i]!;
+      if (!(name === TAG_PROPERTIES.INNER_HTML as string || name === TAG_PROPERTIES.CSS_TEXT as string)) {
+        const attrName = HTML_TAG_MAP[name] ?? name;
+        const attr = value === undefined ? attrName : `${attrName}="${encodeSpecialCharacters(value as string, encode)}"`;
+        if (attributeHtml) attributeHtml += ` ${attr}`;
+        else attributeHtml = attr;
+      }
+    }
 
-  return `${str}<${type} ${HELMET_DATA_ATTRIBUTE}="true" ${attributeHtml}${
-    isSelfClosing ? '/>' : `>${tagContent}</${type}>`
-  }`;
-}, '');
+    const tagContent = tag.innerHTML ?? tag.cssText ?? '';
+
+    const isSelfClosing = !SELF_CLOSING_TAGS.includes(type);
+
+    res += `<${type} ${HELMET_ATTRIBUTE}="true" ${attributeHtml}${
+      isSelfClosing ? '/>' : `>${tagContent}</${type}>`
+    }`;
+  }
+
+  return res;
+}
 
 /**
  * Given a map of element attribute names & values it returns the corresponding
  * map of element properties & values (i.e. replacing some attribute names by
  * their corresponding property names).
  */
-function mapElementAttributesToProps(
-  attributes: Attributes | HTMLElement,
+
+function mapElementAttributesToProps<T>(
+  attributes: HTMLAttributes<T>,
   ops: { addHelmetDataAttr?: boolean; addKey?: Key } = {},
 ): Record<string, unknown> {
   const res: Record<string, unknown> = {};
-  if (ops.addHelmetDataAttr) res[HELMET_DATA_ATTRIBUTE] = true;
+  if (ops.addHelmetDataAttr) res[HELMET_ATTRIBUTE] = true;
   if (ops.addKey !== undefined) res.key = ops.addKey;
   for (const [attrName, value] of Object.entries(attributes)) {
     const propName = REACT_TAG_MAP[attrName] ?? attrName;
@@ -120,7 +143,7 @@ function mapElementAttributesToProps(
   return res;
 }
 
-function renderTitle(title: string, attrs: Attributes): ReactNode {
+function renderTitle(title: string, attrs: TitleProps): ReactNode {
   // NOTE: Rendered as array to match legacy behavior.
   return [
     <title
@@ -132,14 +155,21 @@ function renderTitle(title: string, attrs: Attributes): ReactNode {
   ];
 }
 
-function renderElement(type: string, attrs: HTMLElement, key?: Key): ReactNode {
+function renderElement<T>(
+  type: string,
+  attrs: HTMLAttributes<T>,
+  key?: Key,
+): ReactNode {
   return createElement(type, mapElementAttributesToProps(attrs, {
     addHelmetDataAttr: true,
     addKey: key,
   }));
 }
 
-function renderElements(type: string, attrs: HTMLElement[]): ReactNode[] {
+function renderElements<T>(
+  type: string,
+  attrs: HTMLAttributes<T>[],
+): ReactNode[] {
   const res: ReactNode[] = [];
   for (let i = 0; i < attrs.length; ++i) {
     res.push(renderElement(type, attrs[i]!, i));
@@ -147,28 +177,7 @@ function renderElements(type: string, attrs: HTMLElement[]): ReactNode[] {
   return res;
 }
 
-function newHelmetDatumForAttrs(attrs: BodyProps): HelmetHTMLBodyDatum;
-function newHelmetDatumForAttrs(attrs: HtmlProps): HelmetHTMLElementDatum;
-
-function newHelmetDatumForAttrs(
-  attrs: BodyProps | HtmlProps,
-): HelmetHTMLBodyDatum | HelmetHTMLElementDatum {
-  return {
-    toComponent: () => mapElementAttributesToProps(attrs),
-    toString: () => generateElementAttributesAsString(attrs),
-  };
-}
-
-function newHelmetDatumForTags(
-  type: string,
-  attrs: HTMLElement[],
-  encode: boolean,
-): HelmetDatum {
-  return {
-    toComponent: () => renderElements(type, attrs),
-    toString: () => generateTagsAsString(type, attrs, encode),
-  };
-}
+/*
 
 function newHelmetDatumForTitle(
   title: string,
@@ -176,8 +185,7 @@ function newHelmetDatumForTitle(
   encode: boolean,
 ): HelmetDatum {
   return {
-    toComponent: () => renderTitle(title, attrs),
-    toString: () => generateTitleAsString(title, attrs, encode),
+
   };
 }
 
@@ -214,6 +222,7 @@ const getPriorityMethods = ({
   };
 };
 
+/*
 function mapStateOnServer(props: MappedServerState): HelmetServerState {
   const {
     baseTag,
@@ -241,16 +250,114 @@ function mapStateOnServer(props: MappedServerState): HelmetServerState {
   }
   return {
     priority: priorityMethods,
-    base: newHelmetDatumForTags(TAG_NAMES.BASE, baseTag, encode),
-    bodyAttributes: newHelmetDatumForAttrs(bodyAttributes ?? {}),
-    htmlAttributes: newHelmetDatumForAttrs(htmlAttributes ?? {}),
-    link: newHelmetDatumForTags(TAG_NAMES.LINK, linkTags, encode),
-    meta: newHelmetDatumForTags(TAG_NAMES.META, metaTags, encode),
-    noscript: newHelmetDatumForTags(TAG_NAMES.NOSCRIPT, noscriptTags, encode),
-    script: newHelmetDatumForTags(TAG_NAMES.SCRIPT, scriptTags, encode),
-    style: newHelmetDatumForTags(TAG_NAMES.STYLE, styleTags, encode),
-    title: newHelmetDatumForTitle(title, titleAttributes, encode),
   };
 }
+*/
 
-export default mapStateOnServer;
+// export default mapStateOnServer;
+
+// TODO: So... refactor it, it should be based on the Helmet provider
+// heap, and it should calculate its state into that, and then use it.
+
+export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
+  const getState = () => {
+    heap.state ??= calcAggregatedState(heap.helmets);
+    return heap.state;
+  };
+
+  return {
+    base: {
+      toComponent() {
+        const props = getState().base;
+        return props ? renderElements('base', [props]) : [];
+      },
+      toString() {
+        const s = getState();
+        return s.base ? generateTagsAsString('base', [s.base], s.encodeSpecialCharacters) : '';
+      },
+    },
+    bodyAttributes: {
+      toComponent() {
+        const props = getState().bodyAttributes;
+        return mapElementAttributesToProps(props ?? {});
+      },
+      toString() {
+        const props = getState().bodyAttributes;
+        return generateElementAttributesAsString(props ?? {});
+      },
+    },
+    htmlAttributes: {
+      toComponent() {
+        const props = getState().htmlAttributes;
+        return mapElementAttributesToProps(props ?? {});
+      },
+      toString() {
+        const props = getState().htmlAttributes;
+        return generateElementAttributesAsString(props ?? {});
+      },
+    },
+    link: {
+      toComponent() {
+        return renderElements('link', getState().links ?? []);
+      },
+      toString() {
+        const s = getState();
+        return generateTagsAsString('link', s.links ?? [], s.encodeSpecialCharacters);
+      },
+    },
+    meta: {
+      toComponent() {
+        return renderElements('meta', getState().meta ?? []);
+      },
+      toString() {
+        const s = getState();
+        return generateTagsAsString('meta', s.meta ?? [], s.encodeSpecialCharacters);
+      },
+    },
+    noscript: {
+      toComponent() {
+        return renderElements('noscript', getState().noscript ?? []);
+      },
+      toString() {
+        const s = getState();
+        return generateTagsAsString('noscript', s.noscript ?? [], s.encodeSpecialCharacters);
+      },
+    },
+    priority: {
+      toComponent() {
+        return null;
+      },
+      toString() {
+        return '';
+      },
+    },
+    script: {
+      toComponent() {
+        return renderElements('script', getState().script ?? []);
+      },
+      toString() {
+        const s = getState();
+        return generateTagsAsString('script', s.script ?? [], s.encodeSpecialCharacters);
+      },
+    },
+    style: {
+      toComponent() {
+        return renderElements('style', getState().style ?? []);
+      },
+      toString() {
+        const s = getState();
+        return generateTagsAsString('style', s.style ?? [], s.encodeSpecialCharacters);
+      },
+    },
+    title: {
+      toComponent() {
+        const s = getState();
+        return s.title ? renderTitle(s.title, s.titleAttributes ?? {}) : null;
+      },
+      toString() {
+        const s = getState();
+        return s.title ? generateTitleAsString(s.title, s.titleAttributes ?? {}, s.encodeSpecialCharacters) : '';
+      },
+    },
+  };
+}

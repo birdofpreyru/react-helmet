@@ -1,4 +1,26 @@
-import { TAG_NAMES, TAG_PROPERTIES, ATTRIBUTE_NAMES } from './constants';
+import { TAG_NAMES, TAG_PROPERTIES, ATTRIBUTE_NAMES, HTML_TAG_MAP, SEO_PRIORITY_TAGS } from './constants';
+
+import type {
+  AggregatedState,
+  AttributeArrayData,
+  AttributeData,
+  Attributes,
+  BaseProps,
+  ContextValue,
+  Data,
+  EmptyObject,
+  HelmetPropArrays,
+  HelmetPropBooleans,
+  HelmetPropObjects,
+  HelmetProps,
+  HelmetServerState,
+  LinkProps,
+  MetaProps,
+  PropArrayItem,
+  RegisteredHelmetPropsArray,
+  ScriptProps,
+  WrappedData,
+} from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PropList = Record<string, any>;
@@ -6,7 +28,9 @@ type PropList = Record<string, any>;
 type PropsList = PropList[];
 type AttributeList = string[];
 
-type SeenTags = Record<string, Record<string, boolean>>;
+type SeenTags<T extends keyof HelmetPropArrays> = {
+  [key in keyof PropArrayItem<T>]?: Record<string, boolean>
+};
 
 type MatchProps = Record<string, string | AttributeList>;
 
@@ -19,95 +43,143 @@ const HELMET_PROPS = {
   PRIORITIZE_SEO_TAGS: 'prioritizeSeoTags',
 };
 
-const getInnermostProperty = (propsList: PropsList, property: string) => {
-  for (let i = propsList.length - 1; i >= 0; i -= 1) {
-    const props = propsList[i]!;
-
-    if (Object.prototype.hasOwnProperty.call(props, property)) {
-      return props[property] as string;
-    }
+/**
+ * Finds the last object in the given array of registered props,
+ * that has the specified prop defined, and returns the value of
+ * that prop in that object. Returns `undefined` if no prop object
+ * has that prop defined.
+ */
+function getInnermostProperty<T extends keyof HelmetProps>(
+  props: RegisteredHelmetPropsArray,
+  propName: T,
+): HelmetProps[T] | undefined {
+  for (let i = props.length - 1; i >= 0; --i) {
+    const value = props[i]![1][propName];
+    if (value !== undefined) return value;
   }
+}
 
-  return null;
-};
+export function getTitleFromPropsList(
+  props: RegisteredHelmetPropsArray,
+): string | undefined {
+  let innermostTitle = getInnermostProperty(props, TAG_NAMES.TITLE);
 
-const getTitleFromPropsList = (propsList: PropsList) => {
-  let innermostTitle = getInnermostProperty(propsList, TAG_NAMES.TITLE);
-  const innermostTemplate = getInnermostProperty(propsList, HELMET_PROPS.TITLE_TEMPLATE);
+  const innermostTemplate = getInnermostProperty(
+    props,
+    'titleTemplate',
+  );
+
   if (Array.isArray(innermostTitle)) {
     innermostTitle = innermostTitle.join('');
   }
   if (innermostTemplate && innermostTitle) {
     // use function arg to avoid need to escape $ characters
-    return innermostTemplate.replace(/%s/g, () => innermostTitle);
+    return innermostTemplate.replace(/%s/g, innermostTitle);
   }
 
-  const innermostDefaultTitle = getInnermostProperty(propsList, HELMET_PROPS.DEFAULT_TITLE);
+  const innermostDefaultTitle = getInnermostProperty(
+    props,
+    'defaultTitle',
+  );
 
   return innermostTitle ?? innermostDefaultTitle ?? undefined;
-};
+}
 
 const getOnChangeClientState = (
   propsList: PropsList,
-) => getInnermostProperty(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) ?? (() => undefined);
+) => getInnermostProperty_OLD(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) ?? (() => undefined);
 
-const getAttributesFromPropsList = (
-  tagType: string,
-  propsList: PropsList,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-) => propsList
-  .filter((props) => typeof props[tagType] !== 'undefined')
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  .map((props) => props[tagType])
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  .reduce((tagAttrs, current) => ({ ...tagAttrs, ...current }), {});
+/**
+ * Merges together attributes provided for the same element by different Helmet
+ * instances. Attributes provided by later registered Helmet instances overwrite
+ * the same attributes provided by the earlier registered instances.
+ */
+export function mergeAttributes<T extends keyof HelmetPropObjects>(
+  element: T,
+  props: RegisteredHelmetPropsArray,
+): HelmetProps[T] {
+  const res: HelmetProps[T] = {};
+  for (const item of props) {
+    const attrs = item[1][element];
+    if (attrs) Object.assign(res, attrs);
+  }
+  return res;
+}
 
-const getBaseTagFromPropsList = (
-  primaryAttributes: AttributeList,
-  propsList: PropsList,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-) => propsList
-  .filter((props) => typeof props[TAG_NAMES.BASE] !== 'undefined')
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  .map((props) => props[TAG_NAMES.BASE])
-  .reverse()
-  .reduce((innermostBaseTag, tag) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (!innermostBaseTag.length) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      const keys = Object.keys(tag);
-
-      for (const attributeKey of keys) {
-        const lowerCaseAttributeKey = attributeKey.toLowerCase();
-
-        if (
-          primaryAttributes.includes(lowerCaseAttributeKey)
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          && tag[lowerCaseAttributeKey]
-        ) {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
-          return innermostBaseTag.concat(tag);
-        }
-      }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return innermostBaseTag;
-  }, []);
+/**
+ * Finds the latest registered Helmet instance with `base` props provided,
+ * and with its `href` value set, and returns those `base` props.
+ * NOTE: Based on the legacy getBaseTagFromPropsList().
+ */
+export function aggregateBaseProps(
+  props: RegisteredHelmetPropsArray,
+): BaseProps | undefined {
+  for (let i = props.length - 1; i >= 0; --i) {
+    const res = props[i]![1].base;
+    if (res?.href) return res;
+  }
+}
 
 const warn = (msg: string) => console && typeof console.warn === 'function' && console.warn(msg);
 
-const getTagsFromPropsList = (
-  tagName: string,
-  primaryAttributes: AttributeList,
-  propsList: PropsList,
-) => {
-  // Calculate list of tags, giving priority innermost component (end of the propslist)
-  const approvedSeenTags: SeenTags = {};
+/**
+ * Determines the primary key in the given `props` object, accoding to the given
+ * array of valid primary keys for the kind of props object.
+ * TODO: Rather than passing an array of primaryProps around, it might be more
+ * simple to just have a dedicated function for each possible kind of that
+ * object.
+ */
+function getPrimaryProp<T extends keyof HelmetPropArrays>(
+  props: PropArrayItem<T>,
+  primaryProps: Array<keyof PropArrayItem<T>>,
+): keyof PropArrayItem<T> | null {
+  // Looks up for the "primary attribute" key.
+  let primaryAttributeKey: keyof PropArrayItem<T> | undefined;
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
-  return propsList
+  // TODO: Perhaps also check that the value of attribute being selected
+  // as primary is actually defined? Right now, it implicitly assumes that
+  // in such case the attribute is just not present as a key in `props`.
+  for (const [keyString, value] of Object.entries(props)) {
+    const key = keyString as keyof PropArrayItem<T>;
+
+    // Special rule with link tags, since rel and href are both primary tags,
+    // rel takes priority
+    if (primaryProps.includes(key)
+      && !(
+        key === TAG_PROPERTIES.REL
+        && (value as string).toLowerCase() === 'canonical'
+      )
+      && !(
+        key === TAG_PROPERTIES.REL
+        && (value as string).toLowerCase() === 'stylesheet'
+      )
+    ) primaryAttributeKey = key;
+
+    // Special case for innerHTML which doesn't work lowercased
+    if (
+      primaryProps.includes(key)
+      && (key === TAG_PROPERTIES.INNER_HTML
+        || key === TAG_PROPERTIES.CSS_TEXT
+        || key === TAG_PROPERTIES.ITEM_PROP)
+    ) primaryAttributeKey = key;
+  }
+
+  return primaryAttributeKey ?? null;
+}
+
+export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
+  tagName: T,
+  primaryAttributes: Array<keyof PropArrayItem<T>>,
+  propsArray: RegisteredHelmetPropsArray,
+): HelmetPropArrays[T] {
+  // Calculate list of tags, giving priority innermost component
+  // (end of the propslist)
+  const approvedSeenTags: SeenTags<T> = {};
+
+  // TODO: Well, this is a touch one to refactor, while ensuring it does not
+  // change any behavior aspect... let's stick to the legacy implementation,
+  // with minimal updates, for now, then refactor it later.
+  return propsArray.map(([, props]) => props)
     .filter((props) => {
       if (Array.isArray(props[tagName])) {
         return true;
@@ -121,80 +193,47 @@ const getTagsFromPropsList = (
       }
       return false;
     })
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     .map((props) => props[tagName])
     .reverse()
-    .reduce((approvedTags, instanceTags) => {
-      const instanceSeenTags: SeenTags = {};
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      instanceTags
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        .filter((tag: PropList) => {
-          let primaryAttributeKey;
-          const keys = Object.keys(tag);
-          for (const attributeKey of keys) {
-            const lowerCaseAttributeKey = attributeKey.toLowerCase();
+    // From last to first.
+    .reduce<PropArrayItem<T>[]>((approvedTags, instanceTags) => {
+      const instanceSeenTags: SeenTags<T> = {};
 
-            // Special rule with link tags, since rel and href are both primary tags, rel takes priority
-            if (
-              primaryAttributes.includes(lowerCaseAttributeKey)
-              && !(
-                primaryAttributeKey === TAG_PROPERTIES.REL
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                && tag[primaryAttributeKey].toLowerCase() === 'canonical'
-              ) && !(
-                lowerCaseAttributeKey === TAG_PROPERTIES.REL as string
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                && tag[lowerCaseAttributeKey].toLowerCase() === 'stylesheet'
-              )
-            ) {
-              primaryAttributeKey = lowerCaseAttributeKey;
-            }
-            // Special case for innerHTML which doesn't work lowercased
-            if (
-              primaryAttributes.includes(attributeKey)
-              && (
-                attributeKey === TAG_PROPERTIES.INNER_HTML as string
-                || attributeKey === TAG_PROPERTIES.CSS_TEXT as string
-                || attributeKey === TAG_PROPERTIES.ITEM_PROP as string
-              )
-            ) {
-              primaryAttributeKey = attributeKey;
-            }
-          }
+      instanceTags!.filter((tag: PropArrayItem<T>) => {
+        const primaryAttributeKey = getPrimaryProp(tag, primaryAttributes);
 
-          if (!primaryAttributeKey || !tag[primaryAttributeKey]) {
-            return false;
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-          const value = tag[primaryAttributeKey].toLowerCase();
-
-          if (!approvedSeenTags[primaryAttributeKey]) {
-            approvedSeenTags[primaryAttributeKey] = {};
-          }
-
-          if (!instanceSeenTags[primaryAttributeKey]) {
-            instanceSeenTags[primaryAttributeKey] = {};
-          }
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          if (!approvedSeenTags[primaryAttributeKey]![value]) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            instanceSeenTags[primaryAttributeKey]![value] = true;
-            return true;
-          }
-
+        if (!primaryAttributeKey || !tag[primaryAttributeKey]) {
           return false;
-        })
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        .reverse()
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-return
-        .forEach((tag: PropList) => approvedTags.push(tag));
+        }
+
+        const value = (tag[primaryAttributeKey] as string).toLowerCase();
+
+        if (!approvedSeenTags[primaryAttributeKey]) {
+          approvedSeenTags[primaryAttributeKey] = {};
+        }
+
+        if (!instanceSeenTags[primaryAttributeKey]) {
+          instanceSeenTags[primaryAttributeKey] = {};
+        }
+
+        // essentially we collect every item that haven't been seen so far?
+
+        if (!approvedSeenTags[primaryAttributeKey][value]) {
+          instanceSeenTags[primaryAttributeKey][value] = true;
+          return true;
+        }
+
+        return false;
+      }).reverse()
+
+        // so approved tags are accumulated from last to first
+        .forEach((tag: PropArrayItem<T>) => approvedTags.push(tag));
 
       // Update seen tags with tags from this instance
-      const keys = Object.keys(instanceSeenTags);
+      const keys = Object.keys(instanceSeenTags) as
+        Array<keyof PropArrayItem<T>>;
+
       for (const attributeKey of keys) {
         const tagUnion = {
           ...approvedSeenTags[attributeKey],
@@ -204,102 +243,75 @@ const getTagsFromPropsList = (
         approvedSeenTags[attributeKey] = tagUnion;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return approvedTags;
     }, [])
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    .reverse();
-};
 
-const getAnyTrueFromPropsList = (propsList: PropsList, checkedTag: string) => {
-  if (Array.isArray(propsList) && propsList.length) {
-    for (const prop of propsList) {
-      if (prop[checkedTag]) {
-        return true;
-      }
-    }
+    // then reversed back to the from first-to-last order.
+    .reverse() as HelmetPropArrays[T];
+}
+
+function getAnyTrueFromPropsArray<T extends keyof HelmetPropBooleans>(
+  propsArray: RegisteredHelmetPropsArray,
+  propName: T,
+): boolean {
+  for (const [, props] of propsArray) {
+    if (props[propName]) return true;
   }
   return false;
-};
+}
 
+// TODO: We don't really need this function, we rather extract each kind
+// of tag / attribute info as needed.
 const reducePropsToState = (propsList: PropsList) => ({
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  baseTag: getBaseTagFromPropsList([TAG_PROPERTIES.HREF], propsList),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  bodyAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.BODY, propsList),
-  defer: getInnermostProperty(propsList, HELMET_PROPS.DEFER),
-  encode: getInnermostProperty(propsList, HELMET_PROPS.ENCODE_SPECIAL_CHARACTERS),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  htmlAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.HTML, propsList),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  linkTags: getTagsFromPropsList(
-    TAG_NAMES.LINK,
-    [TAG_PROPERTIES.REL, TAG_PROPERTIES.HREF],
-    propsList,
-  ),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  metaTags: getTagsFromPropsList(
-    TAG_NAMES.META,
-    [
-      TAG_PROPERTIES.NAME,
-      TAG_PROPERTIES.CHARSET,
-      TAG_PROPERTIES.HTTPEQUIV,
-      TAG_PROPERTIES.PROPERTY,
-      TAG_PROPERTIES.ITEM_PROP,
-    ],
-    propsList,
-  ),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  noscriptTags: getTagsFromPropsList(TAG_NAMES.NOSCRIPT, [TAG_PROPERTIES.INNER_HTML], propsList),
+  defer: getInnermostProperty_OLD(propsList, HELMET_PROPS.DEFER),
+
   onChangeClientState: getOnChangeClientState(propsList),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  scriptTags: getTagsFromPropsList(
-    TAG_NAMES.SCRIPT,
-    [TAG_PROPERTIES.SRC, TAG_PROPERTIES.INNER_HTML],
-    propsList,
-  ),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  styleTags: getTagsFromPropsList(TAG_NAMES.STYLE, [TAG_PROPERTIES.CSS_TEXT], propsList),
-  title: getTitleFromPropsList(propsList),
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  titleAttributes: getAttributesFromPropsList(ATTRIBUTE_NAMES.TITLE, propsList),
-  prioritizeSeoTags: getAnyTrueFromPropsList(propsList, HELMET_PROPS.PRIORITIZE_SEO_TAGS),
 });
 
-export const flattenArray = (possibleArray: string[] | string) => (
-  Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray
-);
+export function flattenArray(possibleArray: string[] | string) {
+  return Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray;
+}
 
 export { reducePropsToState };
 
-const checkIfPropsMatch = (props: PropList, toMatch: MatchProps) => {
-  const keys = Object.keys(props);
-  for (const key of keys) {
+function checkIfPropsMatch<T extends keyof HelmetPropArrays>(
+  props: PropArrayItem<T>,
+  toMatch: MatchProps,
+) {
+  for (const key of Object.keys(props)) {
     // e.g. if rel exists in the list of allowed props [amphtml, alternate, etc]
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    if (toMatch[key]?.includes(props[key])) {
-      return true;
-    }
+    // TODO: Do a better typing job here.
+    if (toMatch[key]?.includes(
+      props[key as keyof PropArrayItem<T>] as unknown as string,
+    )) return true;
   }
   return false;
-};
+}
 
-export const prioritizer = (elementsList: HTMLElement[], propsToMatch: MatchProps) => {
-  if (Array.isArray(elementsList)) {
-    return elementsList.reduce(
-      (acc, elementAttrs) => {
-        if (checkIfPropsMatch(elementAttrs, propsToMatch)) {
-          acc.priority.push(elementAttrs);
-        } else {
-          acc.default.push(elementAttrs);
-        }
-        return acc;
-      },
-      { priority: [] as HTMLElement[], default: [] as HTMLElement[] },
-    );
+export function prioritizer<T extends keyof HelmetPropArrays>(
+  propsArray: HelmetPropArrays[T],
+  propsToMatch: MatchProps,
+): {
+    default: PropArrayItem<T>[];
+    priority: PropArrayItem<T>[];
+  } {
+  const res = {
+    default: Array<PropArrayItem<T>>(),
+    priority: Array<PropArrayItem<T>>(),
+  };
+
+  if (propsArray) {
+    for (const props of propsArray) {
+      if (checkIfPropsMatch(props, propsToMatch)) {
+        res.priority.push(props);
+      } else {
+        res.default.push(props);
+      }
+    }
   }
-  return { default: elementsList, priority: [] };
-};
+
+  return res;
+}
 
 export const without = (obj: PropList, key: string) => {
   return {
@@ -307,3 +319,129 @@ export const without = (obj: PropList, key: string) => {
     [key]: undefined,
   };
 };
+
+type UnknownObject = Record<number | string | symbol, unknown>;
+
+/**
+ * Clones given props object deep enough to make it safe to push new items
+ * to its array values, and re-assign its non-array values, without a risk
+ * to mutate any externally owned objects.
+ */
+export function cloneProps(props: HelmetProps): HelmetProps {
+  const res: UnknownObject = {};
+  for (const [key, value] of Object.entries(props)) {
+    res[key] = Array.isArray(value) ? value.slice() : value;
+  }
+  return res;
+}
+
+/**
+ * Merges `source` props into `target`, mutating the `target` object.
+ */
+export function mergeProps(target: HelmetProps, source: HelmetProps) {
+  const tgt = target as UnknownObject;
+  for (const [key, srcValue] of Object.entries(source)) {
+    if (Array.isArray(srcValue)) {
+      const tgtValue = tgt[key] as unknown[];
+      tgt[key] = tgtValue ? tgtValue.concat(srcValue) : srcValue;
+    } else tgt[key] = srcValue;
+  }
+}
+
+/**
+ * Adds given item to the specified prop array inside `target`.
+ * It mutates the target.
+ */
+export function pushToPropArray<K extends keyof HelmetPropArrays>(
+  target: HelmetProps,
+  array: K,
+  item: Exclude<HelmetPropArrays[K], undefined>[number],
+) {
+  type A = Array<typeof item>;
+  const tgt = target[array] as A;
+  if (tgt) tgt.push(item);
+  else (target[array] as A) = [item];
+}
+
+export function calcAggregatedState(
+  props: RegisteredHelmetPropsArray,
+): AggregatedState {
+  let links = getTagsFromPropsList(
+    TAG_NAMES.LINK,
+    [TAG_PROPERTIES.REL, TAG_PROPERTIES.HREF],
+    props,
+  );
+  let meta = getTagsFromPropsList(
+    'meta',
+    [
+      // NOTE: In the legacy version "charSet", "httpEquiv", and "itemProp"
+      // were given as HTML attributes: charset, http-equiv, itemprop.
+      // I believe, it is already fine to replace them here now, but
+      // let's be vigilant.
+      TAG_PROPERTIES.NAME,
+      'charSet',
+      'httpEquiv',
+      TAG_PROPERTIES.PROPERTY,
+      'itemProp',
+    ],
+    props,
+  );
+  let script = getTagsFromPropsList(
+    'script',
+    [TAG_PROPERTIES.SRC, TAG_PROPERTIES.INNER_HTML],
+    props,
+  );
+
+  const prioritizeSeoTags = getAnyTrueFromPropsArray(props, 'prioritizeSeoTags');
+
+  let priority: {
+    links: LinkProps[] | undefined;
+    meta: MetaProps[] | undefined;
+    script: ScriptProps[] | undefined;
+  } | undefined;
+
+  if (prioritizeSeoTags) {
+    const linkP = prioritizer<'link'>(links, SEO_PRIORITY_TAGS.link);
+    links = linkP.default;
+
+    const metaP = prioritizer<'meta'>(meta, SEO_PRIORITY_TAGS.meta);
+    meta = metaP.default;
+
+    const scriptP = prioritizer<'script'>(script, SEO_PRIORITY_TAGS.script);
+    script = scriptP.default;
+
+    priority = {
+      links: linkP.priority,
+      meta: metaP.priority,
+      script: scriptP.priority,
+    };
+  }
+
+  return {
+    base: aggregateBaseProps(props),
+    bodyAttributes: mergeAttributes('bodyAttributes', props),
+    defer: getInnermostProperty(props, 'defer'),
+    encodeSpecialCharacters: getInnermostProperty(props, 'encodeSpecialCharacters') ?? true,
+    htmlAttributes: mergeAttributes('htmlAttributes', props),
+    links,
+    meta,
+    noscript: getTagsFromPropsList(
+      'noscript',
+      [TAG_PROPERTIES.INNER_HTML],
+      props,
+    ),
+    priority,
+    script,
+    style: getTagsFromPropsList(
+      'style',
+      [TAG_PROPERTIES.CSS_TEXT],
+      props,
+    ),
+    title: getTitleFromPropsList(props),
+    titleAttributes: mergeAttributes('titleAttributes', props),
+  };
+}
+
+export function propToAttr(prop: string): string {
+  return HTML_TAG_MAP[prop] ?? prop;
+}

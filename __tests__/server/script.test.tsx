@@ -1,24 +1,13 @@
-import ReactServer from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../config/jest/utils';
 import type { ReactNode } from 'react';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
 
 describe('server', () => {
   describe('API', () => {
     it('renders script tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           script={[
             {
@@ -45,13 +34,13 @@ describe('server', () => {
         expect(script).toEqual(expect.objectContaining({ type: 'script' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(scriptComponent as ReactNode);
+      const markup = renderToStaticMarkup(scriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders script tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           script={[
             {
@@ -74,7 +63,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders script tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />
@@ -93,13 +82,13 @@ describe('server', () => {
         expect(script).toEqual(expect.objectContaining({ type: 'script' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(scriptComponent as ReactNode);
+      const markup = renderToStaticMarkup(scriptComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders script tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />

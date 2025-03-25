@@ -1,23 +1,12 @@
-import ReactServer from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext } from '../../config/jest/utils';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
+import { renderContextServer } from '../../config/jest/utils';
 
 describe('server', () => {
   describe('API', () => {
     it('renders html attributes as component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           htmlAttributes={{
             lang: 'ga',
@@ -30,13 +19,13 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
-      const markup = ReactServer.renderToStaticMarkup(<html lang="en" {...attrs} />);
+      const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders html attributes as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           htmlAttributes={{
             lang: 'ga',
@@ -46,14 +35,14 @@ describe('server', () => {
       );
 
       expect(head?.htmlAttributes).toBeDefined();
-      expect(head!.htmlAttributes.toString).toBeDefined();
+      expect(head?.htmlAttributes.toString).toBeDefined();
       expect(head?.htmlAttributes.toString()).toMatchSnapshot();
     });
   });
 
   describe('Declarative API', () => {
     it('renders html attributes as component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <html lang="ga" className="myClassName" />
         </Helmet>,
@@ -63,20 +52,20 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
-      const markup = ReactServer.renderToStaticMarkup(<html lang="en" {...attrs} />);
+      const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders html attributes as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <html lang="ga" className="myClassName" />
         </Helmet>,
       );
 
       expect(head?.htmlAttributes).toBeDefined();
-      expect(head!.htmlAttributes.toString).toBeDefined();
+      expect(head?.htmlAttributes.toString).toBeDefined();
       expect(head?.htmlAttributes.toString()).toMatchSnapshot();
     });
   });

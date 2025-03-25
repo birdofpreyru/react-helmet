@@ -1,4 +1,4 @@
-// TODO: Move to https://github.com/birdofpreyru/js-utils/tree/master
+// TODO: Move to a dedicated repo.
 
 import babelParser from '@babel/eslint-parser';
 import babelPlugin from '@babel/eslint-plugin';
@@ -10,7 +10,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 import pluginJs from '@eslint/js';
-import stylisticJs from '@stylistic/eslint-plugin-js';
+import stylisticPlugin from '@stylistic/eslint-plugin';
 
 export default tseslint.config(
   { ignores: ['__coverage__', 'lib/'] },
@@ -42,7 +42,7 @@ export default tseslint.config(
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat['jsx-runtime'],
 
-  stylisticJs.configs.all,
+  stylisticPlugin.configs.all,
 
   // TODO: This does not work because a bug in eslint-plugin-react-hooks:
   // https://github.com/facebook/react/issues/32431
@@ -60,41 +60,51 @@ export default tseslint.config(
       '@babel/no-undef': 'error',
       '@babel/no-unused-expressions': 'error',
 
-      '@stylistic/js/object-curly-spacing': 'off',
+      '@stylistic/object-curly-spacing': 'off',
       '@babel/object-curly-spacing': ['error', 'always'],
 
       '@babel/semi': 'error',
-      '@stylistic/js/array-bracket-newline': ['error', 'consistent'],
-      '@stylistic/js/array-element-newline': ['error', 'consistent'],
-      '@stylistic/js/comma-dangle': ['error', 'always-multiline'],
-      '@stylistic/js/dot-location': ['error', 'property'],
-      '@stylistic/js/function-call-argument-newline': ['error', 'consistent'],
-      '@stylistic/js/function-paren-newline': ['error', 'multiline-arguments'],
-      '@stylistic/js/indent': ['error', 2, {
+      '@stylistic/array-bracket-newline': ['error', 'consistent'],
+      '@stylistic/array-element-newline': ['error', 'consistent'],
+      '@stylistic/comma-dangle': ['error', 'always-multiline'],
+      '@stylistic/dot-location': ['error', 'property'],
+      '@stylistic/function-call-argument-newline': ['error', 'consistent'],
+      '@stylistic/function-paren-newline': ['error', 'multiline-arguments'],
+      '@stylistic/indent': ['error', 2, {
         SwitchCase: 1,
       }],
-      '@stylistic/js/multiline-comment-style': 'off',
-      '@stylistic/js/multiline-ternary': ['error', 'always-multiline'],
-      '@stylistic/js/no-extra-parens': ['error', 'all', {
+      '@stylistic/lines-around-comment': ['error', {
+        allowBlockStart: true,
+        allowClassStart: true,
+        allowObjectStart: true,
+        allowTypeStart: true,
+      }],
+      '@stylistic/max-len': ['error', {
+        ignoreStrings: true,
+        ignoreTemplateLiterals: true,
+      }],
+      '@stylistic/multiline-comment-style': 'off',
+      '@stylistic/multiline-ternary': ['error', 'always-multiline'],
+      '@stylistic/no-extra-parens': ['error', 'all', {
         enforceForArrowConditionals: false,
         ignoreJSX: 'multi-line',
         nestedBinaryExpressions: false,
         returnAssign: false,
       }],
-      '@stylistic/js/no-multiple-empty-lines': ['error', { max: 1 }],
-      '@stylistic/js/object-curly-newline': ['error', {
+      '@stylistic/no-multiple-empty-lines': ['error', { max: 1 }],
+      '@stylistic/object-curly-newline': ['error', {
         consistent: true,
         minProperties: 4,
       }],
 
-      '@stylistic/js/object-property-newline': ['error', {
+      '@stylistic/object-property-newline': ['error', {
         allowAllPropertiesOnSameLine: true,
       }],
-      '@stylistic/js/operator-linebreak': ['error', 'before'],
-      '@stylistic/js/padded-blocks': ['error', 'never'],
-      '@stylistic/js/quote-props': ['error', 'as-needed'],
-      '@stylistic/js/quotes': ['error', 'single'],
-      '@stylistic/js/space-before-function-paren': ['error', {
+      '@stylistic/operator-linebreak': ['error', 'before'],
+      '@stylistic/padded-blocks': ['error', 'never'],
+      '@stylistic/quote-props': ['error', 'as-needed'],
+      '@stylistic/quotes': ['error', 'single'],
+      '@stylistic/space-before-function-paren': ['error', {
         named: 'never',
       }],
       'import/no-cycle': 'error',
@@ -105,6 +115,7 @@ export default tseslint.config(
         namedComponents: 'arrow-function',
         unnamedComponents: 'arrow-function',
       }],
+      'react-hooks/exhaustive-deps': 'error',
       'react/prop-types': 'off',
     },
   },
@@ -123,6 +134,7 @@ export default tseslint.config(
       ...tseslint.configs.stylisticTypeChecked,
     ],
     rules: {
+      '@typescript-eslint/array-type': 'off',
       '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
       '@typescript-eslint/no-inferrable-types': 'off',
 
@@ -136,7 +148,6 @@ export default tseslint.config(
 
       '@typescript-eslint/prefer-nullish-coalescing': 'error',
       '@typescript-eslint/unbound-method': 'off',
-
     },
   },
 

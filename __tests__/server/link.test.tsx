@@ -1,26 +1,13 @@
-/** @jest-environment jsdom */
-
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../config/jest/utils';
 import type { ReactNode } from 'react';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
 
 describe('server', () => {
   describe('API', () => {
     it('renders link tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           link={[
             { href: 'http://localhost/helmet', rel: 'canonical' },
@@ -51,7 +38,7 @@ describe('server', () => {
     });
 
     it('renders link tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           link={[
             { href: 'http://localhost/helmet', rel: 'canonical' },
@@ -72,7 +59,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders link tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
@@ -97,7 +84,7 @@ describe('server', () => {
     });
 
     it('renders link tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />

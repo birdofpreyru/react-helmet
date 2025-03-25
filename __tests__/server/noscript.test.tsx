@@ -1,24 +1,13 @@
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../config/jest/utils';
 import type { ReactNode } from 'react';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
 
 describe('server', () => {
   describe('API', () => {
     it('renders noscript tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           noscript={[
             {
@@ -53,7 +42,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders noscript tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <noscript id="foo">{'<link rel="stylesheet" type="text/css" href="/style.css" />'}</noscript>
           <noscript id="bar">{'<link rel="stylesheet" type="text/css" href="/style2.css" />'}</noscript>

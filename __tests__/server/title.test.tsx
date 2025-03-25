@@ -1,26 +1,15 @@
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../config/jest/utils';
 import type { ReactNode } from 'react';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
 
 describe('server', () => {
   describe('API', () => {
     it('provides initial values if no state is found', () => {
       const NullComponent = () => null;
 
-      const head = renderContext(<NullComponent />);
+      const head = renderContextServer(<NullComponent />);
 
       expect(head?.meta).toBeDefined();
       expect(head!.meta.toString).toBeDefined();
@@ -28,7 +17,7 @@ describe('server', () => {
     });
 
     it('encodes special characters in title', () => {
-      const head = renderContext(<Helmet title="Dangerous <script> include" />);
+      const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
 
       expect(head?.title).toBeDefined();
       expect(head!.title.toString).toBeDefined();
@@ -36,7 +25,7 @@ describe('server', () => {
     });
 
     it('opts out of string encoding', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet encodeSpecialCharacters={false} title={'This is text and & and \'.'} />,
       );
 
@@ -46,7 +35,7 @@ describe('server', () => {
     });
 
     it('renders title as React component', () => {
-      const head = renderContext(<Helmet title="Dangerous <script> include" />);
+      const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
 
       expect(head?.title).toBeDefined();
       expect(head!.title.toComponent).toBeDefined();
@@ -66,7 +55,7 @@ describe('server', () => {
     });
 
     it('renders title with itemprop name as React component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
       );
 
@@ -88,7 +77,7 @@ describe('server', () => {
     });
 
     it('renders title tag as string', () => {
-      const head = renderContext(<Helmet title="Dangerous <script> include" />);
+      const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
 
       expect(head?.title).toBeDefined();
       expect(head!.title.toString).toBeDefined();
@@ -96,7 +85,7 @@ describe('server', () => {
     });
 
     it('renders title with itemprop name as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
       );
 
@@ -111,7 +100,7 @@ describe('server', () => {
     it('does not encode all characters with HTML character entity equivalents', () => {
       const chineseTitle = '膣膗 鍆錌雔';
 
-      const head = renderContext(
+      const head = renderContextServer(
         <div>
           <Helmet title={chineseTitle} />
         </div>,
@@ -125,7 +114,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('encodes special characters in title', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
         </Helmet>,
@@ -137,7 +126,7 @@ describe('server', () => {
     });
 
     it('opts out of string encoding', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet encodeSpecialCharacters={false}>
           <title>This is text and & and &apos;.</title>
         </Helmet>,
@@ -149,7 +138,7 @@ describe('server', () => {
     });
 
     it('renders title as React component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
         </Helmet>,
@@ -173,7 +162,7 @@ describe('server', () => {
     });
 
     it('renders title with itemprop name as React component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title itemProp="name">Title with Itemprop</title>
         </Helmet>,
@@ -197,7 +186,7 @@ describe('server', () => {
     });
 
     it('renders title tag as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
         </Helmet>,
@@ -211,7 +200,7 @@ describe('server', () => {
     it('renders title and allows children containing expressions', () => {
       const someValue = 'Some Great Title';
 
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>Title: {someValue}</title>
         </Helmet>,
@@ -223,7 +212,7 @@ describe('server', () => {
     });
 
     it('renders title with itemprop name as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title itemProp="name">Title with Itemprop</title>
         </Helmet>,
@@ -240,7 +229,7 @@ describe('server', () => {
     it('does not encode all characters with HTML character entity equivalents', () => {
       const chineseTitle = '膣膗 鍆錌雔';
 
-      const head = renderContext(
+      const head = renderContextServer(
         <div>
           <Helmet>
             <title>{chineseTitle}</title>
@@ -256,7 +245,7 @@ describe('server', () => {
 
   describe('renderStatic', () => {
     it('does html encode title', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
         </Helmet>,
@@ -268,7 +257,7 @@ describe('server', () => {
     });
 
     it('renders title as React component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <title>{'Dangerous <script> include'}</title>
         </Helmet>,

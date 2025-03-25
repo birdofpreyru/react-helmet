@@ -1,8 +1,8 @@
-import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
+/** @jest-environment jsdom */
 
-Helmet.defaultProps.defer = false;
+import { Helmet } from '../../src';
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('style tags', () => {
   it('updates style tags', () => {
@@ -16,7 +16,7 @@ describe('style tags', () => {
                       font-size: 12px;
                   }
               `;
-    render(
+    renderClient(
       <Helmet
         style={[
           {
@@ -30,7 +30,7 @@ describe('style tags', () => {
       />,
     );
 
-    const existingTags = [...document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`)];
+    const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
     const [firstTag, secondTag] = existingTags;
 
     expect(existingTags).toBeDefined();
@@ -53,7 +53,7 @@ describe('style tags', () => {
                       background-color: green;
                   }
               `;
-    render(
+    renderClient(
       <Helmet
         style={[
           {
@@ -64,25 +64,25 @@ describe('style tags', () => {
       />,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(0);
   });
 
   it('tags without \'cssText\' are not accepted', () => {
-    render(<Helmet style={[{ property: 'won\'t work' }]} />);
+    renderClient(<Helmet style={[{ property: 'won\'t work' }]} />);
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(0);
   });
 
   it('does not render tag when primary attribute is null', () => {
-    render(
+    renderClient(
       <Helmet
         style={[
           {
@@ -93,7 +93,7 @@ describe('style tags', () => {
       />,
     );
 
-    const tagNodes = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
     const existingTags = [].slice.call(tagNodes);
 
     expect(existingTags).toHaveLength(0);
@@ -113,14 +113,14 @@ describe('Declarative API', () => {
             }
         `;
 
-    render(
+    renderClient(
       <Helmet>
         <style type="text/css">{cssText1}</style>
         <style>{cssText2}</style>
       </Helmet>,
     );
 
-    const existingTags = [...document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`)];
+    const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
     const [firstTag, secondTag] = existingTags;
 
     expect(existingTags).toBeDefined();
@@ -143,15 +143,15 @@ describe('Declarative API', () => {
                 background-color: green;
             }
         `;
-    render(
+    renderClient(
       <Helmet>
         <style type="text/css">{cssText}</style>
       </Helmet>,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(0);
@@ -159,27 +159,27 @@ describe('Declarative API', () => {
 
   it('tags without \'cssText\' are not accepted', () => {
     /* eslint-disable react/no-unknown-property */
-    render(
+    renderClient(
       <Helmet>
         <style property="won't work" />
       </Helmet>,
     );
     /* eslint-enable react/no-unknown-property */
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(0);
   });
 
   it('does not render tag when primary attribute is null', () => {
-    render(
+    renderClient(
       <Helmet>
         <style>{undefined}</style>
       </Helmet>,
     );
 
-    const tagNodes = document.head.querySelectorAll(`style[${HELMET_DATA_ATTRIBUTE}]`);
+    const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
     const existingTags = [].slice.call(tagNodes);
 
     expect(existingTags).toHaveLength(0);

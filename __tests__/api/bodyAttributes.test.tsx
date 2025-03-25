@@ -1,9 +1,9 @@
+/** @jest-environment jsdom */
+
 import type { BodyProps } from '../../src';
 import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
-import { render } from '../../config/jest/utils';
-
-Helmet.defaultProps.defer = false;
+import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('body attributes', () => {
   describe('valid attributes', () => {
@@ -37,7 +37,7 @@ describe('body attributes', () => {
           [attribute]: attrValue,
         };
 
-        render(
+        renderClient(
           <Helmet>
             <body {...attr} />
           </Helmet>,
@@ -48,13 +48,13 @@ describe('body attributes', () => {
         const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
 
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
-        expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, reactCompatAttr);
+        expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, reactCompatAttr);
       });
     });
   });
 
   it('updates multiple body attributes', () => {
-    render(
+    renderClient(
       <Helmet>
         <body className="myClassName" tabIndex={-1} />
       </Helmet>,
@@ -64,11 +64,11 @@ describe('body attributes', () => {
 
     expect(bodyTag).toHaveAttribute('class', 'myClassName');
     expect(bodyTag).toHaveAttribute('tabindex', '-1');
-    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'class,tabindex');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'class,tabindex');
   });
 
   it('sets attributes based on the deepest nested component', () => {
-    render(
+    renderClient(
       <div>
         <Helmet>
           <body lang="en" />
@@ -82,11 +82,11 @@ describe('body attributes', () => {
     const bodyTag = document.body;
 
     expect(bodyTag).toHaveAttribute('lang', 'ja');
-    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang');
   });
 
   it('handles valueless attributes', () => {
-    render(
+    renderClient(
       <Helmet>
         <body hidden />
       </Helmet>,
@@ -95,33 +95,33 @@ describe('body attributes', () => {
     const bodyTag = document.body;
 
     expect(bodyTag).toHaveAttribute('hidden', 'true');
-    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'hidden');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
   });
 
   it('clears body attributes that are handled within helmet', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
       </Helmet>,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
     const bodyTag = document.body;
 
     expect(bodyTag).not.toHaveAttribute('lang');
     expect(bodyTag).not.toHaveAttribute('hidden');
-    expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+    expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
   });
 
   it('updates with multiple additions and removals - overwrite and new', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
       </Helmet>,
     );
 
-    render(
+    renderClient(
       <Helmet>
         <body lang="ja" id="body-tag" title="body tag" />
       </Helmet>,
@@ -133,17 +133,17 @@ describe('body attributes', () => {
     expect(bodyTag).toHaveAttribute('lang', 'ja');
     expect(bodyTag).toHaveAttribute('id', 'body-tag');
     expect(bodyTag).toHaveAttribute('title', 'body tag');
-    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'lang,id,title');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
   });
 
   it('updates with multiple additions and removals - all new', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
       </Helmet>,
     );
 
-    render(
+    renderClient(
       <Helmet>
         <body id="body-tag" title="body tag" />
       </Helmet>,
@@ -155,7 +155,7 @@ describe('body attributes', () => {
     expect(bodyTag).not.toHaveAttribute('lang');
     expect(bodyTag).toHaveAttribute('id', 'body-tag');
     expect(bodyTag).toHaveAttribute('title', 'body tag');
-    expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'id,title');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,title');
   });
 
   describe('initialized outside of helmet', () => {
@@ -165,17 +165,17 @@ describe('body attributes', () => {
     });
 
     it('attributes are not cleared', () => {
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const bodyTag = document.body;
 
       expect(bodyTag).toHaveAttribute('test', 'test');
-      expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+      expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
     });
 
     it('attributes are overwritten if specified in helmet', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <body
             // @ts-expect-error "pre-existing expection"
@@ -188,12 +188,12 @@ describe('body attributes', () => {
       const bodyTag = document.body;
 
       expect(bodyTag).toHaveAttribute('test', 'helmet-attr');
-      expect(bodyTag).toHaveAttribute(HELMET_DATA_ATTRIBUTE, 'test');
+      expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'test');
     });
 
     it('attributes are cleared once managed in helmet', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <body
             // @ts-expect-error "pre-existing expection"
@@ -203,12 +203,12 @@ describe('body attributes', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const bodyTag = document.body;
 
       expect(bodyTag).not.toHaveAttribute('test');
-      expect(bodyTag).not.toHaveAttribute(HELMET_DATA_ATTRIBUTE);
+      expect(bodyTag).not.toHaveAttribute(HELMET_ATTRIBUTE);
     });
   });
 });

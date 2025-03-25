@@ -5,34 +5,70 @@ import {
   useRef,
 } from 'react';
 
-import HelmetData, { isDocument, type HelmetDataContext } from './HelmetData';
+import type {
+  AggregatedState,
+  ContextValue,
+  HelmetDataContext,
+  HelmetProps,
+  HelmetProviderHeap,
+  HelmetServerState,
+} from './types';
 
-const defaultValue = {};
+import { newServerState } from './server';
 
-export const Context = createContext(defaultValue);
+export const Context = createContext<ContextValue | undefined>(undefined);
 
 type ProviderProps = {
   children?: ReactNode;
-  context?: Partial<HelmetDataContext>;
-}
-
-type HelmetProviderT = FunctionComponent<ProviderProps> & {
-  canUseDOM: boolean;
+  context?: HelmetDataContext;
 };
 
-const HelmetProvider = (({
+const HelmetProvider: FunctionComponent<ProviderProps> = ({
   children,
   context,
 }) => {
-  const helmetDataRef = useRef<HelmetData>(null);
+  const { current: heap } = useRef<HelmetProviderHeap>({
+    helmets: [],
+    state: undefined,
+  });
 
-  if (!helmetDataRef.current) {
-    helmetDataRef.current = new HelmetData(context ?? {}, HelmetProvider.canUseDOM);
+  const contextValueRef = useRef<ContextValue>(null);
+
+  if (!contextValueRef.current) {
+    contextValueRef.current = {
+      update(id: string, props: HelmetProps | undefined) {
+        const idx = heap.helmets.findIndex((item) => item[0] === id);
+        if (idx >= 0) {
+          delete heap.state;
+          if (props) heap.helmets[idx]![1] = props;
+          else heap.helmets.splice(idx, 1);
+        } else if (props) {
+          delete heap.state;
+          heap.helmets.push([id, props]);
+        }
+      },
+    };
   }
 
-  return <Context value={helmetDataRef.current.value}>{children}</Context>;
-}) as HelmetProviderT;
+  if (context && (!context.helmet || context.helmet !== heap.serverState)) {
+    heap.serverState ??= newServerState(heap);
+    context.helmet = heap.serverState;
+  }
 
-HelmetProvider.canUseDOM = isDocument;
+  return <Context value={contextValueRef.current}>{children}</Context>;
+
+  /*
+  if (!contextValueRef.current) {
+    contextValueRef.current = {
+      context,
+      helmets: [],
+      reEvaluate: () => undefined,
+    };
+
+    if (context) context.helmet = newServerState(contextValueRef.current);
+  }
+
+  */
+};
 
 export default HelmetProvider;

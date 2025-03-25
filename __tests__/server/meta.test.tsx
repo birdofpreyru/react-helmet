@@ -1,34 +1,23 @@
-import ReactServer from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../config/jest/utils';
 import type { ReactNode } from 'react';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
 
 describe('server', () => {
   describe('API', () => {
     it('renders meta tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           meta={[
-            { charset: 'utf-8' },
+            { charSet: 'utf-8' },
             {
               name: 'description',
               content: 'Test description & encoding of special characters like \' " > < `',
             },
-            { 'http-equiv': 'content-type', content: 'text/html' },
+            { httpEquiv: 'content-type', content: 'text/html' },
             { property: 'og:type', content: 'article' },
-            { itemprop: 'name', content: 'Test name itemprop' },
+            { itemProp: 'name', content: 'Test name itemprop' },
           ]}
         />,
       );
@@ -45,23 +34,23 @@ describe('server', () => {
         expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(metaComponent as ReactNode);
+      const markup = renderToStaticMarkup(metaComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders meta tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           meta={[
-            { charset: 'utf-8' },
+            { charSet: 'utf-8' },
             {
               name: 'description',
               content: 'Test description & encoding of special characters like \' " > < `',
             },
-            { 'http-equiv': 'content-type', content: 'text/html' },
+            { httpEquiv: 'content-type', content: 'text/html' },
             { property: 'og:type', content: 'article' },
-            { itemprop: 'name', content: 'Test name itemprop' },
+            { itemProp: 'name', content: 'Test name itemprop' },
           ]}
         />,
       );
@@ -74,7 +63,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders meta tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <meta charSet="utf-8" />
           <meta
@@ -99,13 +88,13 @@ describe('server', () => {
         expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(metaComponent as ReactNode);
+      const markup = renderToStaticMarkup(metaComponent as ReactNode);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders meta tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <meta charSet="utf-8" />
           <meta

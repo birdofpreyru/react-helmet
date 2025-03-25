@@ -1,4 +1,4 @@
-import { HELMET_DATA_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
+import { HELMET_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
 import type { Attributes, StateUpdate, TagList } from './types';
 import { flattenArray } from './utils';
 
@@ -9,72 +9,79 @@ type TagUpdates = {
 
 type TagUpdateList = Record<string, TagUpdates>;
 
-const updateTags = (type: string, tags: HTMLElement[]) => {
+/**
+ * Replaces HTML elements previously added to the DOM's head by React Helmet
+ * by the set of given elements (tags). For any given element that matches
+ * exactly an element already present in the head no actual DOM modification
+ * happens, it just keeps already present element. Returns arrays of newly
+ * added (newTags) and removed (oldTags) elements.
+ */
+function updateTags(type: string, tags: HTMLElement[]) {
+  // TODO: Do we really need the fallback here? document.head is supposed to be
+  // always defined.
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
-  const tagNodes = headElement.querySelectorAll(`${type}[${HELMET_DATA_ATTRIBUTE}]`);
-  const oldTags: HTMLElement[] = [].slice.call(tagNodes);
+
+  const tagNodes = headElement.querySelectorAll<HTMLElement>(`${type}[${HELMET_ATTRIBUTE}]`);
+  const oldTags: HTMLElement[] = [...tagNodes];
   const newTags: HTMLElement[] = [];
-  let indexToDelete: number;
 
-  if (tags?.length) {
-    tags.forEach((tag) => {
-      const newElement = document.createElement(type);
+  for (const tag of tags) {
+    const newElement = document.createElement(type);
 
-      for (const attribute in tag) {
-        if (Object.prototype.hasOwnProperty.call(tag, attribute)) {
-          if (attribute === TAG_PROPERTIES.INNER_HTML as string) {
-            newElement.innerHTML = tag.innerHTML;
-          } else if (attribute === TAG_PROPERTIES.CSS_TEXT as string) {
-            // This seems like a CSSImportRuleDeclaration?
+    for (const attribute in tag) {
+      if (tag.hasAttribute(attribute)) {
+        if (attribute as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
+          newElement.innerHTML = tag.innerHTML;
+        } else if (attribute as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
+          // TODO: Not sure when this is true?
+          // @ts-expect-error "pre-existing"
+          if (newElement.styleSheet) {
             // @ts-expect-error "pre-existing"
-            if (newElement.styleSheet) {
-              // @ts-expect-error "pre-existing"
-              (newElement.styleSheet as CSSStyleDeclaration).cssText = (tag as CSSStyleDeclaration).cssText;
-            } else {
-              // @ts-expect-error "pre-existing"
-              newElement.appendChild(document.createTextNode((tag as CSSStyleDeclaration).cssText));
-            }
+            (newElement.styleSheet as CSSStyleDeclaration).cssText = (tag as CSSStyleDeclaration).cssText;
           } else {
-            const attr = attribute as keyof HTMLElement;
-            const value = typeof tag[attr] === 'undefined' ? '' : tag[attr];
-            newElement.setAttribute(attribute, value as string);
+            // @ts-expect-error "pre-existing"
+            newElement.appendChild(document.createTextNode((tag as CSSStyleDeclaration).cssText));
           }
+        } else {
+          newElement.setAttribute(attribute, tag.getAttribute(attribute) ?? '');
         }
       }
+    }
 
-      newElement.setAttribute(HELMET_DATA_ATTRIBUTE, 'true');
+    newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
 
-      // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
-      if (
-        oldTags.some((existingTag, index) => {
-          indexToDelete = index;
-          return newElement.isEqualNode(existingTag);
-        })
-      ) {
-        oldTags.splice(indexToDelete, 1);
-      } else {
-        newTags.push(newElement);
+    // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
+    for (let i = 0; ; ++i) {
+      if (newElement.isEqualNode(oldTags[i]!)) {
+        oldTags.splice(i, 1);
+        break;
       }
-    });
+      if (i >= oldTags.length) {
+        newTags.push(newElement);
+        break;
+      }
+    }
   }
 
   oldTags.forEach((tag: Node) => tag.parentNode?.removeChild(tag));
   newTags.forEach((tag) => headElement.appendChild(tag));
 
+  // TODO: Do we really need this return value anywhere? Especially `oldTags`
+  // that have been removed from DOM already?
   return {
     oldTags,
     newTags,
   };
-};
+}
 
-const updateAttributes = (tagName: string, attributes: Attributes) => {
+function updateAttributes(tagName: string, attributes: Attributes) {
   const elementTag = document.getElementsByTagName(tagName)[0];
 
   if (!elementTag) {
     return;
   }
 
-  const helmetAttributeString = elementTag.getAttribute(HELMET_DATA_ATTRIBUTE);
+  const helmetAttributeString = elementTag.getAttribute(HELMET_ATTRIBUTE);
   const helmetAttributes = helmetAttributeString ? helmetAttributeString.split(',') : [];
   const attributesToRemove = [...helmetAttributes];
   const attributeKeys = Object.keys(attributes);
@@ -101,23 +108,23 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   }
 
   if (helmetAttributes.length === attributesToRemove.length) {
-    elementTag.removeAttribute(HELMET_DATA_ATTRIBUTE);
-  } else if (elementTag.getAttribute(HELMET_DATA_ATTRIBUTE) !== attributeKeys.join(',')) {
-    elementTag.setAttribute(HELMET_DATA_ATTRIBUTE, attributeKeys.join(','));
+    elementTag.removeAttribute(HELMET_ATTRIBUTE);
+  } else if (elementTag.getAttribute(HELMET_ATTRIBUTE) !== attributeKeys.join(',')) {
+    elementTag.setAttribute(HELMET_ATTRIBUTE, attributeKeys.join(','));
   }
-};
+}
 
-const updateTitle = (title: string, attributes: Attributes) => {
+function updateTitle(title: string, attributes: Attributes) {
   if (typeof title !== 'undefined' && document.title !== title) {
     document.title = flattenArray(title);
   }
 
   updateAttributes(TAG_NAMES.TITLE, attributes);
-};
+}
 
 type Cb = () => number | null | void;
 
-const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
+function commitTagChanges(newState: StateUpdate, cb?: Cb) {
   const {
     baseTag,
     bodyAttributes,
@@ -164,7 +171,11 @@ const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
   }
 
   onChangeClientState(newState, addedTags, removedTags);
-};
+}
+
+// TODO: Right now it does the update in the next animation frame...
+// if "defer" update is opted in... do we really need it? Is that "defer"
+// is just a side-effect of poor engineering of the legacy code?
 
 let _helmetCallback: number | null = null;
 

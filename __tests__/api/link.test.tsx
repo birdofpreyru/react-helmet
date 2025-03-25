@@ -1,13 +1,13 @@
-import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
+/** @jest-environment jsdom */
 
-Helmet.defaultProps.defer = false;
+import { Helmet } from '../../src';
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('link tags', () => {
   describe('API', () => {
     it('updates link tags', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -23,7 +23,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -42,7 +42,7 @@ describe('link tags', () => {
     });
 
     it('clears all link tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -53,9 +53,9 @@ describe('link tags', () => {
         />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -64,9 +64,9 @@ describe('link tags', () => {
 
     it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
       // @ts-expect-error "pre-existing"
-      render(<Helmet link={[{ 'http-equiv': 'won\'t work' }]} />);
+      renderClient(<Helmet link={[{ 'http-equiv': 'won\'t work' }]} />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -74,7 +74,7 @@ describe('link tags', () => {
     });
 
     it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -103,7 +103,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -117,7 +117,7 @@ describe('link tags', () => {
     });
 
     it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -142,7 +142,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -166,7 +166,7 @@ describe('link tags', () => {
     });
 
     it('sets link tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -199,7 +199,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -229,7 +229,7 @@ describe('link tags', () => {
     });
 
     it('allows duplicate link tags if specified in the same component', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -244,7 +244,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -264,7 +264,7 @@ describe('link tags', () => {
     });
 
     it('overrides duplicate link tags with a single link tag in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -289,7 +289,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -303,7 +303,7 @@ describe('link tags', () => {
     });
 
     it('overrides single link tag with duplicate link tags in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -328,7 +328,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -348,7 +348,7 @@ describe('link tags', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             // @ts-expect-error "pre-existing"
@@ -361,7 +361,7 @@ describe('link tags', () => {
         />,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -377,14 +377,14 @@ describe('link tags', () => {
 
   describe('Declarative API', () => {
     it('updates link tags', () => {
-      render(
+      renderClient(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
 
       expect(existingTags).toBeDefined();
 
@@ -403,15 +403,15 @@ describe('link tags', () => {
     });
 
     it('clears all link tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
         </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -419,7 +419,7 @@ describe('link tags', () => {
     });
 
     it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
-      render(
+      renderClient(
         <Helmet>
           <link
             // @ts-expect-error "pre-existing"
@@ -428,7 +428,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toBeDefined();
@@ -436,7 +436,7 @@ describe('link tags', () => {
     });
 
     it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link href="http://localhost/helmet" rel="canonical" />
@@ -450,7 +450,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -464,7 +464,7 @@ describe('link tags', () => {
     });
 
     it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link href="http://localhost/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -475,7 +475,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -499,7 +499,7 @@ describe('link tags', () => {
     });
 
     it('sets link tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -512,7 +512,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -542,14 +542,14 @@ describe('link tags', () => {
     });
 
     it('allows duplicate link tags if specified in the same component', () => {
-      render(
+      renderClient(
         <Helmet>
           <link rel="canonical" href="http://localhost/helmet" />
           <link rel="canonical" href="http://localhost/helmet/component" />
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -569,7 +569,7 @@ describe('link tags', () => {
     });
 
     it('overrides duplicate link tags with a single link tag in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -581,7 +581,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -595,7 +595,7 @@ describe('link tags', () => {
     });
 
     it('overrides single link tag with duplicate link tags in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -607,7 +607,7 @@ describe('link tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -627,7 +627,7 @@ describe('link tags', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <link
             rel="icon"
@@ -639,7 +639,7 @@ describe('link tags', () => {
         </Helmet>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
 
       expect(existingTags).toBeDefined();

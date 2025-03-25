@@ -14,6 +14,9 @@ _This fork is published to NPM as https://www.npmjs.com/package/@dr.pogodin/reac
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/js-utils/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 ---
 
+TODO: ADD SPONSORS SECTION, LINK THESE:
+https://github.com/RigoOnRails (5 EUR)
+
 [Announcement post on Times Open blog](https://open.nytimes.com/the-future-of-meta-tag-management-for-modern-react-development-ec26a7dc9183)
 
 This package is a fork of [React Helmet](https://github.com/nfl/react-helmet).

@@ -1,23 +1,12 @@
-import ReactServer from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../../config/jest/utils';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
+import { renderContextServer, isArray } from '../../config/jest/utils';
 
 describe('server', () => {
   describe('API', () => {
     it('renders style tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           style={[
             {
@@ -40,13 +29,13 @@ describe('server', () => {
       expect(styleComponent).toEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
-      const markup = ReactServer.renderToStaticMarkup(styleComponent);
+      const markup = renderToStaticMarkup(styleComponent);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders style tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           style={[
             {
@@ -69,7 +58,7 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders style tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <style type="text/css">{'body {background-color: green;}'}</style>
           <style type="text/css">{'p {font-size: 12px;}'}</style>
@@ -84,13 +73,13 @@ describe('server', () => {
       expect(styleComponent).toEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
-      const markup = ReactServer.renderToStaticMarkup(styleComponent);
+      const markup = renderToStaticMarkup(styleComponent);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders style tags as string', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <style type="text/css">{'body {background-color: green;}'}</style>
           <style type="text/css">{'p {font-size: 12px;}'}</style>

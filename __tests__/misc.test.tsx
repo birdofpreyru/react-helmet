@@ -1,15 +1,15 @@
-import { Helmet, type OnChangeClientState } from '../src';
-import { HELMET_DATA_ATTRIBUTE } from '../src/constants';
+/** @jest-environment jsdom */
 
-import { render } from '../config/jest/utils';
+import { Helmet } from '../src';
+import { HELMET_ATTRIBUTE } from '../src/constants';
+import type { OnChangeClientState } from '../src/Helmet';
 
-// TODO: This is confusing
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../config/jest/utils';
 
 describe('misc', () => {
   describe('API', () => {
     it('encodes special characters', () => {
-      render(
+      renderClient(
         <Helmet
           meta={[
             {
@@ -20,7 +20,7 @@ describe('misc', () => {
         />,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -36,7 +36,7 @@ describe('misc', () => {
     it('does not change the DOM if it recevies identical props', () => {
       const onChange = jest.fn();
 
-      render(
+      renderClient(
         <Helmet
           meta={[{ name: 'description', content: 'Test description' }]}
           title="Test Title"
@@ -45,7 +45,7 @@ describe('misc', () => {
       );
 
       // Re-rendering will pass new props to an already mounted Helmet
-      render(
+      renderClient(
         <Helmet
           meta={[{ name: 'description', content: 'Test description' }]}
           title="Test Title"
@@ -57,10 +57,10 @@ describe('misc', () => {
     });
 
     it('does not write the DOM if the client and server are identical', () => {
-      document.head.innerHTML = `<script ${HELMET_DATA_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
+      document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
       const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -84,7 +84,7 @@ describe('misc', () => {
       const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       let addedTags;
       let removedTags;
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -112,7 +112,7 @@ describe('misc', () => {
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -153,7 +153,7 @@ describe('misc', () => {
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
-        render(
+        renderClient(
           <Helmet title="Test Title">
             <Helmet title={'Title you\'ll never see'} />
           </Helmet>,
@@ -168,9 +168,9 @@ describe('misc', () => {
     });
 
     it('recognizes valid tags regardless of attribute ordering', () => {
-      render(<Helmet meta={[{ content: 'Test Description', name: 'description' }]} />);
+      renderClient(<Helmet meta={[{ content: 'Test Description', name: 'description' }]} />);
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -197,13 +197,13 @@ describe('misc', () => {
 
   describe('Declarative API', () => {
     it('encodes special characters', () => {
-      render(
+      renderClient(
         <Helmet>
           <meta name="description" content={'This is "quoted" text and & and \'.'} />
         </Helmet>,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();
@@ -217,7 +217,7 @@ describe('misc', () => {
 
     it('does not change the DOM if it recevies identical props', () => {
       const onChange = jest.fn();
-      render(
+      renderClient(
         <Helmet onChangeClientState={onChange}>
           <meta name="description" content="Test description" />
           <title>Test Title</title>
@@ -225,7 +225,7 @@ describe('misc', () => {
       );
 
       // Re-rendering will pass new props to an already mounted Helmet
-      render(
+      renderClient(
         <Helmet onChangeClientState={onChange}>
           <meta name="description" content="Test description" />
           <title>Test Title</title>
@@ -236,10 +236,10 @@ describe('misc', () => {
     });
 
     it('does not write the DOM if the client and server are identical', () => {
-      document.head.innerHTML = `<script ${HELMET_DATA_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
+      document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
       const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
-      render(
+      renderClient(
         <Helmet onChangeClientState={onChange}>
           <script src="http://localhost/test.js" type="text/javascript" />
         </Helmet>,
@@ -258,7 +258,7 @@ describe('misc', () => {
       let addedTags;
       let removedTags;
 
-      render(
+      renderClient(
         <Helmet onChangeClientState={onChange}>
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
           <meta name="description" content="Test description" />
@@ -279,7 +279,7 @@ describe('misc', () => {
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
-      render(
+      renderClient(
         <Helmet onChangeClientState={onChange}>
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
           <link href="http://localhost/style2.css" rel="stylesheet" type="text/css" />
@@ -309,7 +309,7 @@ describe('misc', () => {
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
-        render(
+        renderClient(
           <Helmet>
             <title>Test Title</title>
             <Helmet>
@@ -331,7 +331,7 @@ describe('misc', () => {
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
-        render(
+        renderClient(
           <Helmet>
             <title>Test Title</title>
             <div>
@@ -354,7 +354,7 @@ describe('misc', () => {
 
       const renderInvalid = () => {
         /* eslint-disable react/no-unknown-property */
-        render(
+        renderClient(
           <Helmet>
             <title>Test Title</title>
             <div
@@ -378,7 +378,7 @@ describe('misc', () => {
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
-        render(
+        renderClient(
           <Helmet>
             <title>Test Title</title>
             <link href="http://localhost/helmet" rel="canonical">
@@ -400,7 +400,7 @@ describe('misc', () => {
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
-        render(
+        renderClient(
           <Helmet>
             <title>Test Title</title>
             <script>
@@ -420,7 +420,7 @@ describe('misc', () => {
     it('handles undefined children', () => {
       const charSet = undefined;
 
-      render(
+      renderClient(
         <Helmet>
           {charSet && <meta charSet={charSet} />}
           <title>Test Title</title>
@@ -431,13 +431,13 @@ describe('misc', () => {
     });
 
     it('recognizes valid tags regardless of attribute ordering', () => {
-      render(
+      renderClient(
         <Helmet>
           <meta content="Test Description" name="description" />
         </Helmet>,
       );
 
-      const existingTags = document.head.querySelectorAll(`meta[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const existingTag = existingTags[0];
 
       expect(existingTags).toBeDefined();

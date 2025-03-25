@@ -1,8 +1,8 @@
-import { Helmet } from '../../src';
-import { HELMET_DATA_ATTRIBUTE } from '../../src/constants';
-import { render } from '../../config/jest/utils';
+/** @jest-environment jsdom */
 
-Helmet.defaultProps.defer = false;
+import { Helmet } from '../../src';
+import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { renderClient } from '../../config/jest/utils';
 
 describe('script tags', () => {
   describe('API', () => {
@@ -14,7 +14,7 @@ describe('script tags', () => {
                   "url": "http://localhost/helmet"
                 }
               `;
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -51,7 +51,7 @@ describe('script tags', () => {
     });
 
     it('clears all scripts tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -62,25 +62,25 @@ describe('script tags', () => {
         />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('tags without \'src\' are not accepted', () => {
-      render(<Helmet script={[{ property: 'won\'t work' }]} />);
+      renderClient(<Helmet script={[{ property: 'won\'t work' }]} />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('sets script tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             script={[
@@ -101,7 +101,7 @@ describe('script tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -121,7 +121,7 @@ describe('script tags', () => {
     });
 
     it('sets undefined attribute values to empty strings', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -133,14 +133,14 @@ describe('script tags', () => {
         />,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
       expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -152,14 +152,14 @@ describe('script tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
     });
 
     it('does not render tag when primary attribute (innerHTML) is null', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -170,7 +170,7 @@ describe('script tags', () => {
         />,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -186,7 +186,7 @@ describe('script tags', () => {
             "url": "http://localhost/helmet"
           }
         `;
-      render(
+      renderClient(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />
@@ -212,15 +212,15 @@ describe('script tags', () => {
     });
 
     it('clears all scripts tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
         </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
@@ -228,21 +228,21 @@ describe('script tags', () => {
 
     it('tags without \'src\' are not accepted', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <script property="won't work" />
         </Helmet>,
       );
       /* eslint-enable react/no-unknown-property */
 
-      const existingTags = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     });
 
     it('sets script tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <script src="http://localhost/test.js" type="text/javascript" />
@@ -251,7 +251,7 @@ describe('script tags', () => {
         </div>,
       );
 
-      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`)];
+      const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
 
       expect(existingTags).toBeDefined();
@@ -271,26 +271,26 @@ describe('script tags', () => {
     });
 
     it('sets undefined attribute values to empty strings', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src="foo.js" async={undefined} />
         </Helmet>,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
       expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src={undefined} type="text/javascript" />
         </Helmet>,
       );
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);
@@ -298,7 +298,7 @@ describe('script tags', () => {
 
     it('does not render tag when primary attribute (innerHTML) is null', () => {
       /* eslint-disable react/no-unknown-property */
-      render(
+      renderClient(
         <Helmet>
           <script
             // @ts-expect-error "pre-existing"
@@ -308,7 +308,7 @@ describe('script tags', () => {
       );
       /* eslint-enable react/no-unknown-property */
 
-      const tagNodes = document.head.querySelectorAll(`script[${HELMET_DATA_ATTRIBUTE}]`);
+      const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
 
       expect(existingTags).toHaveLength(0);

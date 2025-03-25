@@ -1,6 +1,6 @@
 import { Helmet } from '../src';
 
-import { render } from '../config/jest/utils';
+import { renderClient } from '../config/jest/utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
@@ -26,7 +26,7 @@ describe.skip('deferred tags', () => {
 
   describe('API', () => {
     it('executes synchronously when defer={true} and async otherwise', async () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             defer={false}
@@ -61,7 +61,7 @@ describe.skip('deferred tags', () => {
 
   describe('Declarative API', () => {
     it('executes synchronously when defer={true} and async otherwise', async () => {
-      render(
+      renderClient(
         <div>
           <Helmet defer={false}>
             <script>window.__spy__(1)</script>
