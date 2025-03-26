@@ -1,6 +1,6 @@
 import { Helmet } from '../src';
 
-import { renderClient } from '../config/jest/utils';
+import { renderClient } from '../jest/server-utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

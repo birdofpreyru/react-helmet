@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import { renderContextServer, isArray } from '../../config/jest/utils';
+import { renderContextServer, isArray } from '../../jest/server-utils';
 
 describe('server', () => {
   describe('API', () => {

@@ -2,10 +2,8 @@ import { type ReactNode, act, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
 
-import { renderToStaticMarkup } from 'react-dom/server';
-
-import Provider from '../../src/Provider';
-import type { HelmetDataContext } from '../../src/types';
+import Provider from '../src/Provider';
+import type { HelmetDataContext } from '../src/types';
 
 let root: Root | null = null;
 
@@ -32,29 +30,11 @@ export const renderClient = (node: ReactNode, context = {}) => {
   });
 };
 
-/**
- * Renders the given `node` within the provided `context` into HTML markup,
- * using server-side rendering API.
- */
-export function renderServer(node: ReactNode, context = {}) {
-  return renderToStaticMarkup(
-    <StrictMode>
-      <Provider context={context}>{node}</Provider>
-    </StrictMode>,
-  );
-}
-
 export const renderContextClient = (node: ReactNode) => {
   const context: HelmetDataContext = {};
   renderClient(node, context);
   return context.helmet;
 };
-
-export function renderContextServer(node: ReactNode) {
-  const context: HelmetDataContext = {};
-  renderServer(node, context);
-  return context.helmet;
-}
 
 // TODO: Get rid of this method.
 export const isArray = {

@@ -2,7 +2,7 @@
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { renderClient } from '../../config/jest/utils';
+import { renderClient } from '../../jest/browser-utils';
 
 describe('link tags', () => {
   describe('API', () => {

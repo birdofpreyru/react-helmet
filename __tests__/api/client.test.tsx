@@ -3,7 +3,7 @@
 import type { OnChangeClientState } from '../../src/Helmet';
 
 import { Helmet } from '../../src';
-import { renderClient } from '../../config/jest/utils';
+import { renderClient } from '../../jest/browser-utils';
 
 describe('onChangeClientState', () => {
   describe('API', () => {

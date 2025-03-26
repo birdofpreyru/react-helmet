@@ -1,5 +1,5 @@
 import { Helmet } from '../../src';
-import { renderContextServer } from '../../config/jest/utils';
+import { renderContextServer } from '../../jest/server-utils';
 
 // TODO: Current test names in this file are stale, and do not represent the new
 // library behavior - now we require to render <Helmet> components inside a tree

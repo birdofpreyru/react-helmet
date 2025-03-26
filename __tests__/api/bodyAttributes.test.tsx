@@ -3,7 +3,7 @@
 import type { BodyProps } from '../../src';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
-import { renderClient } from '../../config/jest/utils';
+import { renderClient } from '../../jest/browser-utils';
 
 describe('body attributes', () => {
   describe('valid attributes', () => {

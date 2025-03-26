@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import { renderContextServer } from '../../config/jest/utils';
+import { renderContextServer } from '../../jest/server-utils';
 
 describe('server', () => {
   describe('Declarative API', () => {

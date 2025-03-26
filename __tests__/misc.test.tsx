@@ -4,7 +4,7 @@ import { Helmet } from '../src';
 import { HELMET_ATTRIBUTE } from '../src/constants';
 import type { OnChangeClientState } from '../src/Helmet';
 
-import { renderClient } from '../config/jest/utils';
+import { renderClient } from '../jest/server-utils';
 
 describe('misc', () => {
   describe('API', () => {
