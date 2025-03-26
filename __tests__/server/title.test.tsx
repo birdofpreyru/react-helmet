@@ -56,7 +56,7 @@ describe('server', () => {
 
     it('renders title with itemprop name as React component', () => {
       const head = renderContextServer(
-        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
+        <Helmet title="Title with Itemprop" titleAttributes={{ itemProp: 'name' }} />,
       );
 
       expect(head?.title).toBeDefined();
@@ -86,7 +86,7 @@ describe('server', () => {
 
     it('renders title with itemprop name as string', () => {
       const head = renderContextServer(
-        <Helmet title="Title with Itemprop" titleAttributes={{ itemprop: 'name' }} />,
+        <Helmet title="Title with Itemprop" titleAttributes={{ itemProp: 'name' }} />,
       );
 
       expect(head?.title).toBeDefined();

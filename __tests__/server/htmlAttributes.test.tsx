@@ -29,7 +29,7 @@ describe('server', () => {
         <Helmet
           htmlAttributes={{
             lang: 'ga',
-            class: 'myClassName',
+            className: 'myClassName',
           }}
         />,
       );
