@@ -325,10 +325,30 @@ export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
     },
     priority: {
       toComponent() {
-        return null;
+        const s = getState();
+        return [
+          ...renderElements('meta', s.priority?.meta ?? []),
+          ...renderElements('link', s.priority?.links ?? []),
+          ...renderElements('script', s.priority?.script ?? []),
+        ];
       },
       toString() {
-        return '';
+        const s = getState();
+        const meta = generateTagsAsString('meta', s.priority?.meta ?? [], s.encodeSpecialCharacters);
+        const link = generateTagsAsString('link', s.priority?.links ?? [], s.encodeSpecialCharacters);
+        const script = generateTagsAsString('script', s.priority?.script ?? [], s.encodeSpecialCharacters);
+
+        let res = meta;
+        if (link) {
+          if (res) res += ' ';
+          res += link;
+        }
+        if (script) {
+          if (res) res += ' ';
+          res += script;
+        }
+
+        return res;
       },
     },
     script: {
@@ -352,11 +372,11 @@ export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
     title: {
       toComponent() {
         const s = getState();
-        return s.title ? renderTitle(s.title, s.titleAttributes ?? {}) : null;
+        return renderTitle(s.title ?? '', s.titleAttributes ?? {});
       },
       toString() {
         const s = getState();
-        return s.title ? generateTitleAsString(s.title, s.titleAttributes ?? {}, s.encodeSpecialCharacters) : '';
+        return generateTitleAsString(s.title ?? '', s.titleAttributes ?? {}, s.encodeSpecialCharacters);
       },
     },
   };
