@@ -1,5 +1,5 @@
-import { HELMET_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
-import type { Attributes, StateUpdate, TagList } from './types';
+import { HELMET_ATTRIBUTE, HTML_TAG_MAP, TAG_NAMES, TAG_PROPERTIES } from './constants';
+import type { AggregatedState, Attributes, BodyProps, HelmetChildProps, HtmlProps, StateUpdate, TagList } from './types';
 import { flattenArray } from './utils';
 
 type TagUpdates = {
@@ -16,7 +16,7 @@ type TagUpdateList = Record<string, TagUpdates>;
  * happens, it just keeps already present element. Returns arrays of newly
  * added (newTags) and removed (oldTags) elements.
  */
-function updateTags(type: string, tags: HTMLElement[]) {
+function updateTags(type: string, tags: HelmetChildProps[]) {
   // TODO: Do we really need the fallback here? document.head is supposed to be
   // always defined.
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
@@ -28,22 +28,25 @@ function updateTags(type: string, tags: HTMLElement[]) {
   for (const tag of tags) {
     const newElement = document.createElement(type);
 
-    for (const attribute in tag) {
-      if (tag.hasAttribute(attribute)) {
-        if (attribute as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
-          newElement.innerHTML = tag.innerHTML;
-        } else if (attribute as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
+    // TODO: Well, the typing within this block is bad, and should be improved.
+    for (const [name, value] of Object.entries(tag)) {
+      if (value !== undefined) {
+        if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
+          newElement.innerHTML = value as string;
+        } else if (name as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
           // TODO: Not sure when this is true?
           // @ts-expect-error "pre-existing"
           if (newElement.styleSheet) {
             // @ts-expect-error "pre-existing"
-            (newElement.styleSheet as CSSStyleDeclaration).cssText = (tag as CSSStyleDeclaration).cssText;
+            (newElement.styleSheet as CSSStyleDeclaration).cssText = (
+              tag as CSSStyleDeclaration).cssText;
           } else {
-            // @ts-expect-error "pre-existing"
-            newElement.appendChild(document.createTextNode((tag as CSSStyleDeclaration).cssText));
+            newElement.appendChild(document.createTextNode(
+              (tag as CSSStyleDeclaration).cssText,
+            ));
           }
         } else {
-          newElement.setAttribute(attribute, tag.getAttribute(attribute) ?? '');
+          newElement.setAttribute(name, (value as string) ?? '');
         }
       }
     }
@@ -74,7 +77,7 @@ function updateTags(type: string, tags: HTMLElement[]) {
   };
 }
 
-function updateAttributes(tagName: string, attributes: Attributes) {
+function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
   const elementTag = document.getElementsByTagName(tagName)[0];
 
   if (!elementTag) {
@@ -84,20 +87,27 @@ function updateAttributes(tagName: string, attributes: Attributes) {
   const helmetAttributeString = elementTag.getAttribute(HELMET_ATTRIBUTE);
   const helmetAttributes = helmetAttributeString ? helmetAttributeString.split(',') : [];
   const attributesToRemove = [...helmetAttributes];
-  const attributeKeys = Object.keys(attributes);
 
-  for (const attribute of attributeKeys) {
-    const value = attributes[attribute] ?? '';
+  const attributeKeys: string[] = [];
+  for (const prop of Object.keys(props)) {
+    // TODO: See a comment below.
+    attributeKeys.push(HTML_TAG_MAP[prop] ?? prop);
+  }
 
-    if (elementTag.getAttribute(attribute) !== value) {
-      elementTag.setAttribute(attribute, value);
+  for (const [key, value] of Object.entries(props)) {
+    // TODO: Get rid of the mapping later. It is not really needed, as HTML
+    // attribute names are case-insensitive. However, our related logic may
+    // still be case dependent - we should be careful about it.
+    const attr = HTML_TAG_MAP[key] ?? key;
+    if (elementTag.getAttribute(attr) !== value) {
+      elementTag.setAttribute(attr, value as string);
     }
 
-    if (!helmetAttributes.includes(attribute)) {
-      helmetAttributes.push(attribute);
+    if (!helmetAttributes.includes(attr)) {
+      helmetAttributes.push(attr);
     }
 
-    const indexToSave = attributesToRemove.indexOf(attribute);
+    const indexToSave = attributesToRemove.indexOf(attr);
     if (indexToSave !== -1) {
       attributesToRemove.splice(indexToSave, 1);
     }
@@ -122,34 +132,32 @@ function updateTitle(title: string, attributes: Attributes) {
   updateAttributes(TAG_NAMES.TITLE, attributes);
 }
 
-type Cb = () => number | null | void;
-
-function commitTagChanges(newState: StateUpdate, cb?: Cb) {
+export function commitTagChanges(newState: AggregatedState) {
   const {
-    baseTag,
+    base,
     bodyAttributes,
     htmlAttributes,
-    linkTags,
-    metaTags,
-    noscriptTags,
+    links,
+    meta,
+    noscript,
     onChangeClientState,
-    scriptTags,
-    styleTags,
+    script,
+    style,
     title,
     titleAttributes,
   } = newState;
-  updateAttributes(TAG_NAMES.BODY, bodyAttributes as Attributes);
-  updateAttributes(TAG_NAMES.HTML, htmlAttributes as Attributes);
+  updateAttributes(TAG_NAMES.BODY, bodyAttributes ?? {});
+  updateAttributes(TAG_NAMES.HTML, htmlAttributes ?? {});
 
-  updateTitle(title, titleAttributes as Attributes);
+  updateTitle(title ?? '', titleAttributes as Attributes);
 
   const tagUpdates: TagUpdateList = {
-    baseTag: updateTags(TAG_NAMES.BASE, baseTag),
-    linkTags: updateTags(TAG_NAMES.LINK, linkTags),
-    metaTags: updateTags(TAG_NAMES.META, metaTags),
-    noscriptTags: updateTags(TAG_NAMES.NOSCRIPT, noscriptTags),
-    scriptTags: updateTags(TAG_NAMES.SCRIPT, scriptTags),
-    styleTags: updateTags(TAG_NAMES.STYLE, styleTags),
+    baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),
+    linkTags: updateTags(TAG_NAMES.LINK, links ?? []),
+    metaTags: updateTags(TAG_NAMES.META, meta ?? []),
+    noscriptTags: updateTags(TAG_NAMES.NOSCRIPT, noscript ?? []),
+    scriptTags: updateTags(TAG_NAMES.SCRIPT, script ?? []),
+    styleTags: updateTags(TAG_NAMES.STYLE, style ?? []),
   };
 
   const addedTags: TagList = {};
@@ -166,32 +174,5 @@ function commitTagChanges(newState: StateUpdate, cb?: Cb) {
     }
   });
 
-  if (cb) {
-    cb();
-  }
-
-  onChangeClientState(newState, addedTags, removedTags);
+  newState?.onChangeClientState?.(newState, addedTags, removedTags);
 }
-
-// TODO: Right now it does the update in the next animation frame...
-// if "defer" update is opted in... do we really need it? Is that "defer"
-// is just a side-effect of poor engineering of the legacy code?
-
-let _helmetCallback: number | null = null;
-
-const handleStateChangeOnClient = (newState: StateUpdate) => {
-  if (_helmetCallback) cancelAnimationFrame(_helmetCallback);
-
-  if (newState.defer) {
-    _helmetCallback = requestAnimationFrame(() => {
-      commitTagChanges(newState, () => {
-        _helmetCallback = null;
-      });
-    });
-  } else {
-    commitTagChanges(newState);
-    _helmetCallback = null;
-  }
-};
-
-export default handleStateChangeOnClient;

@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-helmet",
-  "version": "2.1.0-alpha.1",
+  "version": "3.0.0",
   "description": "Thread-safe Helmet for React 19+ and friends",
   "main": "./lib/index.js",
   "module": "./lib/index.esm.js",
@@ -45,6 +45,7 @@
     "@babel/preset-react": "^7.26.3",
     "@babel/preset-typescript": "^7.26.0",
     "@eslint/js": "^9.21.0",
+    "@jest/globals": "^29.7.0",
     "@stylistic/eslint-plugin": "^4.1.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.2.0",

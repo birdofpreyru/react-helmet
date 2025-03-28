@@ -260,6 +260,7 @@ function mapStateOnServer(props: MappedServerState): HelmetServerState {
 // heap, and it should calculate its state into that, and then use it.
 
 export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
+  // TODO: Should this function to be attached to the heap itself?
   const getState = () => {
     heap.state ??= calcAggregatedState(heap.helmets);
     return heap.state;

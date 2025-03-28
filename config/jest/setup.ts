@@ -1,31 +1,27 @@
 // Polyfills requestAnimationFrame() in the test environment.
 import 'raf/polyfill';
 
+import { afterEach, beforeEach } from '@jest/globals';
 import '@testing-library/jest-dom';
 
-/*
-import '@testing-library/jest-dom';
+import { unmount } from '../../jest/browser-utils';
 
-import { clearInstances } from '../src/HelmetData';
-
-import { unmount } from './utils';
-
-// @ts-expect-error "pre-existing"
-globalThis.IS_REACT_ACT_ENVIRONMENT = true;
+// @ts-expect-error "that's fine"
+global.IS_REACT_ACT_ENVIRONMENT = true;
 
 let headElement: HTMLHeadElement;
 
 beforeEach(() => {
-  headElement ||= document.head || document.querySelector('head');
+  if (typeof document !== 'undefined') {
+    headElement ||= document.head || document.querySelector('head');
 
-  headElement.innerHTML = '';
-  document.body.innerHTML = '<div id="mount"></div>';
+    headElement.innerHTML = '';
+    document.body.innerHTML = '<div id="mount"></div>';
+  }
 });
 
 afterEach(() => {
-  unmount();
-
-  clearInstances();
+  if (typeof document !== 'undefined') {
+    unmount();
+  }
 });
-
-*/

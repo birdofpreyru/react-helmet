@@ -190,6 +190,7 @@ export type AggregatedState = {
   links: LinkProps[] | undefined;
   meta: MetaProps[] | undefined;
   noscript: NoscriptProps[] | undefined;
+  onChangeClientState: OnChangeClientState | undefined;
   priority: {
     links: LinkProps[] | undefined;
     meta: MetaProps[] | undefined;
@@ -221,6 +222,8 @@ export type HelmetDataContext = {
  * context provider and <Helmet> components within its children tree.
  */
 export type ContextValue = {
+  clientApply: () => void;
+
   /** One function to register, update, and un-register <Helmet> instances
    *  (or, more precisely their current aggregated props, aggregated between
    *  the actual props of <Helmet> instance and its children). */
@@ -229,6 +232,7 @@ export type ContextValue = {
 
 export type HelmetProviderHeap = {
   helmets: RegisteredHelmetPropsArray;
+  nextAnimFrameId?: number;
   serverState?: HelmetServerState;
   state: AggregatedState | undefined;
 };

@@ -85,10 +85,6 @@ export function getTitleFromPropsList(
   return innermostTitle ?? innermostDefaultTitle ?? undefined;
 }
 
-const getOnChangeClientState = (
-  propsList: PropsList,
-) => getInnermostProperty_OLD(propsList, HELMET_PROPS.ON_CHANGE_CLIENT_STATE) ?? (() => undefined);
-
 /**
  * Merges together attributes provided for the same element by different Helmet
  * instances. Attributes provided by later registered Helmet instances overwrite
@@ -260,19 +256,9 @@ function getAnyTrueFromPropsArray<T extends keyof HelmetPropBooleans>(
   return false;
 }
 
-// TODO: We don't really need this function, we rather extract each kind
-// of tag / attribute info as needed.
-const reducePropsToState = (propsList: PropsList) => ({
-  defer: getInnermostProperty_OLD(propsList, HELMET_PROPS.DEFER),
-
-  onChangeClientState: getOnChangeClientState(propsList),
-});
-
 export function flattenArray(possibleArray: string[] | string) {
   return Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray;
 }
-
-export { reducePropsToState };
 
 function checkIfPropsMatch<T extends keyof HelmetPropArrays>(
   props: PropArrayItem<T>,
@@ -430,6 +416,7 @@ export function calcAggregatedState(
       [TAG_PROPERTIES.INNER_HTML],
       props,
     ),
+    onChangeClientState: getInnermostProperty(props, 'onChangeClientState'),
     priority,
     script,
     style: getTagsFromPropsList(

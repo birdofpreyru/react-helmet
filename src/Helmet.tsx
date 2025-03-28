@@ -202,7 +202,22 @@ const Helmet: FunctionComponent<HelmetProps> = (props) => {
   );
 
   const id = useId();
+
+  // TODO: Agh... we need it here to ensure that it works server-side,
+  // and we need the same in the useEffect() below to ensure it works
+  // client-side in strict mode (and, thus completely correctly from React's
+  // pure component / side effect logic). It clearly should be optimized,
+  // but let's care about it later.
   context.update(id, reduceChildrenAndProps(props));
+
+  // TODO: I guess, these two useEffect() can be merged together, which should
+  // also allow to simplify and optimize the client-side management of attrs and
+  // elements managed by these. Though, keeping them separate is an easier way
+  // for now to ensure backward compatibility.
+  useEffect(() => {
+    context.update(id, reduceChildrenAndProps(props));
+  });
+
   useEffect(() => () => context.update(id, undefined), [context, id]);
 
   return null;

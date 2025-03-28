@@ -84,3 +84,8 @@ export const HTML_TAG_MAP = (() => {
 })();
 
 export const HELMET_ATTRIBUTE = 'data-rh';
+
+export const IS_DOM_ENVIRONMENT = !!(
+  typeof window !== 'undefined'
+  && window.document.createElement
+);

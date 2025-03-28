@@ -15,6 +15,9 @@ import type {
 } from './types';
 
 import { newServerState } from './server';
+import { IS_DOM_ENVIRONMENT } from './constants';
+import { calcAggregatedState } from './utils';
+import { commitTagChanges } from './client';
 
 export const Context = createContext<ContextValue | undefined>(undefined);
 
@@ -36,6 +39,26 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
 
   if (!contextValueRef.current) {
     contextValueRef.current = {
+      clientApply() {
+        if (IS_DOM_ENVIRONMENT && !heap.state) {
+          heap.state = calcAggregatedState(heap.helmets);
+          if (heap.state.defer) {
+            if (heap.nextAnimFrameId === undefined) {
+              heap.nextAnimFrameId = requestAnimationFrame(() => {
+                heap.state ??= calcAggregatedState(heap.helmets);
+                commitTagChanges(heap.state);
+                delete heap.nextAnimFrameId;
+              });
+            }
+          } else {
+            if (heap.nextAnimFrameId !== undefined) {
+              cancelAnimationFrame(heap.nextAnimFrameId);
+              delete heap.nextAnimFrameId;
+            }
+            commitTagChanges(heap.state);
+          }
+        }
+      },
       update(id: string, props: HelmetProps | undefined) {
         const idx = heap.helmets.findIndex((item) => item[0] === id);
         if (idx >= 0) {
@@ -45,6 +68,24 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
         } else if (props) {
           delete heap.state;
           heap.helmets.push([id, props]);
+        }
+        if (IS_DOM_ENVIRONMENT && !heap.state) {
+          heap.state = calcAggregatedState(heap.helmets);
+          if (heap.state.defer) {
+            if (heap.nextAnimFrameId === undefined) {
+              heap.nextAnimFrameId = requestAnimationFrame(() => {
+                heap.state ??= calcAggregatedState(heap.helmets);
+                commitTagChanges(heap.state);
+                delete heap.nextAnimFrameId;
+              });
+            }
+          } else {
+            if (heap.nextAnimFrameId !== undefined) {
+              cancelAnimationFrame(heap.nextAnimFrameId);
+              delete heap.nextAnimFrameId;
+            }
+            commitTagChanges(heap.state);
+          }
         }
       },
     };
