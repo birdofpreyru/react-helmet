@@ -10,18 +10,18 @@ describe('meta tags', () => {
       renderClient(
         <Helmet
           meta={[
-            { charset: 'utf-8' },
+            { charSet: 'utf-8' },
             {
               name: 'description',
               content: 'Test description',
             },
             {
-              'http-equiv': 'content-type',
+              httpEquiv: 'content-type',
               content: 'text/html',
             },
             { property: 'og:type', content: 'article' },
             {
-              itemprop: 'name',
+              itemProp: 'name',
               content: 'Test name itemprop',
             },
           ]}
@@ -34,16 +34,18 @@ describe('meta tags', () => {
 
       const filteredTags = existingTags.filter(
         (tag) => tag.getAttribute('charset') === 'utf-8'
-        || (
-          tag.getAttribute('name') === 'description'
-          && tag.getAttribute('content') === 'Test description'
-        ) || (
-          tag.getAttribute('http-equiv') === 'content-type'
-          && tag.getAttribute('content') === 'text/html'
-        ) || (
-          tag.getAttribute('itemprop') === 'name'
-          && tag.getAttribute('content') === 'Test name itemprop'
-        ),
+          || (
+            tag.getAttribute('name') === 'description'
+            && tag.getAttribute('content') === 'Test description'
+          )
+          || (
+            tag.getAttribute('http-equiv') === 'content-type'
+            && tag.getAttribute('content') === 'text/html'
+          )
+          || (
+            tag.getAttribute('itemprop') === 'name'
+            && tag.getAttribute('content') === 'Test name itemprop'
+          ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(4);
@@ -83,7 +85,7 @@ describe('meta tags', () => {
         <div>
           <Helmet
             meta={[
-              { charset: 'utf-8' },
+              { charSet: 'utf-8' },
               {
                 name: 'description',
                 content: 'Test description',
@@ -283,7 +285,8 @@ describe('meta tags', () => {
 
       expect(console.warn).toHaveBeenCalled();
 
-      expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0]).toMatchSnapshot();
+      expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0])
+        .toMatchSnapshot();
 
       global.console = originalConsole;
     });
@@ -307,16 +310,18 @@ describe('meta tags', () => {
 
       const filteredTags = existingTags.filter(
         (tag) => tag.getAttribute('charset') === 'utf-8'
-        || (
-          tag.getAttribute('name') === 'description'
-          && tag.getAttribute('content') === 'Test description'
-        ) || (
-          tag.getAttribute('http-equiv') === 'content-type'
-          && tag.getAttribute('content') === 'text/html'
-        ) || (
-          tag.getAttribute('itemprop') === 'name'
-          && tag.getAttribute('content') === 'Test name itemprop'
-        ),
+          || (
+            tag.getAttribute('name') === 'description'
+            && tag.getAttribute('content') === 'Test description'
+          )
+          || (
+            tag.getAttribute('http-equiv') === 'content-type'
+            && tag.getAttribute('content') === 'text/html'
+          )
+          || (
+            tag.getAttribute('itemprop') === 'name'
+            && tag.getAttribute('content') === 'Test name itemprop'
+          ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(4);

@@ -14,7 +14,7 @@ describe('title attributes', () => {
       renderClient(
         <Helmet
           titleAttributes={{
-            itemprop: 'name',
+            itemProp: 'name',
           }}
         />,
       );
@@ -31,7 +31,6 @@ describe('title attributes', () => {
           <Helmet
             titleAttributes={{
               lang: 'en',
-              // @ts-expect-error "pre-existing"
               hidden: undefined,
             }}
           />
@@ -54,7 +53,6 @@ describe('title attributes', () => {
       renderClient(
         <Helmet
           titleAttributes={{
-            // @ts-expect-error "pre-existing"
             hidden: undefined,
           }}
         />,
@@ -71,7 +69,6 @@ describe('title attributes', () => {
         <Helmet
           titleAttributes={{
             lang: 'en',
-            // @ts-expect-error "pre-existing"
             hidden: undefined,
           }}
         />,

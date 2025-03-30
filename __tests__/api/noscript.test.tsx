@@ -52,7 +52,6 @@ describe('noscript tags', () => {
         <Helmet
           noscript={[
             {
-              // @ts-expect-error "pre-existing"
               innerHTML: undefined,
             },
           ]}

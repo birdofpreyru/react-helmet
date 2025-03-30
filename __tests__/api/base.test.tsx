@@ -60,7 +60,6 @@ describe('base tag', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      // @ts-expect-error "pre-existing test"
       renderClient(<Helmet base={{ href: undefined }} />);
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];

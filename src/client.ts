@@ -29,8 +29,9 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
     const newElement = document.createElement(type);
 
     // TODO: Well, the typing within this block is bad, and should be improved.
-    for (const [name, value] of Object.entries(tag)) {
+    for (const [key, value] of Object.entries(tag)) {
       if (value !== undefined) {
+        const name = HTML_TAG_MAP[key] ?? key;
         if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
           newElement.innerHTML = value as string;
         } else if (name as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
@@ -100,7 +101,10 @@ function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
     // still be case dependent - we should be careful about it.
     const attr = HTML_TAG_MAP[key] ?? key;
     if (elementTag.getAttribute(attr) !== value) {
-      elementTag.setAttribute(attr, value as string);
+      // TODO: That ?? '' piece is here to keep the legacy behavior for now,
+      // I guess later we should prefer to consider attrbiutes with "undefined"
+      // value as not set.
+      elementTag.setAttribute(attr, value as string ?? '');
     }
 
     if (!helmetAttributes.includes(attr)) {
@@ -124,8 +128,8 @@ function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
   }
 }
 
-function updateTitle(title: string, attributes: Attributes) {
-  if (typeof title !== 'undefined' && document.title !== title) {
+function updateTitle(title: string | undefined, attributes: Attributes) {
+  if (title !== undefined && document.title !== title) {
     document.title = flattenArray(title);
   }
 
@@ -149,7 +153,7 @@ export function commitTagChanges(newState: AggregatedState) {
   updateAttributes(TAG_NAMES.BODY, bodyAttributes ?? {});
   updateAttributes(TAG_NAMES.HTML, htmlAttributes ?? {});
 
-  updateTitle(title ?? '', titleAttributes as Attributes);
+  updateTitle(title, titleAttributes as Attributes);
 
   const tagUpdates: TagUpdateList = {
     baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),

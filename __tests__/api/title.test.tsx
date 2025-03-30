@@ -127,7 +127,7 @@ describe('title', () => {
         <Helmet
           defaultTitle="Fallback"
           title="Test Title with itemProp"
-          titleAttributes={{ itemprop: 'name' }}
+          titleAttributes={{ itemProp: 'name' }}
         />,
       );
 

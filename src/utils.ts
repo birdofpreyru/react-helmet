@@ -74,7 +74,7 @@ export function getTitleFromPropsList(
   }
   if (innermostTemplate && innermostTitle) {
     // use function arg to avoid need to escape $ characters
-    return innermostTemplate.replace(/%s/g, innermostTitle);
+    return innermostTemplate.replace(/%s/g, () => innermostTitle);
   }
 
   const innermostDefaultTitle = getInnermostProperty(
@@ -82,7 +82,10 @@ export function getTitleFromPropsList(
     'defaultTitle',
   );
 
-  return innermostTitle ?? innermostDefaultTitle ?? undefined;
+  // NOTE: We really want || here to match legacy behavior, where default title
+  // was applied also when the given title was an empty string.
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  return (innermostTitle || innermostDefaultTitle) ?? undefined;
 }
 
 /**
@@ -135,19 +138,19 @@ function getPrimaryProp<T extends keyof HelmetPropArrays>(
   // TODO: Perhaps also check that the value of attribute being selected
   // as primary is actually defined? Right now, it implicitly assumes that
   // in such case the attribute is just not present as a key in `props`.
-  for (const [keyString, value] of Object.entries(props)) {
+  for (const keyString of Object.keys(props)) {
     const key = keyString as keyof PropArrayItem<T>;
 
     // Special rule with link tags, since rel and href are both primary tags,
     // rel takes priority
     if (primaryProps.includes(key)
       && !(
-        key === TAG_PROPERTIES.REL
-        && (value as string).toLowerCase() === 'canonical'
+        primaryAttributeKey === TAG_PROPERTIES.REL
+        && (props[primaryAttributeKey] as string).toLowerCase() === 'canonical'
       )
       && !(
-        key === TAG_PROPERTIES.REL
-        && (value as string).toLowerCase() === 'stylesheet'
+        primaryAttributeKey === TAG_PROPERTIES.REL
+        && (props[primaryAttributeKey] as string).toLowerCase() === 'stylesheet'
       )
     ) primaryAttributeKey = key;
 

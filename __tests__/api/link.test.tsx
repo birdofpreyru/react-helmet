@@ -64,7 +64,7 @@ describe('link tags', () => {
 
     it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
       // @ts-expect-error "pre-existing"
-      renderClient(<Helmet link={[{ 'http-equiv': 'won\'t work' }]} />);
+      renderClient(<Helmet link={[{ httpEquiv: 'won\'t work' }]} />);
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);

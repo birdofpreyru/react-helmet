@@ -21,7 +21,7 @@ describe('onChangeClientState', () => {
             ]}
             meta={[
               {
-                charset: 'utf-8',
+                charSet: 'utf-8',
               },
             ]}
             script={[

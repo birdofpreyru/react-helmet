@@ -10,7 +10,7 @@ describe('html attributes', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
-            class: 'myClassName',
+            className: 'myClassName',
             lang: 'en',
           }}
         />,
