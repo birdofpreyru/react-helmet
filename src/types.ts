@@ -123,6 +123,8 @@ export type StateUpdate = HelmetTags & {
 
 // TODO: Rewise the typing!
 export type OnChangeClientState = (
+  // TODO: So... the new state should be a map of attribute/value maps
+  // for all children elements.
   newState: StateUpdate,
   addedTags: HelmetTags,
   removedTags: HelmetTags

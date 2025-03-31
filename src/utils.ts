@@ -149,8 +149,8 @@ function getPrimaryProp<T extends keyof HelmetPropArrays>(
         && (props[primaryAttributeKey] as string).toLowerCase() === 'canonical'
       )
       && !(
-        primaryAttributeKey === TAG_PROPERTIES.REL
-        && (props[primaryAttributeKey] as string).toLowerCase() === 'stylesheet'
+        key === TAG_PROPERTIES.REL
+        && (props[key] as string).toLowerCase() === 'stylesheet'
       )
     ) primaryAttributeKey = key;
 

@@ -5,7 +5,7 @@ import { flattenArray } from './utils';
 type TagUpdates = {
   oldTags: HTMLElement[];
   newTags: HTMLElement[];
-}
+};
 
 type TagUpdateList = Record<string, TagUpdates>;
 
@@ -22,6 +22,7 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
 
   const tagNodes = headElement.querySelectorAll<HTMLElement>(`${type}[${HELMET_ATTRIBUTE}]`);
+  const allTags: HTMLElement[] = [];
   const oldTags: HTMLElement[] = [...tagNodes];
   const newTags: HTMLElement[] = [];
 
@@ -30,7 +31,7 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     // TODO: Well, the typing within this block is bad, and should be improved.
     for (const [key, value] of Object.entries(tag)) {
-      if (value !== undefined) {
+      if (Object.prototype.hasOwnProperty.call(tag, key)) {
         const name = HTML_TAG_MAP[key] ?? key;
         if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
           newElement.innerHTML = value as string;
@@ -54,6 +55,12 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
 
+    const attrs = {};
+    for (const { name, value } of newElement.attributes) {
+      attrs[name] = value;
+    }
+    allTags.push(attrs);
+
     // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
     for (let i = 0; ; ++i) {
       if (newElement.isEqualNode(oldTags[i]!)) {
@@ -73,6 +80,7 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
   // TODO: Do we really need this return value anywhere? Especially `oldTags`
   // that have been removed from DOM already?
   return {
+    allTags,
     oldTags,
     newTags,
   };
@@ -164,11 +172,16 @@ export function commitTagChanges(newState: AggregatedState) {
     styleTags: updateTags(TAG_NAMES.STYLE, style ?? []),
   };
 
+  const resultTags: TagList = {
+    title,
+  };
   const addedTags: TagList = {};
   const removedTags: TagList = {};
 
   Object.keys(tagUpdates).forEach((tagType) => {
-    const { newTags, oldTags } = tagUpdates[tagType]!;
+    const { allTags, newTags, oldTags } = tagUpdates[tagType]!;
+
+    resultTags[tagType] = allTags;
 
     if (newTags.length) {
       addedTags[tagType] = newTags;
@@ -178,5 +191,5 @@ export function commitTagChanges(newState: AggregatedState) {
     }
   });
 
-  newState?.onChangeClientState?.(newState, addedTags, removedTags);
+  newState?.onChangeClientState?.(resultTags, addedTags, removedTags);
 }

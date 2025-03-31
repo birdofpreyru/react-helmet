@@ -158,30 +158,42 @@ describe('Declarative API', () => {
   });
 
   it('tags without \'cssText\' are not accepted', () => {
-    /* eslint-disable react/no-unknown-property */
-    renderClient(
-      <Helmet>
-        <style property="won't work" />
-      </Helmet>,
-    );
-    /* eslint-enable react/no-unknown-property */
+    const origConsoleError = console.error;
+    console.error = () => undefined;
+    try {
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
+        <Helmet>
+          <style property="won't work" />
+        </Helmet>,
+      );
+      /* eslint-enable react/no-unknown-property */
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
-    expect(existingTags).toBeDefined();
-    expect(existingTags).toHaveLength(0);
+      expect(existingTags).toBeDefined();
+      expect(existingTags).toHaveLength(0);
+    } finally {
+      console.error = origConsoleError;
+    }
   });
 
   it('does not render tag when primary attribute is null', () => {
-    renderClient(
-      <Helmet>
-        <style>{undefined}</style>
-      </Helmet>,
-    );
+    const origConsoleError = console.error;
+    console.error = () => undefined;
+    try {
+      renderClient(
+        <Helmet>
+          <style>{undefined}</style>
+        </Helmet>,
+      );
 
-    const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
-    const existingTags = [].slice.call(tagNodes);
+      const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
+      const existingTags = [].slice.call(tagNodes);
 
-    expect(existingTags).toHaveLength(0);
+      expect(existingTags).toHaveLength(0);
+    } finally {
+      console.error = origConsoleError;
+    }
   });
 });

@@ -123,12 +123,19 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
     assertChildType(type, nestedChildren);
 
     function assertStringChild(child: ReactNode): asserts child is string {
-      if (typeof child !== 'string') throw Error(
-        // NOTE: assertChildType() above guarantees that `type` is a string,
-        // although it is not expressed in a way TypeScript can automatically
-        // pick up.
-        `child of ${type as string} element should be a string`,
-      );
+      if (typeof child !== 'string') {
+        // TODO: We want to throw, but the legacy code did not, so we won't for
+        // now.
+        console.error(`child of ${type as string} element should be a string`);
+
+        /*
+        throw Error(
+          // NOTE: assertChildType() above guarantees that `type` is a string,
+          // although it is not expressed in a way TypeScript can automatically
+          // pick up.
+        );
+        */
+      }
     }
 
     switch (type) {
