@@ -1,5 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`fragments parses Fragments 1`] = `"Hello"`;
-
-exports[`fragments parses nested Fragments 1`] = `"Baz"`;

@@ -40,10 +40,14 @@ function assertChildType(
     `Only elements types ${VALID_TAG_NAMES.join(', ')} are allowed. Helmet does not support rendering <${childType}> elements. Refer to our API for more information.`,
   );
 
-  if (!nestedChildren || typeof nestedChildren === 'string' || (
-    Array.isArray(nestedChildren)
-    && nestedChildren.every((item) => typeof item === 'string')
-  )) return;
+  if (
+    !nestedChildren
+    || typeof nestedChildren === 'string'
+    || Array.isArray(nestedChildren)
+    // TODO: This piece of the check is wrong when parent is a fragment,
+    // and thus children may not be an array of strings.
+    // && nestedChildren.every((item) => typeof item === 'string')
+  ) return;
 
   throw Error(
     `Helmet expects a string as a child of <${childType}>. Did you forget to wrap your children in braces? ( <${childType}>{\`\`}</${childType}> ) Refer to our API for more information.`,

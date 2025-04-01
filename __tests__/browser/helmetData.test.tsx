@@ -1,13 +1,15 @@
+/** @jest-environment jsdom */
+
+import { renderClient } from '../../jest/browser-utils';
+
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
 
 describe('Helmet Data', () => {
   describe('browser', () => {
     it('renders without context', () => {
-      const helmetData = new HelmetData({});
-
       renderClient(
-        <Helmet helmetData={helmetData} base={{ target: '_blank', href: 'http://localhost/' }} />,
+        <Helmet base={{ target: '_blank', href: 'http://localhost/' }} />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -23,10 +25,8 @@ describe('Helmet Data', () => {
     });
 
     it('renders declarative without context', () => {
-      const helmetData = new HelmetData({});
-
       renderClient(
-        <Helmet helmetData={helmetData}>
+        <Helmet>
           <base target="_blank" href="http://localhost/" />
         </Helmet>,
       );
@@ -44,14 +44,12 @@ describe('Helmet Data', () => {
     });
 
     it('sets base tag based on deepest nested component', () => {
-      const helmetData = new HelmetData({});
-
       renderClient(
         <div>
-          <Helmet helmetData={helmetData}>
+          <Helmet>
             <base href="http://mysite.com" />
           </Helmet>
-          <Helmet helmetData={helmetData}>
+          <Helmet>
             <base href="http://mysite.com/public" />
           </Helmet>
         </div>,

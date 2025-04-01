@@ -2,7 +2,7 @@
 
 import { Helmet } from '../src';
 
-import { renderClient } from '../jest/server-utils';
+import { renderClient } from '../jest/browser-utils';
 
 describe('fragments', () => {
   it('parses Fragments', () => {
