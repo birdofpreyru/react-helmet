@@ -144,7 +144,10 @@ function updateTitle(title: string | undefined, attributes: Attributes) {
   updateAttributes(TAG_NAMES.TITLE, attributes);
 }
 
-export function commitTagChanges(newState: AggregatedState) {
+export function commitTagChanges(
+  newState: AggregatedState,
+  firstRender: boolean,
+) {
   const {
     base,
     bodyAttributes,
@@ -191,5 +194,7 @@ export function commitTagChanges(newState: AggregatedState) {
     }
   });
 
-  newState?.onChangeClientState?.(resultTags, addedTags, removedTags);
+  if (firstRender || Object.keys(addedTags).length || Object.keys(removedTags).length) {
+    newState?.onChangeClientState?.(resultTags, addedTags, removedTags);
+  }
 }

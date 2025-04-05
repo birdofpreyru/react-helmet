@@ -86,11 +86,13 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
   for (const item of Object.values(props)) {
     if (Array.isArray(item)) {
       for (const it of item) {
-        for (const key of Object.keys(it)) {
-          const p = getPropName(key);
-          if (p !== key) {
-            it[p] = it[key as keyof HelmetChildProps] as unknown;
-            delete it[key as keyof HelmetChildProps];
+        if (it) {
+          for (const key of Object.keys(it)) {
+            const p = getPropName(key);
+            if (p !== key) {
+              it[p] = it[key as keyof HelmetChildProps] as unknown;
+              delete it[key as keyof HelmetChildProps];
+            }
           }
         }
       }
@@ -162,7 +164,7 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
       case TAG_NAMES.LINK:
       case TAG_NAMES.META:
         if (nestedChildren) throw Error(
-          `<${type} /> elements are self-closing and cannot contain children`,
+          `<${type} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
         );
         pushToPropArray(res, type, childProps as LinkProps | MetaProps);
         break;
@@ -227,6 +229,7 @@ const Helmet: FunctionComponent<HelmetProps> = (props) => {
   // for now to ensure backward compatibility.
   useEffect(() => {
     context.update(id, reduceChildrenAndProps(props));
+    context.clientApply();
   });
 
   useEffect(() => () => context.update(id, undefined), [context, id]);

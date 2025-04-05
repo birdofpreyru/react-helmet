@@ -233,6 +233,10 @@ export type ContextValue = {
 };
 
 export type HelmetProviderHeap = {
+  // TODO: Temporary, to keep legacy behavior to call onChange client-side
+  // callback on the first render.
+  firstRender: boolean;
+
   helmets: RegisteredHelmetPropsArray;
   nextAnimFrameId?: number;
   serverState?: HelmetServerState;

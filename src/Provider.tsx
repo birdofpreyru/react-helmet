@@ -31,6 +31,7 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
   context,
 }) => {
   const { current: heap } = useRef<HelmetProviderHeap>({
+    firstRender: true,
     helmets: [],
     state: undefined,
   });
@@ -46,7 +47,8 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
             if (heap.nextAnimFrameId === undefined) {
               heap.nextAnimFrameId = requestAnimationFrame(() => {
                 heap.state ??= calcAggregatedState(heap.helmets);
-                commitTagChanges(heap.state);
+                commitTagChanges(heap.state, heap.firstRender);
+                heap.firstRender = false;
                 delete heap.nextAnimFrameId;
               });
             }
@@ -55,7 +57,8 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
               cancelAnimationFrame(heap.nextAnimFrameId);
               delete heap.nextAnimFrameId;
             }
-            commitTagChanges(heap.state);
+            commitTagChanges(heap.state, heap.firstRender);
+            heap.firstRender = false;
           }
         }
       },
@@ -68,24 +71,6 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
         } else if (props) {
           delete heap.state;
           heap.helmets.push([id, props]);
-        }
-        if (IS_DOM_ENVIRONMENT && !heap.state) {
-          heap.state = calcAggregatedState(heap.helmets);
-          if (heap.state.defer) {
-            if (heap.nextAnimFrameId === undefined) {
-              heap.nextAnimFrameId = requestAnimationFrame(() => {
-                heap.state ??= calcAggregatedState(heap.helmets);
-                commitTagChanges(heap.state);
-                delete heap.nextAnimFrameId;
-              });
-            }
-          } else {
-            if (heap.nextAnimFrameId !== undefined) {
-              cancelAnimationFrame(heap.nextAnimFrameId);
-              delete heap.nextAnimFrameId;
-            }
-            commitTagChanges(heap.state);
-          }
         }
       },
     };
