@@ -80,19 +80,6 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
   }
 
   return <Context value={contextValueRef.current}>{children}</Context>;
-
-  /*
-  if (!contextValueRef.current) {
-    contextValueRef.current = {
-      context,
-      helmets: [],
-      reEvaluate: () => undefined,
-    };
-
-    if (context) context.helmet = newServerState(contextValueRef.current);
-  }
-
-  */
 };
 
 export default HelmetProvider;

@@ -6,147 +6,157 @@
 [![GitHub repo stars](https://img.shields.io/github/stars/birdofpreyru/react-helmet?style=social)](https://github.com/birdofpreyru/react-helmet)
 [![Dr. Pogodin Studio](https://raw.githubusercontent.com/birdofpreyru/react-helmet/master/.README/logo-dr-pogodin-studio.svg)](https://dr.pogodin.studio/docs/react-helmet)
 
----
-_This is a fork of https://github.com/staylor/react-helmet-async library, which in turns is a fork & upgrade of https://github.com/nfl/react-helmet. The purpose of this fork is to ensure proper maintenance and further development of the library._
-
-_This fork is published to NPM as https://www.npmjs.com/package/@dr.pogodin/react-helmet, its version 2.0.4 exactly matches the same version of the forked library, but with React peer dependency version set to 19. Future versions will take care of an update of dependencies, and code upgrades to the latest React best practices._
+Advanced management of document head's elements (`<base>`, `<link>`, `<meta>`,
+`<noscript>`, `<script>`, `<style>`, `<title>`), and of attributes of `<body>`
+and `<html>` elements in React 19+ applications. This library is a proud
+successor of now unmaintained and stale
+[react-helmet-async](https://github.com/staylor/react-helmet-async) and
+[react-helmet](https://github.com/nfl/react-helmet) libraries.
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/js-utils/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
----
 
-TODO: ADD SPONSORS SECTION, LINK THESE:
-https://github.com/RigoOnRails (5 EUR)
+### Sponsored By
+[<img width=36 src="https://avatars.githubusercontent.com/u/17030877?v=4&s=36" />](https://github.com/RigoOnRails)
 
-[Announcement post on Times Open blog](https://open.nytimes.com/the-future-of-meta-tag-management-for-modern-react-development-ec26a7dc9183)
+### [Contributors](https://github.com/birdofpreyru/react-helmet/graphs/contributors)
+[<img width=36 src="https://avatars.githubusercontent.com/u/20144632?s=36" />](https://github.com/birdofpreyru)
 
-This package is a fork of [React Helmet](https://github.com/nfl/react-helmet).
-`<Helmet>` usage is synonymous, but server and client now requires `<HelmetProvider>` to encapsulate state per request.
+## Table of Contents
+- [Getting Started]
+- [Prioritizing Tags for SEO]
+- [Reference]
+  - [Helmet] &mdash; specifies elements and attributes to be created / set /
+    overriden.
+  - [HelmetDataContext] &mdash; context object for server-side rendering (SSR)
+    purposes.
+  - [HelmetProvider] &mdash; provides [React Context] to [Helmet] components
 
-`react-helmet` relies on `react-side-effect`, which is not thread-safe. If you are doing anything asynchronous on the server, you need Helmet to encapsulate data on a per-request basis, this package does just that.
+## Getting Started
+[Getting Started]: #getting-started
 
-## Usage
-
-**New is 1.0.0:** No more default export! `import { Helmet } from '@dr.pogodin/react-helmet'`
-
-The main way that this package differs from `react-helmet` is that it requires using a Provider to encapsulate Helmet state for your React tree. If you use libraries like Redux or Apollo, you are already familiar with this paradigm:
-
-```javascript
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Helmet, HelmetProvider } from '@dr.pogodin/react-helmet';
-
-const app = (
-  <HelmetProvider>
-    <App>
-      <Helmet>
-        <title>Hello World</title>
-        <link rel="canonical" href="https://www.tacobell.com/" />
-      </Helmet>
-      <h1>Hello World</h1>
-    </App>
-  </HelmetProvider>
-);
-
-ReactDOM.hydrate(
-  app,
-  document.getElementById(‘app’)
-);
+To install the library:
+```sh
+npm install --save @dr.pogodin/react-helmet
 ```
 
-On the server, we will no longer use static methods to extract state. `react-side-effect`
-exposed a `.rewind()` method, which Helmet used when calling `Helmet.renderStatic()`. Instead, we are going
-to pass a `context` prop to `HelmetProvider`, which will hold our state specific to each request.
-
-```javascript
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { Helmet, HelmetProvider } from '@dr.pogodin/react-helmet';
-
-const helmetContext = {};
-
-const app = (
-  <HelmetProvider context={helmetContext}>
-    <App>
-      <Helmet>
-        <title>Hello World</title>
-        <link rel="canonical" href="https://www.tacobell.com/" />
-      </Helmet>
-      <h1>Hello World</h1>
-    </App>
-  </HelmetProvider>
-);
-
-const html = renderToString(app);
-
-const { helmet } = helmetContext;
-
-// helmet.title.toString() etc…
-```
-
-## Streams
-
-This package only works with streaming if your `<head>` data is output outside of `renderToNodeStream()`.
-This is possible if your data hydration method already parses your React tree. Example:
-
-```javascript
-import through from 'through';
-import { renderToNodeStream } from 'react-dom/server';
-import { getDataFromTree } from 'react-apollo';
-import { Helmet, HelmetProvider } from '@dr.pogodin/react-helmet';
-import template from 'server/template';
-
-const helmetContext = {};
-
-const app = (
-  <HelmetProvider context={helmetContext}>
-    <App>
-      <Helmet>
-        <title>Hello World</title>
-        <link rel="canonical" href="https://www.tacobell.com/" />
-      </Helmet>
-      <h1>Hello World</h1>
-    </App>
-  </HelmetProvider>
-);
-
-await getDataFromTree(app);
-
-const [header, footer] = template({
-  helmet: helmetContext.helmet,
-});
-
-res.status(200);
-res.write(header);
-renderToNodeStream(app)
-  .pipe(
-    through(
-      function write(data) {
-        this.queue(data);
-      },
-      function end() {
-        this.queue(footer);
-        this.queue(null);
-      }
-    )
-  )
-  .pipe(res);
-```
-
-## Usage in Jest
-While testing in using jest, if there is a need to emulate SSR, the following string is required to have the test behave the way they are expected to.
-
-```javascript
+At a high level, wrap the main application tree into [HelmetProvider]:
+```tsx
+import type { FunctionComponent } from 'react';
 import { HelmetProvider } from '@dr.pogodin/react-helmet';
 
-HelmetProvider.canUseDOM = false;
+const YourApp: FunctionComponent = () => {
+  /* Whatever code you need. */
+  return (
+    <HelmetProvider>
+      { /* Your application tree. */ }
+    </HelmetProvider>
+  );
+}
 ```
 
-## Prioritizing tags for SEO
+Anywhere within the [HelmetProvider]'s children tree use [Helmet] component
+to set / modify document head's elements, or supported attributes of `<body>`
+and `<html>` elements. Instances of [Helmet] component within the application
+tree add or override elements and attributes in the order these [Helmet]
+instances are rendered.
+```tsx
+import type { FunctionComponent } from 'react';
+import { Helmet } from '@dr.pogodin/react-helmet';
 
-It is understood that in some cases for SEO, certain tags should appear earlier in the HEAD. Using the `prioritizeSeoTags` flag on any `<Helmet>` component allows the server render of @dr.pogodin/react-helmet to expose a method for prioritizing relevant SEO tags.
+const SomeComponent: FunctionComponent = () => {
+  /* Whatever code you need. */
+  return (
+    <div>
+      <Helmet>
+        <title>My Title</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+        <meta charSet="utf-8" />
+        <meta name="description" content="Some Component" />
+      </Helmet>
+      { /* Whatever other stuff you need. */ }
+
+      { /* For example, this other <Helmet> component will override the title
+           and description set earlier in the render tree. */ }
+      <Helmet>
+        <title>Overriden Title</title>
+        <meta name="description" content="Overriden Component Description" />
+      </Helmet>
+    </div>
+  )
+};
+```
+
+Alternatively, all elements and attributes specified by [Helmet] components may
+be provided _via_ props instead of children.
+```tsx
+import type { FunctionComponent } from 'react';
+import { Helmet } from '@dr.pogodin/react-helmet';
+
+const SomeComponent: FunctionComponent = () => {
+  /* Whatever code you need. */
+  return (
+    <div>
+      <Helmet
+        title="My Title"
+        link={[{
+          href: 'http://mysite.com/example',
+          rel: 'canonical',
+        }]}
+        meta={[{
+          charSet: 'utf-8',
+        }, {
+          content: 'Some Component',
+          name: 'description',
+        }]}
+      />
+      { /* Whatever other stuff you need. */ }
+
+      { /* For example, this other <Helmet> component will override the title
+           and description set earlier in the render tree. It is also fine to
+           use a mix of props and children. */ }
+      <Helmet title="Overriden Title">
+        <meta name="description" content="Overriden Component Description" />
+      </Helmet>
+    </div>
+  )
+};
+```
+
+For the server-side rendering purposes you pass in a `context` object to
+the [HelmetProvider], and after the render you use that object to retrieve
+the string, or component representation of the elements and attributes to be
+injected into the document head (if you use streaming for server side rendering
+you should output your `<head>` data outside `renderToNodeStream()`):
+```tsx
+import type { FunctionComponent } from 'react';
+import { type HelmetDataContext, HelmetProvider } from '@dr.pogodin/react-helmet';
+
+async function yourServerSideRenderingFunction() {
+  // ...
+  const context: HelmetDataContext = {};
+  const { prelude } = await prerenderToNodeStream(
+    <HelmetProvider context={context}>
+      { /* Your application tree. */ }
+    </HelmetProvider>
+  );
+  // ...
+
+  // For example, this is how you get the string representation of <meta> tags
+  // to be injected into your document head.
+  const metaElements = context.helmet.meta?.toString();
+}
+```
+
+## Prioritizing Tags for SEO
+[Prioritizing Tags for SEO]: #prioritizing-tags-for-seo
+
+It is understood that in some cases for SEO, certain tags should appear earlier
+in the HEAD. Using the `prioritizeSeoTags` flag on any `<Helmet>` component
+allows the server render of @dr.pogodin/react-helmet to expose a method for
+prioritizing relevant SEO tags.
 
 In the component:
-```javascript
+```tsx
 <Helmet prioritizeSeoTags>
   <title>A fancy webpage</title>
   <link rel="notImportant" href="https://www.chipotle.com" />
@@ -157,8 +167,7 @@ In the component:
 ```
 
 In your server template:
-
-```javascript
+```tsx
 <html>
   <head>
     ${helmet.title.toString()}
@@ -172,7 +181,6 @@ In your server template:
 ```
 
 Will result in:
-
 ```html
 <html>
   <head>
@@ -186,30 +194,194 @@ Will result in:
 </html>
 ```
 
-A list of prioritized tags and attributes can be found in [constants.ts](./src/constants.ts).
+A list of prioritized tags and attributes (`SEO_PRIORITY_TAGS`) can be found in
+[constants.ts](./src/constants.ts).
 
-## Usage without Context
-You can optionally use `<Helmet>` outside a context by manually creating a stateful `HelmetData` instance, and passing that stateful object to each `<Helmet>` instance:
+## Reference
+[Reference]: #reference
 
+### Helmet
+[Helmet]: #helmet
 
-```js
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { Helmet, HelmetProvider, HelmetData } from '@dr.pogodin/react-helmet';
+The [Helmet] component specifies (document head) elements and attributes to be
+created / set / overriden by the library. Different [Helmet] instances within
+the application tree (within the single [HelmetProvider]) have effect in the
+order they are encountered (mounted to DOM) during the render.
 
-const helmetData = new HelmetData({});
+The [Helmet] component exposes two equivalent APIs &mdash; the elements /
+attributes may be provided either as component's children (_i.e._ written as
+regular JSX component children), or as [Helmet] component props. Both these
+APIs can also be used at the same time, with values provided as props handled
+as additional JSX children, appearing prior the explicitly provided JSX children.
 
-const app = (
-    <App>
-      <Helmet helmetData={helmetData}>
-        <title>Hello World</title>
-        <link rel="canonical" href="https://www.tacobell.com/" />
-      </Helmet>
-      <h1>Hello World</h1>
-    </App>
-);
+**Props**
+- `base` &mdash; _To be documented_
 
-const html = renderToString(app);
+- `bodyAttributes` &mdash; _To be documented_
 
-const { helmet } = helmetData.context;
+- `defaultTitle` &mdash; **string** | **undefined** &mdash; Optional.
+  The fallback to use when `titleTemplate` (below) prop is provided,
+  but no title was specified:
+  ```tsx
+  // JSX code:
+  <Helmet
+    defaultTitle="My Site"
+    titleTemplate"My Site - %s"
+  />
+
+  // DOM output:
+  <head>
+    <title>My Site</title>
+  </head>
+  ```
+
+- `defer` &mdash; **boolean** | **undefined** &mdash; Optional. Defaults _true_.
+  set to _false_ to not use `requestAnimationFrame` and instead update the DOM
+  as soon as possible. Useful if you want to update the title when the tab is
+  out of focus.
+
+- `encodeSpecialCharacters` &mdash; **boolean** | **undefined** &mdash;
+  Optional. Defaults _true_. Set _false_ to disable string encoding by
+  `.toString()` methods of [HelmetDataContext].
+
+- `htmlAttributes` &mdash; _To be documented_
+
+- `link` &mdash; _To be documented_
+
+- `meta` &mdash; _To be documented_
+
+- `noscript` &mdash; _To be documented_
+
+- `onChangeClientState` &mdash; **function** | **undefined** &mdash; Optional.
+  A callback to trigger on client-side each time the head elements / attributes
+  are updated. It will be called with three arguments:
+  - `newState` &mdash; _To be documented_
+  - `addedTags` &mdash; _To be documented_
+  - `removedTags` &mdash; _To be documented_
+
+- `prioritizeSeoTags` &mdash; _To be documented_
+
+- `script` &mdash; _To be documented_
+
+- `style` &mdash; _To be documented_
+
+- `title` &mdash; _To be documented_
+
+- `titleAttributes` &mdash; _To be documented_
+
+- `titleTemplate` &mdash; **string** | **undefined** &mdash; Optional.
+  Allows to inherit title from a template, _e.g._
+  ```tsx
+  // JSX code:
+  <Helmet titleTemplate="%s | MyAwesomeWebsite.com">
+    <title>Nested Title</title>
+  </Helmet>
+
+  // DOM output:
+  <head>
+    <title>Nested Title | MyAwesomeWebsite.com</title>
+  </head>
+  ```
+
+**Children**
+
+```tsx
+<Helmet>
+    {/* html attributes */}
+    <html lang="en" amp />
+
+    {/* body attributes */}
+    <body className="root" />
+
+    {/* title attributes and value */}
+    <title itemProp="name" lang="en">My Plain Title or {`dynamic`} title</title>
+
+    {/* base element */}
+    <base target="_blank" href="http://mysite.com/" />
+
+    {/* multiple meta elements */}
+    <meta name="description" content="Helmet application" />
+    <meta property="og:type" content="article" />
+
+    {/* multiple link elements */}
+    <link rel="canonical" href="http://mysite.com/example" />
+    <link rel="apple-touch-icon" href="http://mysite.com/img/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="http://mysite.com/img/apple-touch-icon-72x72.png" />
+    {locales.map((locale) => {
+        <link rel="alternate" href="http://example.com/{locale}" hrefLang={locale} key={locale}/>
+    })}
+
+    {/* multiple script elements */}
+    <script src="http://include.com/pathtojs.js" type="text/javascript" />
+
+    {/* inline script elements */}
+    <script type="application/ld+json">{`
+        {
+            "@context": "http://schema.org"
+        }
+    `}</script>
+
+    {/* noscript elements */}
+    <noscript>{`
+        <link rel="stylesheet" type="text/css" href="foo.css" />
+    `}</noscript>
+
+    {/* inline style elements */}
+    <style type="text/css">{`
+        body {
+            background-color: blue;
+        }
+
+        p {
+            font-size: 12px;
+        }
+    `}</style>
+</Helmet>
 ```
+
+### HelmetDataContext
+[HelmetDataContext]: #helmetdatacontext
+
+The [HelmetDataContext] (it may be initialized as just an empty object) can be
+provided to [HelmetProvider] for server-side rendering (SSR) purposes. After
+the component tree has been rendered, the `helmet` field will be attached to
+this context:
+```tsx
+type HelmetDataContext = {
+  helmet?: {
+    base: HelmetDatum;
+    bodyAttributes: HelmetDatum;
+    htmlAttributes: HelmetDatum;
+    link: HelmetDatum;
+    meta: HelmetDatum;
+    noscript: HelmetDatum;
+    script: HelmetDatum;
+    style: HelmetDatum;
+    title: HelmetDatum;
+    titleAttributes?: HelmetDatum;
+    priority: HelmetDatum;
+  };
+};
+
+// where each HelmetDatum has two methods allowing to get string and component
+// representations of the corresponding elements or attrbiutes:
+type HelmetDatum = {
+  toString(): string;
+  toComponent(): ReactNode;
+};
+```
+
+### HelmetProvider
+[HelmetProvider]: #helmetprovider
+
+The [HelmetProvider] component provides [React Context] to [Helmet]
+components, _i.e._ any [Helmet] components in the application tree must be
+descendants of a single [HelmetProvider] instance.
+
+**Props**
+- `children` &mdash; **ReactNode** &mdash; The component tree to render in
+  the place of [HelmetProvider].
+- `context` &mdash; [HelmetDataContext] | **undefined** &mdash; Optional.
+  A user-provided context object for server-side rendering (SSR) purposes.
+
+[React Context]: https://react.dev/learn/passing-data-deeply-with-context

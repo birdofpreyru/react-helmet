@@ -20,7 +20,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - lib
+            - build
   release:
     <<: *defaults
     steps:
