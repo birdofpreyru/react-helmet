@@ -25,7 +25,8 @@ describe('server', () => {
       expect(head?.script).toBeDefined();
       expect(head!.script.toComponent).toBeDefined();
 
-      const scriptComponent = head?.script.toComponent() as unknown as Element[];
+      const scriptComponent
+        = head?.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
@@ -73,7 +74,8 @@ describe('server', () => {
       expect(head?.script).toBeDefined();
       expect(head!.script.toComponent).toBeDefined();
 
-      const scriptComponent = head?.script.toComponent() as unknown as Element[];
+      const scriptComponent
+        = head?.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toEqual(isArray);
       expect(scriptComponent).toHaveLength(2);

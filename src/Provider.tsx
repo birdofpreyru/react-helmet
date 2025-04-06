@@ -6,12 +6,10 @@ import {
 } from 'react';
 
 import type {
-  AggregatedState,
   ContextValue,
   HelmetDataContext,
   HelmetProps,
   HelmetProviderHeap,
-  HelmetServerState,
 } from './types';
 
 import { newServerState } from './server';

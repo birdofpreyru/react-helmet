@@ -1,6 +1,6 @@
 /** @jest-environment jsdom */
 
-import type { OnChangeClientState } from '../../src/Helmet';
+import type { OnChangeClientState } from '../../src';
 
 import { Helmet } from '../../src';
 import { renderClient } from '../../jest/browser-utils';
@@ -63,20 +63,20 @@ describe('onChangeClientState', () => {
       );
 
       expect(addedTags?.baseTag).toBeDefined();
-      expect(addedTags?.baseTag[0]).toBeDefined();
-      expect(addedTags?.baseTag[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.baseTag?.[0]).toBeDefined();
+      expect(addedTags?.baseTag?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.metaTags).toBeDefined();
-      expect(addedTags?.metaTags[0]).toBeDefined();
-      expect(addedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags?.[0]).toBeDefined();
+      expect(addedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.linkTags).toBeDefined();
-      expect(addedTags?.linkTags[0]).toBeDefined();
-      expect(addedTags?.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags?.[0]).toBeDefined();
+      expect(addedTags?.linkTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.scriptTags).toBeDefined();
-      expect(addedTags?.scriptTags[0]).toBeDefined();
-      expect(addedTags?.scriptTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.scriptTags?.[0]).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(removedTags).toEqual({});
     });
@@ -142,20 +142,20 @@ describe('onChangeClientState', () => {
       );
 
       expect(addedTags?.baseTag).toBeDefined();
-      expect(addedTags?.baseTag[0]).toBeDefined();
-      expect(addedTags?.baseTag[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.baseTag?.[0]).toBeDefined();
+      expect(addedTags?.baseTag?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.metaTags).toBeDefined();
-      expect(addedTags?.metaTags[0]).toBeDefined();
-      expect(addedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags?.[0]).toBeDefined();
+      expect(addedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.linkTags).toBeDefined();
-      expect(addedTags?.linkTags[0]).toBeDefined();
-      expect(addedTags?.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags?.[0]).toBeDefined();
+      expect(addedTags?.linkTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(addedTags?.scriptTags).toBeDefined();
-      expect(addedTags?.scriptTags[0]).toBeDefined();
-      expect(addedTags?.scriptTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.scriptTags?.[0]).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(removedTags).toEqual({});
     });

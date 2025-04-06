@@ -21,7 +21,9 @@ describe('server', () => {
       expect(head.title.toString()).toMatchSnapshot();
       expect(head.title.toComponent).toBeDefined();
 
-      const markup = renderToStaticMarkup(head?.title.toComponent() as unknown as ReactNode);
+      const markup = renderToStaticMarkup(
+        head?.title.toComponent() as unknown as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
 
@@ -131,7 +133,9 @@ describe('server', () => {
       expect(head?.title.toString()).toMatchSnapshot();
       expect(head!.title.toComponent).toBeDefined();
 
-      const markup = renderToStaticMarkup(head?.title.toComponent() as unknown as ReactNode);
+      const markup = renderToStaticMarkup(
+        head?.title.toComponent() as unknown as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
 

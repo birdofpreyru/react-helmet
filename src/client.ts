@@ -1,8 +1,23 @@
-import { HELMET_ATTRIBUTE, HTML_TAG_MAP, TAG_NAMES, TAG_PROPERTIES } from './constants';
-import type { AggregatedState, Attributes, BodyProps, HelmetChildProps, HtmlProps, StateUpdate, TagList } from './types';
+import {
+  HELMET_ATTRIBUTE,
+  HTML_TAG_MAP,
+  TAG_NAMES,
+  TAG_PROPERTIES,
+} from './constants';
+
+import type {
+  AggregatedState,
+  BodyProps,
+  HelmetChildProps,
+  HelmetTags,
+  HtmlProps,
+  StateUpdate,
+} from './types';
+
 import { flattenArray } from './utils';
 
 type TagUpdates = {
+  allTags: HTMLElement[];
   oldTags: HTMLElement[];
   newTags: HTMLElement[];
 };
@@ -55,9 +70,9 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
 
-    const attrs = {};
+    const attrs = {} as HTMLElement;
     for (const { name, value } of newElement.attributes) {
-      attrs[name] = value;
+      (attrs[name as keyof HTMLElement] as unknown) = value;
     }
     allTags.push(attrs);
 
@@ -136,7 +151,10 @@ function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
   }
 }
 
-function updateTitle(title: string | undefined, attributes: Attributes) {
+function updateTitle(
+  title: string | undefined,
+  attributes: BodyProps | HtmlProps,
+) {
   if (title !== undefined && document.title !== title) {
     document.title = flattenArray(title);
   }
@@ -151,6 +169,7 @@ export function commitTagChanges(
   const {
     base,
     bodyAttributes,
+    defer,
     htmlAttributes,
     links,
     meta,
@@ -164,7 +183,7 @@ export function commitTagChanges(
   updateAttributes(TAG_NAMES.BODY, bodyAttributes ?? {});
   updateAttributes(TAG_NAMES.HTML, htmlAttributes ?? {});
 
-  updateTitle(title, titleAttributes as Attributes);
+  updateTitle(title, titleAttributes!);
 
   const tagUpdates: TagUpdateList = {
     baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),
@@ -175,26 +194,42 @@ export function commitTagChanges(
     styleTags: updateTags(TAG_NAMES.STYLE, style ?? []),
   };
 
-  const resultTags: TagList = {
-    title,
+  const resultTags: StateUpdate = {
+    baseTag: [],
+    bodyAttributes: {},
+    defer: defer ?? false,
+    htmlAttributes: {},
+    linkTags: [],
+    metaTags: [],
+    noscriptTags: [],
+    onChangeClientState: onChangeClientState ?? (() => undefined),
+    scriptTags: [],
+    styleTags: [],
+    title: title ?? '',
+    titleAttributes: {},
   };
-  const addedTags: TagList = {};
-  const removedTags: TagList = {};
+
+  const addedTags: Partial<HelmetTags> = {};
+  const removedTags: Partial<HelmetTags> = {};
 
   Object.keys(tagUpdates).forEach((tagType) => {
     const { allTags, newTags, oldTags } = tagUpdates[tagType]!;
 
-    resultTags[tagType] = allTags;
+    (resultTags[tagType as keyof HelmetTags] as HTMLElement[]) = allTags;
 
     if (newTags.length) {
-      addedTags[tagType] = newTags;
+      (addedTags[tagType as keyof HelmetTags] as HTMLElement[]) = newTags;
     }
     if (oldTags.length) {
-      removedTags[tagType] = tagUpdates[tagType]!.oldTags;
+      (removedTags[tagType as keyof HelmetTags] as HTMLElement[])
+        = tagUpdates[tagType]!.oldTags;
     }
   });
 
-  if (firstRender || Object.keys(addedTags).length || Object.keys(removedTags).length) {
-    newState?.onChangeClientState?.(resultTags, addedTags, removedTags);
+  if (firstRender
+    || Object.keys(addedTags).length
+    || Object.keys(removedTags).length
+  ) {
+    onChangeClientState?.(resultTags, addedTags, removedTags);
   }
 }

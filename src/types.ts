@@ -34,40 +34,12 @@ export type HelmetChildProps =
   | ScriptProps | StyleProps | TitleProps;
 
 /**
- * Attribute arrays of the elements that may be present in DOM multiple times.
- */
-export type AttributeArrayData = {
-  link?: Attributes[];
-  meta?: Attributes[];
-  noscript?: Attributes[];
-  script?: Attributes[];
-  style?: Attributes[];
-};
-
-/**
- * Attributes of the elements that may be present in DOM only once.
- */
-export type AttributeData = {
-  base?: Attributes;
-  bodyAttributes?: Attributes;
-  htmlAttributes?: Attributes;
-  titleAttributes?: Attributes;
-};
-
-/**
  * String data for title.
  */
 export type StringData = {
   title?: string;
   titleTemplate?: string;
 };
-
-/**
- * Collection of all data for elements managed by a <Helmet> component.
- */
-export type Data = AttributeArrayData & AttributeData & StringData;
-
-export type WrappedData = { data: Data; encode: boolean };
 
 export type HelmetTags = {
   baseTag: HTMLBaseElement[];
@@ -84,7 +56,9 @@ export type HelmetDatum<T = ReactNode> = {
 };
 
 export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;
-export type HelmetHTMLElementDatum = HelmetDatum<HTMLAttributes<HTMLHtmlElement>>;
+
+export type HelmetHTMLElementDatum =
+  HelmetDatum<HTMLAttributes<HTMLHtmlElement>>;
 
 export type HelmetServerState = {
   base: HelmetDatum;
@@ -103,9 +77,6 @@ export type HelmetServerState = {
   priority: HelmetDatum;
 };
 
-// TODO: This is essentially the same type as HelmetTags, just with less detailed.
-export type TagList = Record<string, HTMLElement[]>;
-
 export type StateUpdate = HelmetTags & {
   bodyAttributes: BodyProps;
   defer: boolean;
@@ -115,7 +86,11 @@ export type StateUpdate = HelmetTags & {
   // OnChangeClientState, declared inside Helmet module; and there is
   // a circular dependency between that declaration and this StateUpdate type.
   // Also, not sure this field is really necessary inside StateUpdate?
-  onChangeClientState: (newState: StateUpdate, addedTags: TagList, removedTags: TagList) => void;
+  onChangeClientState: (
+    newState: StateUpdate,
+    addedTags: Partial<HelmetTags>,
+    removedTags: Partial<HelmetTags>,
+  ) => void;
 
   title: string;
   titleAttributes: TitleProps;
@@ -126,8 +101,8 @@ export type OnChangeClientState = (
   // TODO: So... the new state should be a map of attribute/value maps
   // for all children elements.
   newState: StateUpdate,
-  addedTags: HelmetTags,
-  removedTags: HelmetTags
+  addedTags: Partial<HelmetTags>,
+  removedTags: Partial<HelmetTags>,
 ) => void;
 
 /**
@@ -212,12 +187,6 @@ export type MappedServerState = HelmetTags & { encode?: boolean };
 export type HelmetDataContext = {
   helmet?: HelmetServerState;
 };
-
-/** User-provided server-side rendering context, if any. */
-// context?: HelmetDataContext;
-
-// helmets: WrappedData[];
-// reEvaluate: () => void;
 
 /**
  * The value of internal context used by Helmet to communicate between its

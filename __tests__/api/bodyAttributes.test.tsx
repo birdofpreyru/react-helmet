@@ -31,7 +31,7 @@ describe('body attributes', () => {
 
     Object.keys(attributeList).forEach((attribute) => {
       it(`${attribute}`, () => {
-        const attrValue = attributeList[attribute];
+        const attrValue = attributeList[`${attribute}` as keyof BodyProps] as string;
 
         const attr = {
           [attribute]: attrValue,

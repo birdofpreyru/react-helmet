@@ -1,31 +1,27 @@
-import { TAG_NAMES, TAG_PROPERTIES, ATTRIBUTE_NAMES, HTML_TAG_MAP, SEO_PRIORITY_TAGS } from './constants';
+import {
+  HTML_TAG_MAP,
+  TAG_NAMES,
+  TAG_PROPERTIES,
+  SEO_PRIORITY_TAGS,
+} from './constants';
 
 import type {
   AggregatedState,
-  AttributeArrayData,
-  AttributeData,
-  Attributes,
   BaseProps,
-  ContextValue,
-  Data,
-  EmptyObject,
   HelmetPropArrays,
   HelmetPropBooleans,
   HelmetPropObjects,
   HelmetProps,
-  HelmetServerState,
   LinkProps,
   MetaProps,
   PropArrayItem,
   RegisteredHelmetPropsArray,
   ScriptProps,
-  WrappedData,
 } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PropList = Record<string, any>;
 
-type PropsList = PropList[];
 type AttributeList = string[];
 
 type SeenTags<T extends keyof HelmetPropArrays> = {
@@ -33,15 +29,6 @@ type SeenTags<T extends keyof HelmetPropArrays> = {
 };
 
 type MatchProps = Record<string, string | AttributeList>;
-
-const HELMET_PROPS = {
-  DEFAULT_TITLE: 'defaultTitle',
-  DEFER: 'defer',
-  ENCODE_SPECIAL_CHARACTERS: 'encodeSpecialCharacters',
-  ON_CHANGE_CLIENT_STATE: 'onChangeClientState',
-  TITLE_TEMPLATE: 'titleTemplate',
-  PRIORITIZE_SEO_TAGS: 'prioritizeSeoTags',
-};
 
 /**
  * Finds the last object in the given array of registered props,

@@ -32,7 +32,9 @@ describe('server', () => {
         expect(link).toEqual(expect.objectContaining({ type: 'link' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(linkComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        linkComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -78,7 +80,9 @@ describe('server', () => {
         expect(link).toEqual(expect.objectContaining({ type: 'link' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(linkComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        linkComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });

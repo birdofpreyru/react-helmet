@@ -1,4 +1,9 @@
-import { type HTMLAttributes, type Key, type ReactNode, createElement } from 'react';
+import {
+  type HTMLAttributes,
+  type Key,
+  type ReactNode,
+  createElement,
+} from 'react';
 
 import {
   HELMET_ATTRIBUTE,
@@ -6,34 +11,27 @@ import {
   REACT_TAG_MAP,
   TAG_PROPERTIES,
   HTML_TAG_MAP,
-  // SEO_PRIORITY_TAGS,
 } from './constants';
 
 import type {
-  // Attributes,
-  // BodyProps,
-  // HelmetDatum,
-  // HelmetHTMLBodyDatum,
-  // HelmetHTMLElementDatum,
-  // HtmlProps,
-  // MappedServerState,
-  ContextValue,
   HelmetProviderHeap,
   HelmetServerState,
+  ScriptProps,
+  StyleProps,
   TitleProps,
 } from './types';
 
 import {
   calcAggregatedState,
-  findBaseAttributes_OLD,
   flattenArray,
-  getTagsFromPropsList_OLD,
-  getTitleFromPropsList_OLD,
-  mergeAttributes,
   propToAttr,
 } from './utils';
 
-const SELF_CLOSING_TAGS: string[] = [TAG_NAMES.NOSCRIPT, TAG_NAMES.SCRIPT, TAG_NAMES.STYLE];
+const SELF_CLOSING_TAGS: string[] = [
+  TAG_NAMES.NOSCRIPT,
+  TAG_NAMES.SCRIPT,
+  TAG_NAMES.STYLE,
+];
 
 const encodeSpecialCharacters = (str: string, encode = true) => {
   if (encode === false) {
@@ -47,8 +45,6 @@ const encodeSpecialCharacters = (str: string, encode = true) => {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;');
 };
-
-type Attributes = Record<string, string | null | number | boolean | undefined>;
 
 function generateElementAttributesAsString<T>(
   attrs: HTMLAttributes<T>,
@@ -91,9 +87,9 @@ function generateTagsAsString<T>(
     let attributeHtml = '';
 
     const entries = Object.entries(tag);
-    for (let i = 0; i < entries.length; ++i) {
-      const [name, value] = entries[i]!;
-      if (!(name === TAG_PROPERTIES.INNER_HTML as string || name === TAG_PROPERTIES.CSS_TEXT as string)) {
+    for (const [name, value] of entries) {
+      if (!(name === TAG_PROPERTIES.INNER_HTML as string
+        || name === TAG_PROPERTIES.CSS_TEXT as string)) {
         const attrName = HTML_TAG_MAP[name] ?? name;
         const attr = value === undefined ? attrName : `${attrName}="${encodeSpecialCharacters(value as string, encode)}"`;
         if (attributeHtml) attributeHtml += ` ${attr}`;
@@ -101,7 +97,7 @@ function generateTagsAsString<T>(
       }
     }
 
-    const tagContent = tag.innerHTML ?? tag.cssText ?? '';
+    const tagContent = (tag as ScriptProps).innerHTML ?? (tag as StyleProps).cssText ?? '';
 
     const isSelfClosing = !SELF_CLOSING_TAGS.includes(type);
 

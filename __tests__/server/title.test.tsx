@@ -49,7 +49,9 @@ describe('server', () => {
         expect(title).toEqual(expect.objectContaining({ type: 'title' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(titleComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        titleComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -71,7 +73,9 @@ describe('server', () => {
         expect(title).toEqual(expect.objectContaining({ type: 'title' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(titleComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        titleComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -156,7 +160,9 @@ describe('server', () => {
         expect(title).toEqual(expect.objectContaining({ type: 'title' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(titleComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        titleComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -180,7 +186,9 @@ describe('server', () => {
         expect(title).toEqual(expect.objectContaining({ type: 'title' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(titleComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        titleComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -275,7 +283,9 @@ describe('server', () => {
         expect(title).toEqual(expect.objectContaining({ type: 'title' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(titleComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        titleComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });

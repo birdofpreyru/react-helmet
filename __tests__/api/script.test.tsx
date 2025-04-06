@@ -126,7 +126,6 @@ describe('script tags', () => {
           script={[
             {
               src: 'foo.js',
-              // @ts-expect-error "pre-existing"
               async: undefined,
             },
           ]}
@@ -144,7 +143,6 @@ describe('script tags', () => {
         <Helmet
           script={[
             {
-              // @ts-expect-error "pre-existing"
               src: undefined,
               type: 'text/javascript',
             },
@@ -163,7 +161,6 @@ describe('script tags', () => {
         <Helmet
           script={[
             {
-              // @ts-expect-error "pre-existing"
               innerHTML: undefined,
             },
           ]}

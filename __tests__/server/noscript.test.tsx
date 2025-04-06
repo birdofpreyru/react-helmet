@@ -25,7 +25,8 @@ describe('server', () => {
       expect(head?.noscript).toBeDefined();
       expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head?.noscript.toComponent() as unknown as Element[];
+      const noscriptComponent
+        = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -34,7 +35,9 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        noscriptComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -52,7 +55,8 @@ describe('server', () => {
       expect(head?.noscript).toBeDefined();
       expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head?.noscript.toComponent() as unknown as Element[];
+      const noscriptComponent
+        = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -61,7 +65,9 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent as ReactNode);
+      const markup = ReactServer.renderToStaticMarkup(
+        noscriptComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });

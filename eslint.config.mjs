@@ -141,7 +141,8 @@ export default tseslint.config(
       // TODO: Its current implementation seems to give false positive.
       '@typescript-eslint/no-invalid-void-type': 'off',
 
-      // NOTE: According to its documentation "@typescript-eslint/no-unused-vars"
+      // NOTE: According to its documentation
+      // "@typescript-eslint/no-unused-vars"
       // requires to disable "no-unused-vars".
       'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'error',

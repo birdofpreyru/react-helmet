@@ -2,7 +2,7 @@
 
 import { Helmet } from '../src';
 import { HELMET_ATTRIBUTE } from '../src/constants';
-import type { OnChangeClientState } from '../src/Helmet';
+import type { OnChangeClientState } from '../src';
 
 import { renderClient } from '../jest/browser-utils';
 
@@ -104,11 +104,11 @@ describe('misc', () => {
       removedTags = onChange.mock.calls[0]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags?.[0]).toBeDefined();
+      expect(addedTags.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags?.[0]).toBeDefined();
+      expect(addedTags.linkTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -137,14 +137,14 @@ describe('misc', () => {
       removedTags = onChange.mock.calls[1]?.[2];
 
       expect(addedTags).toHaveProperty('metaTags');
-      expect(addedTags?.metaTags[0]).toBeDefined();
-      expect(addedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags?.[0]).toBeDefined();
+      expect(addedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
-      expect(addedTags?.linkTags[0]).toBeDefined();
-      expect(addedTags?.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags?.[0]).toBeDefined();
+      expect(addedTags?.linkTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toHaveProperty('metaTags');
-      expect(removedTags?.metaTags[0]).toBeDefined();
-      expect(removedTags?.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(removedTags?.metaTags?.[0]).toBeDefined();
+      expect(removedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).not.toHaveProperty('linkTags');
     });
 
@@ -271,11 +271,11 @@ describe('misc', () => {
       removedTags = onChange.mock.calls[0]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags?.[0]).toBeDefined();
+      expect(addedTags.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags?.[0]).toBeDefined();
+      expect(addedTags.linkTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
@@ -293,14 +293,14 @@ describe('misc', () => {
       removedTags = onChange.mock.calls[1]![2];
 
       expect(addedTags).toHaveProperty('metaTags');
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.metaTags?.[0]).toBeDefined();
+      expect(addedTags.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(addedTags).toHaveProperty('linkTags');
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0]?.outerHTML).toMatchSnapshot();
+      expect(addedTags.linkTags?.[0]).toBeDefined();
+      expect(addedTags.linkTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).toHaveProperty('metaTags');
-      expect(removedTags.metaTags[0]).toBeDefined();
-      expect(removedTags.metaTags[0]?.outerHTML).toMatchSnapshot();
+      expect(removedTags.metaTags?.[0]).toBeDefined();
+      expect(removedTags.metaTags?.[0]?.outerHTML).toMatchSnapshot();
       expect(removedTags).not.toHaveProperty('linkTags');
     });
 

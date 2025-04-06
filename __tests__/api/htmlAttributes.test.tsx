@@ -49,6 +49,7 @@ describe('html attributes', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
         />,
@@ -65,6 +66,7 @@ describe('html attributes', () => {
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
         />,
@@ -84,6 +86,7 @@ describe('html attributes', () => {
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
         />,
@@ -113,6 +116,7 @@ describe('html attributes', () => {
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
         />,
@@ -155,6 +159,7 @@ describe('html attributes', () => {
         renderClient(
           <Helmet
             htmlAttributes={{
+              // @ts-expect-error "pre-existing"
               test: 'helmet-attr',
             }}
           />,
@@ -170,6 +175,7 @@ describe('html attributes', () => {
         renderClient(
           <Helmet
             htmlAttributes={{
+              // @ts-expect-error "pre-existing"
               test: 'helmet-attr',
             }}
           />,

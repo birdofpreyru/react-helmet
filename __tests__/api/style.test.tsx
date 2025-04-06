@@ -86,7 +86,6 @@ describe('style tags', () => {
       <Helmet
         style={[
           {
-            // @ts-expect-error "pre-existing"
             cssText: undefined,
           },
         ]}

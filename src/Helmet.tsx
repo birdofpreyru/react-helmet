@@ -8,7 +8,7 @@ import {
   useId,
 } from 'react';
 
-import { HTML_TAG_MAP, REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants';
+import { REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants';
 
 import { Context } from './Provider';
 
@@ -16,7 +16,6 @@ import type {
   BaseProps,
   BodyProps,
   HelmetChildProps,
-  HelmetPropArrays,
   HelmetProps,
   HtmlProps,
   LinkProps,
