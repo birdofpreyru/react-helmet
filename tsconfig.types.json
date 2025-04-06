@@ -1,0 +1,13 @@
+{
+  "extends": "@tsconfig/recommended",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx",
+    "module": "Preserve",
+    "noUncheckedIndexedAccess": true,
+    "outDir": "build/types",
+    "verbatimModuleSyntax": true
+  },
+  "include": ["src"]
+}

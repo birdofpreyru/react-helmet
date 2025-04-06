@@ -2,17 +2,19 @@
   "name": "@dr.pogodin/react-helmet",
   "version": "3.0.0",
   "description": "Thread-safe Helmet for React 19+ and friends",
-  "main": "./lib/index.js",
-  "module": "./lib/index.esm.js",
-  "types": "./lib/index.d.ts",
+  "main": "./build/common/index.js",
+  "module": "./build/module/index.js",
+  "types": "./build/types/index.d.ts",
   "exports": {
-    "types": "./lib/index.d.ts",
-    "import": "./lib/index.esm.js",
-    "default": "./lib/index.js"
+    "types": "./build/types/index.d.ts",
+    "module": "./build/module/index.js",
+    "default": "./build/common/index.js"
   },
   "scripts": {
-    "clean": "rimraf lib",
-    "build": "npm run clean && NODE_ENV=production tsx build.ts && npm run types",
+    "build": "rimraf build && npm run build:types && npm run build:common && npm run build:module",
+    "build:common": "rimraf build/common && babel src -x .ts,.tsx --out-dir build/common --source-maps",
+    "build:module": "rimraf build/module && babel src -x .ts,.tsx --out-dir build/module --source-maps --config-file ./babel.module.config.js",
+    "build:types": "rimraf build/types && tsc --project tsconfig.types.json",
     "lint": "eslint",
     "test": "npm run lint && npm run typecheck && npm run jest",
     "typecheck": "tsc",
@@ -38,6 +40,7 @@
     "@babel/runtime": "^7.26.9"
   },
   "devDependencies": {
+    "@babel/cli": "^7.27.0",
     "@babel/eslint-parser": "^7.26.8",
     "@babel/eslint-plugin": "^7.25.9",
     "@babel/plugin-transform-runtime": "^7.26.9",
@@ -71,6 +74,5 @@
   },
   "peerDependencies": {
     "react": "19"
-  },
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  }
 }

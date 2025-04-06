@@ -13,7 +13,7 @@ import pluginJs from '@eslint/js';
 import stylisticPlugin from '@stylistic/eslint-plugin';
 
 export default tseslint.config(
-  { ignores: ['__coverage__', 'lib/'] },
+  { ignores: ['__coverage__', 'build/'] },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
