@@ -1,104 +1,102 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('title', () => {
   describe('API', () => {
     it('updates page title', () => {
-      render(<Helmet defaultTitle="Fallback" title="Test Title" />);
+      renderClient(<Helmet defaultTitle="Fallback" title="Test Title" />);
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('updates page title with multiple children', () => {
-      render(
+      renderClient(
         <div>
           <Helmet title="Test Title" />
           <Helmet title="Child One Title" />
           <Helmet title="Child Two Title" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('sets title based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet title="Main Title" />
           <Helmet title="Nested Title" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('sets title using deepest nested component with a defined title', () => {
-      render(
+      renderClient(
         <div>
           <Helmet title="Main Title" />
           <Helmet />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses defaultTitle if no title is defined', () => {
-      render(
+      renderClient(
         <Helmet
           defaultTitle="Fallback"
           title=""
           titleTemplate="This is a %s of the titleTemplate feature"
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses a titleTemplate if defined', () => {
-      render(
+      renderClient(
         <Helmet
           defaultTitle="Fallback"
           title="Test"
           titleTemplate="This is a %s of the titleTemplate feature"
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('replaces multiple title strings in titleTemplate', () => {
-      render(
+      renderClient(
         <Helmet
           title="Test"
           titleTemplate="This is a %s of the titleTemplate feature. Another %s."
-        />
+        />,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses a titleTemplate based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet title="Test" titleTemplate="This is a %s of the titleTemplate feature" />
           <Helmet title="Second Test" titleTemplate="A %s using nested titleTemplate attributes" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('merges deepest component title with nearest upstream titleTemplate', () => {
-      render(
+      renderClient(
         <div>
           <Helmet title="Test" titleTemplate="This is a %s of the titleTemplate feature" />
           <Helmet title="Second Test" />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -107,7 +105,7 @@ describe('title', () => {
     it('renders dollar characters in a title correctly when titleTemplate present', () => {
       const dollarTitle = 'te$t te$$t te$$$t te$$$$t';
 
-      render(<Helmet title={dollarTitle} titleTemplate="This is a %s" />);
+      renderClient(<Helmet title={dollarTitle} titleTemplate="This is a %s" />);
 
       expect(document.title).toMatchSnapshot();
     });
@@ -115,22 +113,22 @@ describe('title', () => {
     it('does not encode all characters with HTML character entity equivalents', () => {
       const chineseTitle = '膣膗 鍆錌雔';
 
-      render(
+      renderClient(
         <div>
           <Helmet title={chineseTitle} />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('page title with prop itemprop', () => {
-      render(
+      renderClient(
         <Helmet
           defaultTitle="Fallback"
           title="Test Title with itemProp"
-          titleAttributes={{ itemprop: 'name' }}
-        />
+          titleAttributes={{ itemProp: 'name' }}
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -142,10 +140,10 @@ describe('title', () => {
 
   describe('Declarative API', () => {
     it('updates page title', () => {
-      render(
+      renderClient(
         <Helmet defaultTitle="Fallback">
           <title>Test Title</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -154,17 +152,17 @@ describe('title', () => {
     it('updates page title and allows children containing expressions', () => {
       const someValue = 'Some Great Title';
 
-      render(
+      renderClient(
         <Helmet>
           <title>Title: {someValue}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('updates page title with multiple children', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <title>Test Title</title>
@@ -175,14 +173,14 @@ describe('title', () => {
           <Helmet>
             <title>Child Two Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('sets title based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <title>Main Title</title>
@@ -190,57 +188,57 @@ describe('title', () => {
           <Helmet>
             <title>Nested Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('sets title using deepest nested component with a defined title', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <title>Main Title</title>
           </Helmet>
           <Helmet />
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses defaultTitle if no title is defined', () => {
-      render(
+      renderClient(
         <Helmet defaultTitle="Fallback" titleTemplate="This is a %s of the titleTemplate feature">
           <title />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses a titleTemplate if defined', () => {
-      render(
+      renderClient(
         <Helmet defaultTitle="Fallback" titleTemplate="This is a %s of the titleTemplate feature">
           <title>Test</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('replaces multiple title strings in titleTemplate', () => {
-      render(
+      renderClient(
         <Helmet titleTemplate="This is a %s of the titleTemplate feature. Another %s.">
           <title>Test</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('uses a titleTemplate based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet titleTemplate="This is a %s of the titleTemplate feature">
             <title>Test</title>
@@ -248,14 +246,14 @@ describe('title', () => {
           <Helmet titleTemplate="A %s using nested titleTemplate attributes">
             <title>Second Test</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('merges deepest component title with nearest upstream titleTemplate', () => {
-      render(
+      renderClient(
         <div>
           <Helmet titleTemplate="This is a %s of the titleTemplate feature">
             <title>Test</title>
@@ -263,7 +261,7 @@ describe('title', () => {
           <Helmet>
             <title>Second Test</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -272,10 +270,10 @@ describe('title', () => {
     it('renders dollar characters in a title correctly when titleTemplate present', () => {
       const dollarTitle = 'te$t te$$t te$$$t te$$$$t';
 
-      render(
+      renderClient(
         <Helmet titleTemplate="This is a %s">
           <title>{dollarTitle}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
@@ -284,20 +282,20 @@ describe('title', () => {
     it('does not encode all characters with HTML character entity equivalents', () => {
       const chineseTitle = '膣膗 鍆錌雔';
 
-      render(
+      renderClient(
         <Helmet>
           <title>{chineseTitle}</title>
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it('page title with prop itemProp', () => {
-      render(
+      renderClient(
         <Helmet defaultTitle="Fallback">
           <title itemProp="name">Test Title with itemProp</title>
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -307,32 +305,32 @@ describe('title', () => {
     });
 
     it('retains existing title tag when no title tag is defined', () => {
-      document.head.innerHTML = `<title>Existing Title</title>`;
+      document.head.innerHTML = '<title>Existing Title</title>';
 
-      render(
+      renderClient(
         <Helmet>
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
     });
 
     it.skip('clears title tag if empty title is defined', () => {
-      render(
+      renderClient(
         <Helmet>
           <title>Existing Title</title>
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toMatchSnapshot();
 
-      render(
+      renderClient(
         <Helmet>
           <title />
           <meta name="keywords" content="stuff" />
-        </Helmet>
+        </Helmet>,
       );
 
       expect(document.title).toBe('');

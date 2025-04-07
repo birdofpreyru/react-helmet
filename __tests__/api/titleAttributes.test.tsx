@@ -1,24 +1,22 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('title attributes', () => {
   beforeEach(() => {
-    document.head.innerHTML = `<title>Test Title</title>`;
+    document.head.innerHTML = '<title>Test Title</title>';
   });
 
   describe('API', () => {
     it('update title attributes', () => {
-      render(
+      renderClient(
         <Helmet
           titleAttributes={{
-            itemprop: 'name',
+            itemProp: 'name',
           }}
-        />
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -28,12 +26,11 @@ describe('title attributes', () => {
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             titleAttributes={{
               lang: 'en',
-              // @ts-ignore
               hidden: undefined,
             }}
           />
@@ -42,7 +39,7 @@ describe('title attributes', () => {
               lang: 'ja',
             }}
           />
-        </div>
+        </div>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -53,13 +50,12 @@ describe('title attributes', () => {
     });
 
     it('handles valueless attributes', () => {
-      render(
+      renderClient(
         <Helmet
           titleAttributes={{
-            // @ts-ignore
             hidden: undefined,
           }}
-        />
+        />,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -69,17 +65,16 @@ describe('title attributes', () => {
     });
 
     it('clears title attributes that are handled within helmet', () => {
-      render(
+      renderClient(
         <Helmet
           titleAttributes={{
             lang: 'en',
-            // @ts-ignore
             hidden: undefined,
           }}
-        />
+        />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const titleTag = document.getElementsByTagName('title')[0];
 
@@ -91,10 +86,10 @@ describe('title attributes', () => {
 
   describe('Declarative API', () => {
     it('updates title attributes', () => {
-      render(
+      renderClient(
         <Helmet>
           <title itemProp="name" />
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -104,7 +99,7 @@ describe('title attributes', () => {
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <title lang="en" hidden />
@@ -112,7 +107,7 @@ describe('title attributes', () => {
           <Helmet>
             <title lang="ja" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -123,10 +118,10 @@ describe('title attributes', () => {
     });
 
     it('handles valueless attributes', () => {
-      render(
+      renderClient(
         <Helmet>
           <title hidden />
-        </Helmet>
+        </Helmet>,
       );
 
       const titleTag = document.getElementsByTagName('title')[0];
@@ -136,13 +131,13 @@ describe('title attributes', () => {
     });
 
     it('clears title attributes that are handled within helmet', () => {
-      render(
+      renderClient(
         <Helmet>
           <title lang="en" hidden />
-        </Helmet>
+        </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const titleTag = document.getElementsByTagName('title')[0];
 

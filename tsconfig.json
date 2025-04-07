@@ -1,21 +1,10 @@
 { 
-  "exclude": [],
-  "include": ["**/*.ts", "**/*.tsx"],
+  "extends": "@tsconfig/recommended",
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vitest/globals"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react",
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "target": "ESNext",
-    "strict": true,
-    "baseUrl": ".",
-    "skipLibCheck": true,
+    "jsx": "react-jsx",
+    "module": "Preserve",
     "noEmit": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowJs": true
+    "noUncheckedIndexedAccess": true,
+    "verbatimModuleSyntax": true
   }
 }

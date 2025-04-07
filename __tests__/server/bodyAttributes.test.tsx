@@ -1,47 +1,35 @@
-import React from 'react';
-import ReactServer from 'react-dom/server';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext } from '../utils';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
+import { renderContextServer } from '../../jest/server-utils';
 
 describe('server', () => {
   describe('Declarative API', () => {
     it('renders body attributes as component', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
           <body lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
-      const attrs = head.bodyAttributes.toComponent();
+      const attrs = head?.bodyAttributes.toComponent();
 
       expect(attrs).toBeDefined();
 
-      const markup = ReactServer.renderToStaticMarkup(<body lang="en" {...attrs} />);
+      const markup = renderToStaticMarkup(<body lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
     });
 
     it('renders body attributes as string', () => {
-      const body = renderContext(
+      const body = renderContextServer(
         <Helmet>
           <body lang="ga" className="myClassName" />
-        </Helmet>
+        </Helmet>,
       );
 
-      expect(body.bodyAttributes).toBeDefined();
-      expect(body.bodyAttributes.toString).toBeDefined();
-      expect(body.bodyAttributes.toString()).toMatchSnapshot();
+      expect(body?.bodyAttributes).toBeDefined();
+      expect(body!.bodyAttributes.toString).toBeDefined();
+      expect(body?.bodyAttributes.toString()).toMatchSnapshot();
     });
   });
 });

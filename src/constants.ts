@@ -57,7 +57,11 @@ export const SEO_PRIORITY_TAGS = {
 
 export const VALID_TAG_NAMES = Object.values(TAG_NAMES);
 
-export const REACT_TAG_MAP = {
+/**
+ * The mapping of HTML attribute names to the corresponding element properties,
+ * for the names that do not match their corresponding properties.
+ */
+export const REACT_TAG_MAP: Record<string, string> = {
   accesskey: 'accessKey',
   charset: 'charSet',
   class: 'className',
@@ -68,12 +72,20 @@ export const REACT_TAG_MAP = {
   tabindex: 'tabIndex',
 };
 
-export const HTML_TAG_MAP = Object.entries(REACT_TAG_MAP).reduce(
-  (carry, [key, value]) => {
-    carry[value] = key;
-    return carry;
-  },
-  {} as { [key: string]: string }
-);
+/**
+ * The mapping reverse of REACT_TAG_MAP.
+ */
+export const HTML_TAG_MAP = (() => {
+  const res: Record<string, string> = {};
+  for (const [key, value] of Object.entries(REACT_TAG_MAP)) {
+    res[value] = key;
+  }
+  return res;
+})();
 
 export const HELMET_ATTRIBUTE = 'data-rh';
+
+export const IS_DOM_ENVIRONMENT = !!(
+  typeof window !== 'undefined'
+  && window.document.createElement
+);

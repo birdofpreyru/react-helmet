@@ -1,14 +1,13 @@
-import React from 'react';
-import type { MockedFunction } from 'vitest';
-
 import { Helmet } from '../src';
 
-import { render } from './utils';
-import './window';
+import { renderClient } from '../jest/browser-utils';
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
-    __spy__: MockedFunction<any>;
+    // pre-existing
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    __spy__: jest.Mock<any>;
   }
 }
 
@@ -16,58 +15,53 @@ describe.skip('deferred tags', () => {
   beforeEach(() => {
     Object.defineProperty(window, '__spy__', {
       configurable: true,
-      value: vi.fn(() => {}),
+      value: jest.fn(),
     });
   });
 
   afterEach(() => {
-    // @ts-ignore
+    // @ts-expect-error "pre-existing"
     delete window.__spy__;
   });
 
   describe('API', () => {
     it('executes synchronously when defer={true} and async otherwise', async () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             defer={false}
             script={[
               {
-                innerHTML: `window.__spy__(1)`,
+                innerHTML: 'window.__spy__(1)',
               },
             ]}
           />
           <Helmet
             script={[
               {
-                innerHTML: `window.__spy__(2)`,
+                innerHTML: 'window.__spy__(2)',
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
-      await vi.waitFor(
-        () =>
-          new Promise(resolve => {
-            requestAnimationFrame(() => {
-              // @ts-ignore
-              expect(window.__spy__).toHaveBeenCalledTimes(2);
-              // @ts-ignore
-              expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          expect(window.__spy__).toHaveBeenCalledTimes(2);
+          expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-              resolve(true);
-            });
-          })
-      );
+          resolve(true);
+        });
+      });
     });
   });
 
   describe('Declarative API', () => {
     it('executes synchronously when defer={true} and async otherwise', async () => {
-      render(
+      renderClient(
         <div>
           <Helmet defer={false}>
             <script>window.__spy__(1)</script>
@@ -75,22 +69,19 @@ describe.skip('deferred tags', () => {
           <Helmet>
             <script>window.__spy__(2)</script>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(window.__spy__).toHaveBeenCalledTimes(1);
 
-      await vi.waitFor(
-        () =>
-          new Promise(resolve => {
-            requestAnimationFrame(() => {
-              expect(window.__spy__).toHaveBeenCalledTimes(2);
-              expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
+      await new Promise((resolve) => {
+        requestAnimationFrame(() => {
+          expect(window.__spy__).toHaveBeenCalledTimes(2);
+          expect(window.__spy__.mock.calls).toStrictEqual([[1], [2]]);
 
-              resolve(true);
-            });
-          })
-      );
+          resolve(true);
+        });
+      });
     });
   });
 });

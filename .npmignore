@@ -1,7 +1,5 @@
-*.tgz
 .*
-.eslintrc.js
+__coverage__
 __tests__
-jest.setup.js
-node_modules
+dr.pogodin-react-helmet-*.tgz
 src

@@ -1,10 +1,8 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('script tags', () => {
   describe('API', () => {
@@ -16,7 +14,7 @@ describe('script tags', () => {
                   "url": "http://localhost/helmet"
                 }
               `;
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -32,7 +30,7 @@ describe('script tags', () => {
               innerHTML: scriptInnerHTML,
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.getElementsByTagName('script')];
@@ -40,19 +38,20 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('src') === 'http://localhost/test.js' &&
-            tag.getAttribute('type') === 'text/javascript') ||
-          (tag.getAttribute('src') === 'http://localhost/test2.js' &&
-            tag.getAttribute('type') === 'text/javascript') ||
-          (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML)
+        (tag) => (
+          tag.getAttribute('src') === 'http://localhost/test.js'
+          && tag.getAttribute('type') === 'text/javascript'
+        ) || (
+          tag.getAttribute('src') === 'http://localhost/test2.js'
+          && tag.getAttribute('type') === 'text/javascript'
+        ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(3);
     });
 
     it('clears all scripts tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
@@ -60,10 +59,10 @@ describe('script tags', () => {
               type: 'text/javascript',
             },
           ]}
-        />
+        />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -71,8 +70,8 @@ describe('script tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'src' are not accepted", () => {
-      render(<Helmet script={[{ property: "won't work" }]} />);
+    it('tags without \'src\' are not accepted', () => {
+      renderClient(<Helmet script={[{ property: 'won\'t work' }]} />);
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -81,7 +80,7 @@ describe('script tags', () => {
     });
 
     it('sets script tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             script={[
@@ -99,7 +98,7 @@ describe('script tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
@@ -109,48 +108,46 @@ describe('script tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
               src: 'foo.js',
-              // @ts-ignore
               async: undefined,
             },
           ]}
-        />
+        />,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`) as Element;
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
-              // @ts-ignore
               src: undefined,
               type: 'text/javascript',
             },
           ]}
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
@@ -160,15 +157,14 @@ describe('script tags', () => {
     });
 
     it('does not render tag when primary attribute (innerHTML) is null', () => {
-      render(
+      renderClient(
         <Helmet
           script={[
             {
-              // @ts-ignore
               innerHTML: undefined,
             },
           ]}
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
@@ -187,12 +183,12 @@ describe('script tags', () => {
             "url": "http://localhost/helmet"
           }
         `;
-      render(
+      renderClient(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
           <script src="http://localhost/test2.js" type="text/javascript" />
           <script type="application/ld+json">{scriptInnerHTML}</script>
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.getElementsByTagName('script')];
@@ -200,25 +196,26 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('src') === 'http://localhost/test.js' &&
-            tag.getAttribute('type') === 'text/javascript') ||
-          (tag.getAttribute('src') === 'http://localhost/test2.js' &&
-            tag.getAttribute('type') === 'text/javascript') ||
-          (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML)
+        (tag) => (
+          tag.getAttribute('src') === 'http://localhost/test.js'
+          && tag.getAttribute('type') === 'text/javascript'
+        ) || (
+          tag.getAttribute('src') === 'http://localhost/test2.js'
+          && tag.getAttribute('type') === 'text/javascript'
+        ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(3);
     });
 
     it('clears all scripts tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src="http://localhost/test.js" type="text/javascript" />
-        </Helmet>
+        </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -226,12 +223,14 @@ describe('script tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'src' are not accepted", () => {
-      render(
+    it('tags without \'src\' are not accepted', () => {
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <script property="won't work" />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -240,13 +239,13 @@ describe('script tags', () => {
     });
 
     it('sets script tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <script src="http://localhost/test.js" type="text/javascript" />
             <script src="http://localhost/test2.js" type="text/javascript" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
@@ -256,36 +255,36 @@ describe('script tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src="foo.js" async={undefined} />
-        </Helmet>
+        </Helmet>,
       );
 
-      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`) as Element;
+      const existingTag = document.head.querySelector(`script[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTag).toBeDefined();
-      expect(existingTag.outerHTML).toMatchSnapshot();
+      expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute (src) is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <script src={undefined} type="text/javascript" />
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
@@ -295,14 +294,16 @@ describe('script tags', () => {
     });
 
     it('does not render tag when primary attribute (innerHTML) is null', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <script
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             innerHTML={undefined}
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const tagNodes = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);

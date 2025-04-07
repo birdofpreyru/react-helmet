@@ -1,10 +1,8 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('style tags', () => {
   it('updates style tags', () => {
@@ -18,7 +16,7 @@ describe('style tags', () => {
                       font-size: 12px;
                   }
               `;
-    render(
+    renderClient(
       <Helmet
         style={[
           {
@@ -29,7 +27,7 @@ describe('style tags', () => {
             cssText: cssText2,
           },
         ]}
-      />
+      />,
     );
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
@@ -39,14 +37,14 @@ describe('style tags', () => {
     expect(existingTags).toHaveLength(2);
 
     expect(firstTag).toBeInstanceOf(Element);
-    expect(firstTag.getAttribute).toBeDefined();
+    expect(firstTag!.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag.innerHTML).toEqual(cssText1);
-    expect(firstTag.outerHTML).toMatchSnapshot();
+    expect(firstTag?.innerHTML).toEqual(cssText1);
+    expect(firstTag?.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag.innerHTML).toEqual(cssText2);
-    expect(secondTag.outerHTML).toMatchSnapshot();
+    expect(secondTag?.innerHTML).toEqual(cssText2);
+    expect(secondTag?.outerHTML).toMatchSnapshot();
   });
 
   it('clears all style tags if none are specified', () => {
@@ -55,7 +53,7 @@ describe('style tags', () => {
                       background-color: green;
                   }
               `;
-    render(
+    renderClient(
       <Helmet
         style={[
           {
@@ -63,10 +61,10 @@ describe('style tags', () => {
             cssText,
           },
         ]}
-      />
+      />,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
     const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
@@ -74,8 +72,8 @@ describe('style tags', () => {
     expect(existingTags).toHaveLength(0);
   });
 
-  it("tags without 'cssText' are not accepted", () => {
-    render(<Helmet style={[{ property: "won't work" }]} />);
+  it('tags without \'cssText\' are not accepted', () => {
+    renderClient(<Helmet style={[{ property: 'won\'t work' }]} />);
 
     const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
@@ -84,15 +82,14 @@ describe('style tags', () => {
   });
 
   it('does not render tag when primary attribute is null', () => {
-    render(
+    renderClient(
       <Helmet
         style={[
           {
-            // @ts-ignore
             cssText: undefined,
           },
         ]}
-      />
+      />,
     );
 
     const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
@@ -115,11 +112,11 @@ describe('Declarative API', () => {
             }
         `;
 
-    render(
+    renderClient(
       <Helmet>
         <style type="text/css">{cssText1}</style>
         <style>{cssText2}</style>
-      </Helmet>
+      </Helmet>,
     );
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
@@ -129,14 +126,14 @@ describe('Declarative API', () => {
     expect(existingTags).toHaveLength(2);
 
     expect(firstTag).toBeInstanceOf(Element);
-    expect(firstTag.getAttribute).toBeDefined();
+    expect(firstTag!.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag.innerHTML).toEqual(cssText1);
-    expect(firstTag.outerHTML).toMatchSnapshot();
+    expect(firstTag?.innerHTML).toEqual(cssText1);
+    expect(firstTag?.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag.innerHTML).toEqual(cssText2);
-    expect(secondTag.outerHTML).toMatchSnapshot();
+    expect(secondTag?.innerHTML).toEqual(cssText2);
+    expect(secondTag?.outerHTML).toMatchSnapshot();
   });
 
   it('clears all style tags if none are specified', () => {
@@ -145,13 +142,13 @@ describe('Declarative API', () => {
                 background-color: green;
             }
         `;
-    render(
+    renderClient(
       <Helmet>
         <style type="text/css">{cssText}</style>
-      </Helmet>
+      </Helmet>,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
     const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
@@ -159,29 +156,43 @@ describe('Declarative API', () => {
     expect(existingTags).toHaveLength(0);
   });
 
-  it("tags without 'cssText' are not accepted", () => {
-    render(
-      <Helmet>
-        <style property="won't work" />
-      </Helmet>
-    );
+  it('tags without \'cssText\' are not accepted', () => {
+    const origConsoleError = console.error;
+    console.error = () => undefined;
+    try {
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
+        <Helmet>
+          <style property="won't work" />
+        </Helmet>,
+      );
+      /* eslint-enable react/no-unknown-property */
 
-    const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
+      const existingTags = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
 
-    expect(existingTags).toBeDefined();
-    expect(existingTags).toHaveLength(0);
+      expect(existingTags).toBeDefined();
+      expect(existingTags).toHaveLength(0);
+    } finally {
+      console.error = origConsoleError;
+    }
   });
 
   it('does not render tag when primary attribute is null', () => {
-    render(
-      <Helmet>
-        <style>{undefined}</style>
-      </Helmet>
-    );
+    const origConsoleError = console.error;
+    console.error = () => undefined;
+    try {
+      renderClient(
+        <Helmet>
+          <style>{undefined}</style>
+        </Helmet>,
+      );
 
-    const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
-    const existingTags = [].slice.call(tagNodes);
+      const tagNodes = document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`);
+      const existingTags = [].slice.call(tagNodes);
 
-    expect(existingTags).toHaveLength(0);
+      expect(existingTags).toHaveLength(0);
+    } finally {
+      console.error = origConsoleError;
+    }
   });
 });

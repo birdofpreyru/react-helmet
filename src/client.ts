@@ -1,75 +1,107 @@
-import { HELMET_ATTRIBUTE, TAG_NAMES, TAG_PROPERTIES } from './constants';
-import type { Attributes, StateUpdate, TagList } from './types';
+import {
+  HELMET_ATTRIBUTE,
+  HTML_TAG_MAP,
+  TAG_NAMES,
+  TAG_PROPERTIES,
+} from './constants';
+
+import type {
+  AggregatedState,
+  BodyProps,
+  HelmetChildProps,
+  HelmetTags,
+  HtmlProps,
+  StateUpdate,
+} from './types';
+
 import { flattenArray } from './utils';
 
-interface TagUpdates {
+type TagUpdates = {
+  allTags: HTMLElement[];
   oldTags: HTMLElement[];
   newTags: HTMLElement[];
-}
+};
 
-interface TagUpdateList {
-  [key: string]: TagUpdates;
-}
+type TagUpdateList = Record<string, TagUpdates>;
 
-const updateTags = (type: string, tags: HTMLElement[]) => {
+/**
+ * Replaces HTML elements previously added to the DOM's head by React Helmet
+ * by the set of given elements (tags). For any given element that matches
+ * exactly an element already present in the head no actual DOM modification
+ * happens, it just keeps already present element. Returns arrays of newly
+ * added (newTags) and removed (oldTags) elements.
+ */
+function updateTags(type: string, tags: HelmetChildProps[]) {
+  // TODO: Do we really need the fallback here? document.head is supposed to be
+  // always defined.
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
-  const tagNodes = headElement.querySelectorAll(`${type}[${HELMET_ATTRIBUTE}]`);
-  const oldTags: HTMLElement[] = [].slice.call(tagNodes);
+
+  const tagNodes = headElement.querySelectorAll<HTMLElement>(`${type}[${HELMET_ATTRIBUTE}]`);
+  const allTags: HTMLElement[] = [];
+  const oldTags: HTMLElement[] = [...tagNodes];
   const newTags: HTMLElement[] = [];
-  let indexToDelete: number;
 
-  if (tags && tags.length) {
-    tags.forEach(tag => {
-      const newElement = document.createElement(type);
+  for (const tag of tags) {
+    const newElement = document.createElement(type);
 
-      for (const attribute in tag) {
-        if (Object.prototype.hasOwnProperty.call(tag, attribute)) {
-          if (attribute === TAG_PROPERTIES.INNER_HTML) {
-            newElement.innerHTML = tag.innerHTML;
-          } else if (attribute === TAG_PROPERTIES.CSS_TEXT) {
-            // This seems like a CSSImportRuleDeclaration?
-            // @ts-ignore
-            if (newElement.styleSheet) {
-              // @ts-ignore
-              newElement.styleSheet.cssText = tag.cssText;
-            } else {
-              // @ts-ignore
-              newElement.appendChild(document.createTextNode(tag.cssText));
-            }
+    // TODO: Well, the typing within this block is bad, and should be improved.
+    for (const [key, value] of Object.entries(tag)) {
+      if (Object.prototype.hasOwnProperty.call(tag, key)) {
+        const name = HTML_TAG_MAP[key] ?? key;
+        if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
+          newElement.innerHTML = value as string;
+        } else if (name as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
+          // TODO: Not sure when this is true?
+          // @ts-expect-error "pre-existing"
+          if (newElement.styleSheet) {
+            // @ts-expect-error "pre-existing"
+            (newElement.styleSheet as CSSStyleDeclaration).cssText = (
+              tag as CSSStyleDeclaration).cssText;
           } else {
-            const attr = attribute as keyof HTMLElement;
-            const value = typeof tag[attr] === 'undefined' ? '' : tag[attr];
-            newElement.setAttribute(attribute, value as string);
+            newElement.appendChild(document.createTextNode(
+              (tag as CSSStyleDeclaration).cssText,
+            ));
           }
+        } else {
+          newElement.setAttribute(name, (value as string) ?? '');
         }
       }
+    }
 
-      newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
+    newElement.setAttribute(HELMET_ATTRIBUTE, 'true');
 
-      // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
-      if (
-        oldTags.some((existingTag, index) => {
-          indexToDelete = index;
-          return newElement.isEqualNode(existingTag);
-        })
-      ) {
-        oldTags.splice(indexToDelete, 1);
-      } else {
-        newTags.push(newElement);
+    const attrs = {} as HTMLElement;
+    for (const { name, value } of newElement.attributes) {
+      (attrs[name as keyof HTMLElement] as unknown) = value;
+    }
+    allTags.push(attrs);
+
+    // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
+    for (let i = 0; ; ++i) {
+      if (newElement.isEqualNode(oldTags[i]!)) {
+        oldTags.splice(i, 1);
+        break;
       }
-    });
+      if (i >= oldTags.length) {
+        newTags.push(newElement);
+        break;
+      }
+    }
   }
 
   oldTags.forEach((tag: Node) => tag.parentNode?.removeChild(tag));
-  newTags.forEach(tag => headElement.appendChild(tag));
+  newTags.forEach((tag) => headElement.appendChild(tag));
 
+  // TODO: Do we really need this return value anywhere? Especially `oldTags`
+  // that have been removed from DOM already?
   return {
+    allTags,
     oldTags,
     newTags,
   };
-};
+}
 
-const updateAttributes = (tagName: string, attributes: Attributes) => {
+function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
   const elementTag = document.getElementsByTagName(tagName)[0];
 
   if (!elementTag) {
@@ -79,27 +111,37 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   const helmetAttributeString = elementTag.getAttribute(HELMET_ATTRIBUTE);
   const helmetAttributes = helmetAttributeString ? helmetAttributeString.split(',') : [];
   const attributesToRemove = [...helmetAttributes];
-  const attributeKeys = Object.keys(attributes);
 
-  for (const attribute of attributeKeys) {
-    const value = attributes[attribute] || '';
+  const attributeKeys: string[] = [];
+  for (const prop of Object.keys(props)) {
+    // TODO: See a comment below.
+    attributeKeys.push(HTML_TAG_MAP[prop] ?? prop);
+  }
 
-    if (elementTag.getAttribute(attribute) !== value) {
-      elementTag.setAttribute(attribute, value);
+  for (const [key, value] of Object.entries(props)) {
+    // TODO: Get rid of the mapping later. It is not really needed, as HTML
+    // attribute names are case-insensitive. However, our related logic may
+    // still be case dependent - we should be careful about it.
+    const attr = HTML_TAG_MAP[key] ?? key;
+    if (elementTag.getAttribute(attr) !== value) {
+      // TODO: That ?? '' piece is here to keep the legacy behavior for now,
+      // I guess later we should prefer to consider attrbiutes with "undefined"
+      // value as not set.
+      elementTag.setAttribute(attr, value as string ?? '');
     }
 
-    if (helmetAttributes.indexOf(attribute) === -1) {
-      helmetAttributes.push(attribute);
+    if (!helmetAttributes.includes(attr)) {
+      helmetAttributes.push(attr);
     }
 
-    const indexToSave = attributesToRemove.indexOf(attribute);
+    const indexToSave = attributesToRemove.indexOf(attr);
     if (indexToSave !== -1) {
       attributesToRemove.splice(indexToSave, 1);
     }
   }
 
   for (let i = attributesToRemove.length - 1; i >= 0; i -= 1) {
-    elementTag.removeAttribute(attributesToRemove[i]);
+    elementTag.removeAttribute(attributesToRemove[i]!);
   }
 
   if (helmetAttributes.length === attributesToRemove.length) {
@@ -107,84 +149,87 @@ const updateAttributes = (tagName: string, attributes: Attributes) => {
   } else if (elementTag.getAttribute(HELMET_ATTRIBUTE) !== attributeKeys.join(',')) {
     elementTag.setAttribute(HELMET_ATTRIBUTE, attributeKeys.join(','));
   }
-};
+}
 
-const updateTitle = (title: string, attributes: Attributes) => {
-  if (typeof title !== 'undefined' && document.title !== title) {
+function updateTitle(
+  title: string | undefined,
+  attributes: BodyProps | HtmlProps,
+) {
+  if (title !== undefined && document.title !== title) {
     document.title = flattenArray(title);
   }
 
   updateAttributes(TAG_NAMES.TITLE, attributes);
-};
+}
 
-type Cb = () => number | null | void;
-
-const commitTagChanges = (newState: StateUpdate, cb?: Cb) => {
+export function commitTagChanges(
+  newState: AggregatedState,
+  firstRender: boolean,
+) {
   const {
-    baseTag,
+    base,
     bodyAttributes,
+    defer,
     htmlAttributes,
-    linkTags,
-    metaTags,
-    noscriptTags,
+    links,
+    meta,
+    noscript,
     onChangeClientState,
-    scriptTags,
-    styleTags,
+    script,
+    style,
     title,
     titleAttributes,
   } = newState;
-  updateAttributes(TAG_NAMES.BODY, bodyAttributes as Attributes);
-  updateAttributes(TAG_NAMES.HTML, htmlAttributes as Attributes);
+  updateAttributes(TAG_NAMES.BODY, bodyAttributes ?? {});
+  updateAttributes(TAG_NAMES.HTML, htmlAttributes ?? {});
 
-  updateTitle(title, titleAttributes as Attributes);
+  updateTitle(title, titleAttributes!);
 
   const tagUpdates: TagUpdateList = {
-    baseTag: updateTags(TAG_NAMES.BASE, baseTag),
-    linkTags: updateTags(TAG_NAMES.LINK, linkTags),
-    metaTags: updateTags(TAG_NAMES.META, metaTags),
-    noscriptTags: updateTags(TAG_NAMES.NOSCRIPT, noscriptTags),
-    scriptTags: updateTags(TAG_NAMES.SCRIPT, scriptTags),
-    styleTags: updateTags(TAG_NAMES.STYLE, styleTags),
+    baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),
+    linkTags: updateTags(TAG_NAMES.LINK, links ?? []),
+    metaTags: updateTags(TAG_NAMES.META, meta ?? []),
+    noscriptTags: updateTags(TAG_NAMES.NOSCRIPT, noscript ?? []),
+    scriptTags: updateTags(TAG_NAMES.SCRIPT, script ?? []),
+    styleTags: updateTags(TAG_NAMES.STYLE, style ?? []),
   };
 
-  const addedTags: TagList = {};
-  const removedTags: TagList = {};
+  const resultTags: StateUpdate = {
+    baseTag: [],
+    bodyAttributes: {},
+    defer: defer ?? false,
+    htmlAttributes: {},
+    linkTags: [],
+    metaTags: [],
+    noscriptTags: [],
+    onChangeClientState: onChangeClientState ?? (() => undefined),
+    scriptTags: [],
+    styleTags: [],
+    title: title ?? '',
+    titleAttributes: {},
+  };
 
-  Object.keys(tagUpdates).forEach(tagType => {
-    const { newTags, oldTags } = tagUpdates[tagType];
+  const addedTags: Partial<HelmetTags> = {};
+  const removedTags: Partial<HelmetTags> = {};
+
+  Object.keys(tagUpdates).forEach((tagType) => {
+    const { allTags, newTags, oldTags } = tagUpdates[tagType]!;
+
+    (resultTags[tagType as keyof HelmetTags] as HTMLElement[]) = allTags;
 
     if (newTags.length) {
-      addedTags[tagType] = newTags;
+      (addedTags[tagType as keyof HelmetTags] as HTMLElement[]) = newTags;
     }
     if (oldTags.length) {
-      removedTags[tagType] = tagUpdates[tagType].oldTags;
+      (removedTags[tagType as keyof HelmetTags] as HTMLElement[])
+        = tagUpdates[tagType]!.oldTags;
     }
   });
 
-  if (cb) {
-    cb();
+  if (firstRender
+    || Object.keys(addedTags).length
+    || Object.keys(removedTags).length
+  ) {
+    onChangeClientState?.(resultTags, addedTags, removedTags);
   }
-
-  onChangeClientState(newState, addedTags, removedTags);
-};
-
-let _helmetCallback: number | null = null;
-
-const handleStateChangeOnClient = (newState: StateUpdate) => {
-  if (_helmetCallback) {
-    cancelAnimationFrame(_helmetCallback);
-  }
-
-  if (newState.defer) {
-    _helmetCallback = requestAnimationFrame(() => {
-      commitTagChanges(newState, () => {
-        _helmetCallback = null;
-      });
-    });
-  } else {
-    commitTagChanges(newState);
-    _helmetCallback = null;
-  }
-};
-
-export default handleStateChangeOnClient;
+}

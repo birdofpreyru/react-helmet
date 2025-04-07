@@ -1,24 +1,13 @@
-import React from 'react';
 import ReactServer from 'react-dom/server';
 
 import { Helmet } from '../../src';
-import Provider from '../../src/Provider';
-import { renderContext, isArray } from '../utils';
-
-Helmet.defaultProps.defer = false;
-
-beforeAll(() => {
-  Provider.canUseDOM = false;
-});
-
-afterAll(() => {
-  Provider.canUseDOM = true;
-});
+import { renderContextServer, isArray } from '../../jest/server-utils';
+import type { ReactNode } from 'react';
 
 describe('server', () => {
   describe('API', () => {
     it('renders noscript tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet
           noscript={[
             {
@@ -30,13 +19,14 @@ describe('server', () => {
               innerHTML: '<link rel="stylesheet" type="text/css" href="/style2.css" />',
             },
           ]}
-        />
+        />,
       );
 
-      expect(head.noscript).toBeDefined();
-      expect(head.noscript.toComponent).toBeDefined();
+      expect(head?.noscript).toBeDefined();
+      expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head.noscript.toComponent();
+      const noscriptComponent
+        = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -45,7 +35,9 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(
+        noscriptComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });
@@ -53,17 +45,18 @@ describe('server', () => {
 
   describe('Declarative API', () => {
     it('renders noscript tags as React components', () => {
-      const head = renderContext(
+      const head = renderContextServer(
         <Helmet>
-          <noscript id="foo">{`<link rel="stylesheet" type="text/css" href="/style.css" />`}</noscript>
-          <noscript id="bar">{`<link rel="stylesheet" type="text/css" href="/style2.css" />`}</noscript>
-        </Helmet>
+          <noscript id="foo">{'<link rel="stylesheet" type="text/css" href="/style.css" />'}</noscript>
+          <noscript id="bar">{'<link rel="stylesheet" type="text/css" href="/style2.css" />'}</noscript>
+        </Helmet>,
       );
 
-      expect(head.noscript).toBeDefined();
-      expect(head.noscript.toComponent).toBeDefined();
+      expect(head?.noscript).toBeDefined();
+      expect(head!.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head.noscript.toComponent();
+      const noscriptComponent
+        = head?.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -72,7 +65,9 @@ describe('server', () => {
         expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
-      const markup = ReactServer.renderToStaticMarkup(noscriptComponent);
+      const markup = ReactServer.renderToStaticMarkup(
+        noscriptComponent as ReactNode,
+      );
 
       expect(markup).toMatchSnapshot();
     });

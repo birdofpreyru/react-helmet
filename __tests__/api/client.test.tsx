@@ -1,15 +1,15 @@
-import React from 'react';
+/** @jest-environment jsdom */
+
+import type { OnChangeClientState } from '../../src';
 
 import { Helmet } from '../../src';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('onChangeClientState', () => {
   describe('API', () => {
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = vi.fn();
-      render(
+      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
+      renderClient(
         <div>
           <Helmet
             base={{ href: 'http://mysite.com/' }}
@@ -21,7 +21,7 @@ describe('onChangeClientState', () => {
             ]}
             meta={[
               {
-                charset: 'utf-8',
+                charSet: 'utf-8',
               },
             ]}
             script={[
@@ -33,50 +33,50 @@ describe('onChangeClientState', () => {
             title="Main Title"
             onChangeClientState={onChange}
           />
-        </div>
+        </div>,
       );
 
       expect(onChange).toHaveBeenCalled();
 
-      const newState = onChange.mock.calls[0][0];
-      const addedTags = onChange.mock.calls[0][1];
-      const removedTags = onChange.mock.calls[0][2];
+      const newState = onChange.mock.calls[0]?.[0];
+      const addedTags = onChange.mock.calls[0]?.[1];
+      const removedTags = onChange.mock.calls[0]?.[2];
 
       expect(newState).toEqual(expect.objectContaining({ title: 'Main Title' }));
-      expect(newState.baseTag[0]).toEqual(
+      expect(newState?.baseTag[0]).toEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
-        })
+        }),
       );
-      expect(newState.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
-      expect(newState.linkTags[0]).toEqual(
+      expect(newState?.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
+      expect(newState?.linkTags[0]).toEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
-        })
+        }),
       );
-      expect(newState.scriptTags[0]).toEqual(
+      expect(newState?.scriptTags[0]).toEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
-        })
+        }),
       );
 
-      expect(addedTags.baseTag).toBeDefined();
-      expect(addedTags.baseTag[0]).toBeDefined();
-      expect(addedTags.baseTag[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.baseTag).toBeDefined();
+      expect(addedTags?.baseTag?.[0]).toBeDefined();
+      expect(addedTags?.baseTag?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.metaTags).toBeDefined();
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags).toBeDefined();
+      expect(addedTags?.metaTags?.[0]).toBeDefined();
+      expect(addedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.linkTags).toBeDefined();
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags).toBeDefined();
+      expect(addedTags?.linkTags?.[0]).toBeDefined();
+      expect(addedTags?.linkTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.scriptTags).toBeDefined();
-      expect(addedTags.scriptTags[0]).toBeDefined();
-      expect(addedTags.scriptTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.scriptTags).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(removedTags).toEqual({});
     });
@@ -102,8 +102,8 @@ describe('onChangeClientState', () => {
 
   describe('Declarative API', () => {
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = vi.fn();
-      render(
+      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
+      renderClient(
         <div>
           <Helmet onChangeClientState={onChange}>
             <base href="http://mysite.com/" />
@@ -112,50 +112,50 @@ describe('onChangeClientState', () => {
             <script src="http://localhost/test.js" type="text/javascript" />
             <title>Main Title</title>
           </Helmet>
-        </div>
+        </div>,
       );
 
       expect(onChange).toHaveBeenCalled();
 
-      const newState = onChange.mock.calls[0][0];
-      const addedTags = onChange.mock.calls[0][1];
-      const removedTags = onChange.mock.calls[0][2];
+      const newState = onChange.mock.calls[0]?.[0];
+      const addedTags = onChange.mock.calls[0]?.[1];
+      const removedTags = onChange.mock.calls[0]?.[2];
 
       expect(newState).toEqual(expect.objectContaining({ title: 'Main Title' }));
-      expect(newState.baseTag[0]).toEqual(
+      expect(newState?.baseTag[0]).toEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
-        })
+        }),
       );
-      expect(newState.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
-      expect(newState.linkTags[0]).toEqual(
+      expect(newState?.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
+      expect(newState?.linkTags[0]).toEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
-        })
+        }),
       );
-      expect(newState.scriptTags[0]).toEqual(
+      expect(newState?.scriptTags[0]).toEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
-        })
+        }),
       );
 
-      expect(addedTags.baseTag).toBeDefined();
-      expect(addedTags.baseTag[0]).toBeDefined();
-      expect(addedTags.baseTag[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.baseTag).toBeDefined();
+      expect(addedTags?.baseTag?.[0]).toBeDefined();
+      expect(addedTags?.baseTag?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.metaTags).toBeDefined();
-      expect(addedTags.metaTags[0]).toBeDefined();
-      expect(addedTags.metaTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.metaTags).toBeDefined();
+      expect(addedTags?.metaTags?.[0]).toBeDefined();
+      expect(addedTags?.metaTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.linkTags).toBeDefined();
-      expect(addedTags.linkTags[0]).toBeDefined();
-      expect(addedTags.linkTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.linkTags).toBeDefined();
+      expect(addedTags?.linkTags?.[0]).toBeDefined();
+      expect(addedTags?.linkTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(addedTags.scriptTags).toBeDefined();
-      expect(addedTags.scriptTags[0]).toBeDefined();
-      expect(addedTags.scriptTags[0].outerHTML).toMatchSnapshot();
+      expect(addedTags?.scriptTags).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]).toBeDefined();
+      expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
       expect(removedTags).toEqual({});
     });

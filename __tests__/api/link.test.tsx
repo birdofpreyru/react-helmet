@@ -1,15 +1,13 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('link tags', () => {
   describe('API', () => {
     it('updates link tags', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -22,7 +20,7 @@ describe('link tags', () => {
               type: 'text/css',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -30,19 +28,21 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('href') === 'http://localhost/style.css' &&
-            tag.getAttribute('rel') === 'stylesheet' &&
-            tag.getAttribute('type') === 'text/css') ||
-          (tag.getAttribute('href') === 'http://localhost/helmet' &&
-            tag.getAttribute('rel') === 'canonical')
+        (tag) => (
+          tag.getAttribute('href') === 'http://localhost/style.css'
+          && tag.getAttribute('rel') === 'stylesheet'
+          && tag.getAttribute('type') === 'text/css'
+        ) || (
+          tag.getAttribute('href') === 'http://localhost/helmet'
+          && tag.getAttribute('rel') === 'canonical'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(2);
     });
 
     it('clears all link tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -50,10 +50,10 @@ describe('link tags', () => {
               rel: 'canonical',
             },
           ]}
-        />
+        />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
@@ -62,9 +62,9 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' or 'rel' are not accepted, even if they are valid for other tags", () => {
-      // @ts-ignore
-      render(<Helmet link={[{ 'http-equiv': "won't work" }]} />);
+    it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
+      // @ts-expect-error "pre-existing"
+      renderClient(<Helmet link={[{ httpEquiv: 'won\'t work' }]} />);
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
@@ -73,8 +73,8 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags 'rel' and 'href' properly use 'rel' as the primary identification for this tag, regardless of ordering", () => {
-      render(
+    it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -100,7 +100,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -110,14 +110,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/newest');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
-    it("tags with rel='stylesheet' uses the href as the primary identification of the tag, regardless of ordering", () => {
-      render(
+    it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -139,7 +139,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -149,24 +149,24 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/style.css');
       expect(firstTag).toHaveAttribute('rel', 'stylesheet');
       expect(firstTag).toHaveAttribute('type', 'text/css');
       expect(firstTag).toHaveAttribute('media', 'all');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'stylesheet');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/inner.css');
       expect(secondTag).toHaveAttribute('type', 'text/css');
       expect(secondTag).toHaveAttribute('media', 'all');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets link tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -196,7 +196,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -206,30 +206,30 @@ describe('link tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/style.css');
       expect(firstTag).toHaveAttribute('rel', 'stylesheet');
       expect(firstTag).toHaveAttribute('type', 'text/css');
       expect(firstTag).toHaveAttribute('media', 'all');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
       expect(secondTag).toHaveAttribute('rel', 'canonical');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag.getAttribute).toBeDefined();
+      expect(thirdTag!.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('href', 'http://localhost/inner.css');
       expect(thirdTag).toHaveAttribute('rel', 'stylesheet');
       expect(thirdTag).toHaveAttribute('type', 'text/css');
       expect(thirdTag).toHaveAttribute('media', 'all');
-      expect(thirdTag.outerHTML).toMatchSnapshot();
+      expect(thirdTag?.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate link tags if specified in the same component', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
             {
@@ -241,7 +241,7 @@ describe('link tags', () => {
               href: 'http://localhost/helmet/component',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -251,20 +251,20 @@ describe('link tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'canonical');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate link tags with a single link tag in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -286,7 +286,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -296,14 +296,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single link tag with duplicate link tags in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             link={[
@@ -325,7 +325,7 @@ describe('link tags', () => {
               },
             ]}
           />
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -335,30 +335,30 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'canonical');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet
           link={[
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             { rel: 'icon', sizes: '192x192', href: null },
             {
               rel: 'canonical',
               href: 'http://localhost/helmet/component',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -368,20 +368,20 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
   });
 
   describe('Declarative API', () => {
     it('updates link tags', () => {
-      render(
+      renderClient(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -389,25 +389,27 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        tag =>
-          (tag.getAttribute('href') === 'http://localhost/style.css' &&
-            tag.getAttribute('rel') === 'stylesheet' &&
-            tag.getAttribute('type') === 'text/css') ||
-          (tag.getAttribute('href') === 'http://localhost/helmet' &&
-            tag.getAttribute('rel') === 'canonical')
+        (tag) => (
+          tag.getAttribute('href') === 'http://localhost/style.css'
+          && tag.getAttribute('rel') === 'stylesheet'
+          && tag.getAttribute('type') === 'text/css'
+        ) || (
+          tag.getAttribute('href') === 'http://localhost/helmet'
+          && tag.getAttribute('rel') === 'canonical'
+        ),
       );
 
       expect(filteredTags.length).toBeGreaterThanOrEqual(2);
     });
 
     it('clears all link tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet>
           <link href="http://localhost/helmet" rel="canonical" />
-        </Helmet>
+        </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
       const existingTags = [].slice.call(tagNodes);
@@ -416,14 +418,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'href' or 'rel' are not accepted, even if they are valid for other tags", () => {
-      render(
+    it('tags without \'href\' or \'rel\' are not accepted, even if they are valid for other tags', () => {
+      renderClient(
         <Helmet>
           <link
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             httpEquiv="won't work"
           />
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`);
@@ -433,8 +435,8 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags 'rel' and 'href' properly use 'rel' as the primary identification for this tag, regardless of ordering", () => {
-      render(
+    it('tags \'rel\' and \'href\' properly use \'rel\' as the primary identification for this tag, regardless of ordering', () => {
+      renderClient(
         <div>
           <Helmet>
             <link href="http://localhost/helmet" rel="canonical" />
@@ -445,7 +447,7 @@ describe('link tags', () => {
           <Helmet>
             <link href="http://localhost/helmet/newest" rel="canonical" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -455,14 +457,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/newest');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
-    it("tags with rel='stylesheet' uses the href as the primary identification of the tag, regardless of ordering", () => {
-      render(
+    it('tags with rel=\'stylesheet\' uses the href as the primary identification of the tag, regardless of ordering', () => {
+      renderClient(
         <div>
           <Helmet>
             <link href="http://localhost/style.css" rel="stylesheet" type="text/css" media="all" />
@@ -470,7 +472,7 @@ describe('link tags', () => {
           <Helmet>
             <link rel="stylesheet" href="http://localhost/inner.css" type="text/css" media="all" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -480,24 +482,24 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/style.css');
       expect(firstTag).toHaveAttribute('rel', 'stylesheet');
       expect(firstTag).toHaveAttribute('type', 'text/css');
       expect(firstTag).toHaveAttribute('media', 'all');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'stylesheet');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/inner.css');
       expect(secondTag).toHaveAttribute('type', 'text/css');
       expect(secondTag).toHaveAttribute('media', 'all');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('sets link tags based on deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -507,7 +509,7 @@ describe('link tags', () => {
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
             <link href="http://localhost/inner.css" rel="stylesheet" type="text/css" media="all" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -517,34 +519,34 @@ describe('link tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('href', 'http://localhost/style.css');
       expect(firstTag).toHaveAttribute('rel', 'stylesheet');
       expect(firstTag).toHaveAttribute('type', 'text/css');
       expect(firstTag).toHaveAttribute('media', 'all');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
       expect(secondTag).toHaveAttribute('rel', 'canonical');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag.getAttribute).toBeDefined();
+      expect(thirdTag!.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('href', 'http://localhost/inner.css');
       expect(thirdTag).toHaveAttribute('rel', 'stylesheet');
       expect(thirdTag).toHaveAttribute('type', 'text/css');
       expect(thirdTag).toHaveAttribute('media', 'all');
-      expect(thirdTag.outerHTML).toMatchSnapshot();
+      expect(thirdTag?.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate link tags if specified in the same component', () => {
-      render(
+      renderClient(
         <Helmet>
           <link rel="canonical" href="http://localhost/helmet" />
           <link rel="canonical" href="http://localhost/helmet/component" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -554,20 +556,20 @@ describe('link tags', () => {
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'canonical');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate link tags with a single link tag in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -576,7 +578,7 @@ describe('link tags', () => {
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -586,14 +588,14 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single link tag with duplicate link tags in a nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <link rel="canonical" href="http://localhost/helmet" />
@@ -602,7 +604,7 @@ describe('link tags', () => {
             <link rel="canonical" href="http://localhost/helmet/component" />
             <link rel="canonical" href="http://localhost/helmet/innercomponent" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -612,29 +614,29 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag.getAttribute).toBeDefined();
+      expect(secondTag!.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('rel', 'canonical');
       expect(secondTag).toHaveAttribute('href', 'http://localhost/helmet/innercomponent');
-      expect(secondTag.outerHTML).toMatchSnapshot();
+      expect(secondTag?.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <link
             rel="icon"
             sizes="192x192"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             href={null}
           />
           <link rel="canonical" href="http://localhost/helmet/component" />
-        </Helmet>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.querySelectorAll(`link[${HELMET_ATTRIBUTE}]`)];
@@ -644,10 +646,10 @@ describe('link tags', () => {
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag!.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('rel', 'canonical');
       expect(firstTag).toHaveAttribute('href', 'http://localhost/helmet/component');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
   });
 });

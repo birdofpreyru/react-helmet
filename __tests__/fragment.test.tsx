@@ -1,22 +1,19 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../src';
 
-import { render } from './utils';
-
-// TODO: This is confusing
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../jest/browser-utils';
 
 describe('fragments', () => {
   it('parses Fragments', () => {
     const title = 'Hello';
-    render(
+    renderClient(
       <Helmet>
         <>
           <title>{title}</title>
           <meta charSet="utf-8" />
         </>
-      </Helmet>
+      </Helmet>,
     );
 
     expect(document.title).toBe(title);
@@ -24,7 +21,7 @@ describe('fragments', () => {
 
   it('parses nested Fragments', () => {
     const title = 'Baz';
-    render(
+    renderClient(
       <Helmet>
         <>
           <title>Foo</title>
@@ -33,7 +30,7 @@ describe('fragments', () => {
             <title>{title}</title>
           </>
         </>
-      </Helmet>
+      </Helmet>,
     );
 
     expect(document.title).toBe(title);

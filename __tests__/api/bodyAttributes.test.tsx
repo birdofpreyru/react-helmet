@@ -1,11 +1,9 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import type { BodyProps } from '../../src';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('body attributes', () => {
   describe('valid attributes', () => {
@@ -18,36 +16,36 @@ describe('body attributes', () => {
       dir: 'rtl',
       draggable: 'true',
       dropzone: 'copy',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       hidden: 'true',
       id: 'test',
       lang: 'fr',
       spellcheck: 'true',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       style: 'color: green',
-      // @ts-ignore
+      // @ts-expect-error "pre-existing expection"
       tabIndex: '-1',
       title: 'test',
       translate: 'no',
     };
 
-    Object.keys(attributeList).forEach(attribute => {
+    Object.keys(attributeList).forEach((attribute) => {
       it(`${attribute}`, () => {
-        const attrValue = attributeList[attribute];
+        const attrValue = attributeList[`${attribute}` as keyof BodyProps] as string;
 
         const attr = {
           [attribute]: attrValue,
         };
 
-        render(
+        renderClient(
           <Helmet>
             <body {...attr} />
-          </Helmet>
+          </Helmet>,
         );
 
         const bodyTag = document.body;
 
-        const reactCompatAttr = HTML_TAG_MAP[attribute] || attribute;
+        const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
 
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
         expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, reactCompatAttr);
@@ -56,10 +54,10 @@ describe('body attributes', () => {
   });
 
   it('updates multiple body attributes', () => {
-    render(
+    renderClient(
       <Helmet>
         <body className="myClassName" tabIndex={-1} />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -70,7 +68,7 @@ describe('body attributes', () => {
   });
 
   it('sets attributes based on the deepest nested component', () => {
-    render(
+    renderClient(
       <div>
         <Helmet>
           <body lang="en" />
@@ -78,7 +76,7 @@ describe('body attributes', () => {
         <Helmet>
           <body lang="ja" />
         </Helmet>
-      </div>
+      </div>,
     );
 
     const bodyTag = document.body;
@@ -88,10 +86,10 @@ describe('body attributes', () => {
   });
 
   it('handles valueless attributes', () => {
-    render(
+    renderClient(
       <Helmet>
         <body hidden />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -101,13 +99,13 @@ describe('body attributes', () => {
   });
 
   it('clears body attributes that are handled within helmet', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
-    render(<Helmet />);
+    renderClient(<Helmet />);
 
     const bodyTag = document.body;
 
@@ -117,16 +115,16 @@ describe('body attributes', () => {
   });
 
   it('updates with multiple additions and removals - overwrite and new', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
-    render(
+    renderClient(
       <Helmet>
         <body lang="ja" id="body-tag" title="body tag" />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -139,16 +137,16 @@ describe('body attributes', () => {
   });
 
   it('updates with multiple additions and removals - all new', () => {
-    render(
+    renderClient(
       <Helmet>
         <body lang="en" hidden />
-      </Helmet>
+      </Helmet>,
     );
 
-    render(
+    renderClient(
       <Helmet>
         <body id="body-tag" title="body tag" />
-      </Helmet>
+      </Helmet>,
     );
 
     const bodyTag = document.body;
@@ -167,7 +165,7 @@ describe('body attributes', () => {
     });
 
     it('attributes are not cleared', () => {
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const bodyTag = document.body;
 
@@ -176,14 +174,16 @@ describe('body attributes', () => {
     });
 
     it('attributes are overwritten if specified in helmet', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <body
-            // @ts-ignore
+            // @ts-expect-error "pre-existing expection"
             test="helmet-attr"
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const bodyTag = document.body;
 
@@ -192,16 +192,18 @@ describe('body attributes', () => {
     });
 
     it('attributes are cleared once managed in helmet', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <body
-            // @ts-ignore
+            // @ts-expect-error "pre-existing expection"
             test="helmet-attr"
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const bodyTag = document.body;
 

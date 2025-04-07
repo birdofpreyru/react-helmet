@@ -1,10 +1,9 @@
-import type { ReactNode } from 'react';
-import React, { StrictMode } from 'react';
+import { type ReactNode, act, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import type { Root } from 'react-dom/client';
-import { act } from 'react-dom/test-utils';
 
 import Provider from '../src/Provider';
+import type { HelmetDataContext } from '../src/types';
 
 let root: Root | null = null;
 
@@ -15,9 +14,10 @@ export const unmount = () => {
   });
 };
 
-export const render = (node: ReactNode, context = {} as any) => {
+export const renderClient = (node: ReactNode, context = {}) => {
   if (!root) {
-    const elem = document.getElementById('mount') as HTMLElement;
+    const elem = document.getElementById('mount');
+    if (!elem) throw Error('Internal error');
     root = createRoot(elem);
   }
 
@@ -25,17 +25,19 @@ export const render = (node: ReactNode, context = {} as any) => {
     root?.render(
       <StrictMode>
         <Provider context={context}>{node}</Provider>
-      </StrictMode>
+      </StrictMode>,
     );
   });
 };
 
-export const renderContext = (node: ReactNode) => {
-  const context = {} as any;
-  render(node, context);
+export const renderContextClient = (node: ReactNode) => {
+  const context: HelmetDataContext = {};
+  renderClient(node, context);
   return context.helmet;
 };
 
+// TODO: Get rid of this method.
 export const isArray = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   asymmetricMatch: (actual: any) => Array.isArray(actual),
 };

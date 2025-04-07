@@ -1,23 +1,21 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('noscript tags', () => {
   describe('API', () => {
     it('updates noscript tags', () => {
-      render(
+      renderClient(
         <Helmet
           noscript={[
             {
               id: 'bar',
-              innerHTML: `<link rel="stylesheet" type="text/css" href="foo.css" />`,
+              innerHTML: '<link rel="stylesheet" type="text/css" href="foo.css" />',
             },
           ]}
-        />
+        />,
       );
 
       const existingTags = [...document.head.getElementsByTagName('noscript')];
@@ -25,14 +23,14 @@ describe('noscript tags', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      expect(firstTag.id).toBe('bar');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.id).toBe('bar');
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('clears all noscripts tags if none are specified', () => {
-      render(<Helmet noscript={[{ id: 'bar' }]} />);
+      renderClient(<Helmet noscript={[{ id: 'bar' }]} />);
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -40,8 +38,8 @@ describe('noscript tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'innerHTML' are not accepted", () => {
-      render(<Helmet noscript={[{ property: "won't work" }]} />);
+    it('tags without \'innerHTML\' are not accepted', () => {
+      renderClient(<Helmet noscript={[{ property: 'won\'t work' }]} />);
 
       const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
 
@@ -50,15 +48,14 @@ describe('noscript tags', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet
           noscript={[
             {
-              // @ts-ignore
               innerHTML: undefined,
             },
           ]}
-        />
+        />,
       );
 
       const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
@@ -70,10 +67,10 @@ describe('noscript tags', () => {
 
   describe('Declarative API', () => {
     it('updates noscript tags', () => {
-      render(
+      renderClient(
         <Helmet>
-          <noscript id="bar">{`<link rel="stylesheet" type="text/css" href="foo.css" />`}</noscript>
-        </Helmet>
+          <noscript id="bar">{'<link rel="stylesheet" type="text/css" href="foo.css" />'}</noscript>
+        </Helmet>,
       );
 
       const existingTags = [...document.head.getElementsByTagName('noscript')];
@@ -81,18 +78,18 @@ describe('noscript tags', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      expect(firstTag.id).toBe('bar');
-      expect(firstTag.outerHTML).toMatchSnapshot();
+      expect(firstTag?.id).toBe('bar');
+      expect(firstTag?.outerHTML).toMatchSnapshot();
     });
 
     it('clears all noscripts tags if none are specified', () => {
-      render(
+      renderClient(
         <Helmet>
           <noscript id="bar" />
-        </Helmet>
+        </Helmet>,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const existingTags = document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`);
 
@@ -100,12 +97,14 @@ describe('noscript tags', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it("tags without 'innerHTML' are not accepted", () => {
-      render(
+    it('tags without \'innerHTML\' are not accepted', () => {
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <noscript property="won't work" />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const existingTags = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);
 
@@ -114,10 +113,10 @@ describe('noscript tags', () => {
     });
 
     it('does not render tag when primary attribute is null', () => {
-      render(
+      renderClient(
         <Helmet>
           <noscript>{undefined}</noscript>
-        </Helmet>
+        </Helmet>,
       );
 
       const tagNodes = document.head.querySelectorAll(`noscript[${HELMET_ATTRIBUTE}]`);

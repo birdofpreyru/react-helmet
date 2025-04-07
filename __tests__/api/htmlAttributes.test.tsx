@@ -1,21 +1,19 @@
-import React from 'react';
+/** @jest-environment jsdom */
 
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { render } from '../utils';
-
-Helmet.defaultProps.defer = false;
+import { renderClient } from '../../jest/browser-utils';
 
 describe('html attributes', () => {
   describe('API', () => {
     it('updates html attributes', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
-            class: 'myClassName',
+            className: 'myClassName',
             lang: 'en',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -26,7 +24,7 @@ describe('html attributes', () => {
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet
             htmlAttributes={{
@@ -38,7 +36,7 @@ describe('html attributes', () => {
               lang: 'ja',
             }}
           />
-        </div>
+        </div>,
       );
 
       const htmlTag = document.documentElement;
@@ -48,12 +46,13 @@ describe('html attributes', () => {
     });
 
     it('handles valueless attributes', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -63,16 +62,17 @@ describe('html attributes', () => {
     });
 
     it('clears html attributes that are handled within helmet', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
-        />
+        />,
       );
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const htmlTag = document.documentElement;
 
@@ -82,23 +82,24 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
-        />
+        />,
       );
 
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'ja',
             id: 'html-tag',
             title: 'html tag',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -111,22 +112,23 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - all new', () => {
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             lang: 'en',
+            // @ts-expect-error "pre-existing"
             amp: undefined,
           }}
-        />
+        />,
       );
 
-      render(
+      renderClient(
         <Helmet
           htmlAttributes={{
             id: 'html-tag',
             title: 'html tag',
           }}
-        />
+        />,
       );
 
       const htmlTag = document.documentElement;
@@ -145,7 +147,7 @@ describe('html attributes', () => {
       });
 
       it('attributes are not cleared', () => {
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
@@ -154,12 +156,13 @@ describe('html attributes', () => {
       });
 
       it('attributes are overwritten if specified in helmet', () => {
-        render(
+        renderClient(
           <Helmet
             htmlAttributes={{
+              // @ts-expect-error "pre-existing"
               test: 'helmet-attr',
             }}
-          />
+          />,
         );
 
         const htmlTag = document.documentElement;
@@ -169,15 +172,16 @@ describe('html attributes', () => {
       });
 
       it('attributes are cleared once managed in helmet', () => {
-        render(
+        renderClient(
           <Helmet
             htmlAttributes={{
+              // @ts-expect-error "pre-existing"
               test: 'helmet-attr',
             }}
-          />
+          />,
         );
 
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
@@ -189,10 +193,10 @@ describe('html attributes', () => {
 
   describe('Declarative API', () => {
     it('updates html attributes', () => {
-      render(
+      renderClient(
         <Helmet>
           <html className="myClassName" lang="en" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -203,7 +207,7 @@ describe('html attributes', () => {
     });
 
     it('sets attributes based on the deepest nested component', () => {
-      render(
+      renderClient(
         <div>
           <Helmet>
             <html lang="en" />
@@ -211,7 +215,7 @@ describe('html attributes', () => {
           <Helmet>
             <html lang="ja" />
           </Helmet>
-        </div>
+        </div>,
       );
 
       const htmlTag = document.documentElement;
@@ -221,14 +225,16 @@ describe('html attributes', () => {
     });
 
     it('handles valueless attributes', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <html
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
       const htmlTag = document.documentElement;
 
@@ -237,17 +243,19 @@ describe('html attributes', () => {
     });
 
     it('clears html attributes that are handled within helmet', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
-      render(<Helmet />);
+      renderClient(<Helmet />);
 
       const htmlTag = document.documentElement;
 
@@ -257,20 +265,22 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - overwrite and new', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
-      render(
+      renderClient(
         <Helmet>
           <html lang="ja" id="html-tag" title="html tag" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -283,20 +293,22 @@ describe('html attributes', () => {
     });
 
     it('updates with multiple additions and removals - all new', () => {
-      render(
+      /* eslint-disable react/no-unknown-property */
+      renderClient(
         <Helmet>
           <html
             lang="en"
-            // @ts-ignore
+            // @ts-expect-error "pre-existing"
             amp
           />
-        </Helmet>
+        </Helmet>,
       );
+      /* eslint-enable react/no-unknown-property */
 
-      render(
+      renderClient(
         <Helmet>
           <html id="html-tag" title="html tag" />
-        </Helmet>
+        </Helmet>,
       );
 
       const htmlTag = document.documentElement;
@@ -315,7 +327,7 @@ describe('html attributes', () => {
       });
 
       it('are not cleared', () => {
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
@@ -324,14 +336,16 @@ describe('html attributes', () => {
       });
 
       it('overwritten if specified in helmet', () => {
-        render(
+        /* eslint-disable react/no-unknown-property */
+        renderClient(
           <Helmet>
             <html
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               test="helmet-attr"
             />
-          </Helmet>
+          </Helmet>,
         );
+        /* eslint-enable react/no-unknown-property */
 
         const htmlTag = document.documentElement;
 
@@ -340,16 +354,18 @@ describe('html attributes', () => {
       });
 
       it('cleared once it is managed in helmet', () => {
-        render(
+        /* eslint-disable react/no-unknown-property */
+        renderClient(
           <Helmet>
             <html
-              // @ts-ignore
+              // @ts-expect-error "pre-existing"
               test="helmet-attr"
             />
-          </Helmet>
+          </Helmet>,
         );
+        /* eslint-enable react/no-unknown-property */
 
-        render(<Helmet />);
+        renderClient(<Helmet />);
 
         const htmlTag = document.documentElement;
 
