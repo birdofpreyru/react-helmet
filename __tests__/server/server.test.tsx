@@ -221,6 +221,7 @@ describe('server', () => {
           <link rel="notImportant" href="https://www.chipotle.com" />
           <link rel="canonical" href="https://www.tacobell.com" />
           <meta property="og:title" content="A very important title" />
+          <meta name="description" content="Some Description" />
         </Helmet>,
       );
 
@@ -230,8 +231,14 @@ describe('server', () => {
       expect(head?.priority.toString()).toContain(
         'property="og:title" content="A very important title"',
       );
+      expect(head?.priority.toString()).toContain(
+        'name="description" content="Some Description"',
+      );
       expect(head?.meta.toString()).not.toContain(
         'property="og:title" content="A very important title"',
+      );
+      expect(head?.meta.toString()).not.toContain(
+        'name="description" content="Some Description"',
       );
     });
 
