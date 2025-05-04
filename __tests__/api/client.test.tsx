@@ -1,14 +1,14 @@
 /** @jest-environment jsdom */
 
-import type { OnChangeClientState } from '../../src';
+import { type OnChangeClientState, Helmet } from '../../src';
 
-import { Helmet } from '../../src';
 import { renderClient } from '../../jest/browser-utils';
 
 describe('onChangeClientState', () => {
   describe('API', () => {
+    // eslint-disable-next-line complexity
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       renderClient(
         <div>
           <Helmet
@@ -24,6 +24,7 @@ describe('onChangeClientState', () => {
                 charSet: 'utf-8',
               },
             ]}
+            onChangeClientState={onChange}
             script={[
               {
                 src: 'http://localhost/test.js',
@@ -31,31 +32,32 @@ describe('onChangeClientState', () => {
               },
             ]}
             title="Main Title"
-            onChangeClientState={onChange}
           />
         </div>,
       );
 
+      // TODO: Revisit.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
       const newState = onChange.mock.calls[0]?.[0];
       const addedTags = onChange.mock.calls[0]?.[1];
       const removedTags = onChange.mock.calls[0]?.[2];
 
-      expect(newState).toEqual(expect.objectContaining({ title: 'Main Title' }));
-      expect(newState?.baseTag[0]).toEqual(
+      expect(newState).toStrictEqual(expect.objectContaining({ title: 'Main Title' }));
+      expect(newState?.baseTag[0]).toStrictEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
         }),
       );
-      expect(newState?.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
-      expect(newState?.linkTags[0]).toEqual(
+      expect(newState?.metaTags[0]).toStrictEqual(expect.objectContaining({ charset: 'utf-8' }));
+      expect(newState?.linkTags[0]).toStrictEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
         }),
       );
-      expect(newState?.scriptTags[0]).toEqual(
+      expect(newState?.scriptTags[0]).toStrictEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
@@ -78,7 +80,7 @@ describe('onChangeClientState', () => {
       expect(addedTags?.scriptTags?.[0]).toBeDefined();
       expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(removedTags).toEqual({});
+      expect(removedTags).toStrictEqual({});
     });
 
     //   it('calls the deepest defined callback with the deepest state', () => {
@@ -101,8 +103,9 @@ describe('onChangeClientState', () => {
   });
 
   describe('Declarative API', () => {
+    // eslint-disable-next-line complexity
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<void, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       renderClient(
         <div>
           <Helmet onChangeClientState={onChange}>
@@ -115,26 +118,28 @@ describe('onChangeClientState', () => {
         </div>,
       );
 
+      // TODO: Revisit.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
       const newState = onChange.mock.calls[0]?.[0];
       const addedTags = onChange.mock.calls[0]?.[1];
       const removedTags = onChange.mock.calls[0]?.[2];
 
-      expect(newState).toEqual(expect.objectContaining({ title: 'Main Title' }));
-      expect(newState?.baseTag[0]).toEqual(
+      expect(newState).toStrictEqual(expect.objectContaining({ title: 'Main Title' }));
+      expect(newState?.baseTag[0]).toStrictEqual(
         expect.objectContaining({
           href: 'http://mysite.com/',
         }),
       );
-      expect(newState?.metaTags[0]).toEqual(expect.objectContaining({ charset: 'utf-8' }));
-      expect(newState?.linkTags[0]).toEqual(
+      expect(newState?.metaTags[0]).toStrictEqual(expect.objectContaining({ charset: 'utf-8' }));
+      expect(newState?.linkTags[0]).toStrictEqual(
         expect.objectContaining({
           href: 'http://localhost/helmet',
           rel: 'canonical',
         }),
       );
-      expect(newState?.scriptTags[0]).toEqual(
+      expect(newState?.scriptTags[0]).toStrictEqual(
         expect.objectContaining({
           src: 'http://localhost/test.js',
           type: 'text/javascript',
@@ -157,7 +162,7 @@ describe('onChangeClientState', () => {
       expect(addedTags?.scriptTags?.[0]).toBeDefined();
       expect(addedTags?.scriptTags?.[0]?.outerHTML).toMatchSnapshot();
 
-      expect(removedTags).toEqual({});
+      expect(removedTags).toStrictEqual({});
     });
   });
 

@@ -1,7 +1,6 @@
 /** @jest-environment jsdom */
 
-import type { BodyProps } from '../../src';
-import { Helmet } from '../../src';
+import { type BodyProps, Helmet } from '../../src';
 import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
 import { renderClient } from '../../jest/browser-utils';
 
@@ -30,7 +29,11 @@ describe('body attributes', () => {
     };
 
     Object.keys(attributeList).forEach((attribute) => {
+      // TODO: Revisit.
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
       it(`${attribute}`, () => {
+        // TODO: Revisit.
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
         const attrValue = attributeList[`${attribute}` as keyof BodyProps] as string;
 
         const attr = {
@@ -39,12 +42,15 @@ describe('body attributes', () => {
 
         renderClient(
           <Helmet>
+            {/* eslint-disable-next-line react/jsx-props-no-spreading */}
             <body {...attr} />
           </Helmet>,
         );
 
         const bodyTag = document.body;
 
+        // TODO: Revisit.
+        // eslint-disable-next-line jest/no-conditional-in-test
         const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
 
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
@@ -101,7 +107,7 @@ describe('body attributes', () => {
   it('clears body attributes that are handled within helmet', () => {
     renderClient(
       <Helmet>
-        <body lang="en" hidden />
+        <body hidden lang="en" />
       </Helmet>,
     );
 
@@ -117,13 +123,13 @@ describe('body attributes', () => {
   it('updates with multiple additions and removals - overwrite and new', () => {
     renderClient(
       <Helmet>
-        <body lang="en" hidden />
+        <body hidden lang="en" />
       </Helmet>,
     );
 
     renderClient(
       <Helmet>
-        <body lang="ja" id="body-tag" title="body tag" />
+        <body id="body-tag" lang="ja" title="body tag" />
       </Helmet>,
     );
 
@@ -133,13 +139,13 @@ describe('body attributes', () => {
     expect(bodyTag).toHaveAttribute('lang', 'ja');
     expect(bodyTag).toHaveAttribute('id', 'body-tag');
     expect(bodyTag).toHaveAttribute('title', 'body tag');
-    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,lang,title');
   });
 
   it('updates with multiple additions and removals - all new', () => {
     renderClient(
       <Helmet>
-        <body lang="en" hidden />
+        <body hidden lang="en" />
       </Helmet>,
     );
 

@@ -9,8 +9,8 @@ describe('server', () => {
       const head = renderContextServer(
         <Helmet
           htmlAttributes={{
-            lang: 'ga',
             className: 'myClassName',
+            lang: 'ga',
           }}
         />,
       );
@@ -19,6 +19,7 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
+      // eslint-disable-next-line react/jsx-props-no-spreading
       const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
@@ -28,8 +29,8 @@ describe('server', () => {
       const head = renderContextServer(
         <Helmet
           htmlAttributes={{
-            lang: 'ga',
             className: 'myClassName',
+            lang: 'ga',
           }}
         />,
       );
@@ -44,7 +45,7 @@ describe('server', () => {
     it('renders html attributes as component', () => {
       const head = renderContextServer(
         <Helmet>
-          <html lang="ga" className="myClassName" />
+          <html className="myClassName" lang="ga" />
         </Helmet>,
       );
 
@@ -52,6 +53,7 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
+      // eslint-disable-next-line react/jsx-props-no-spreading
       const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
@@ -60,7 +62,7 @@ describe('server', () => {
     it('renders html attributes as string', () => {
       const head = renderContextServer(
         <Helmet>
-          <html lang="ga" className="myClassName" />
+          <html className="myClassName" lang="ga" />
         </Helmet>,
       );
 

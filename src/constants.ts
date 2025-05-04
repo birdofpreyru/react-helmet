@@ -33,7 +33,6 @@ export enum TAG_NAMES {
 
 export const SEO_PRIORITY_TAGS = {
   link: { rel: ['amphtml', 'canonical', 'alternate'] },
-  script: { type: ['application/ld+json'] },
   meta: {
     charset: '',
     name: ['generator', 'robots', 'description'],
@@ -53,6 +52,7 @@ export const SEO_PRIORITY_TAGS = {
       'twitter:site',
     ],
   },
+  script: { type: ['application/ld+json'] },
 };
 
 export const VALID_TAG_NAMES = Object.values(TAG_NAMES);

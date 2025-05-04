@@ -1,3 +1,6 @@
+// TODO: Perhaps, just rename stuff with underscores.
+/* eslint-disable no-underscore-dangle */
+
 import { Helmet } from '../src';
 
 import { renderClient } from '../jest/browser-utils';
@@ -6,8 +9,7 @@ declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface Window {
     // pre-existing
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    __spy__: jest.Mock<any>;
+    __spy__: jest.Mock<unknown>;
   }
 }
 

@@ -65,9 +65,9 @@ describe('html attributes', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
-            lang: 'en',
             // @ts-expect-error "pre-existing"
             amp: undefined,
+            lang: 'en',
           }}
         />,
       );
@@ -85,9 +85,9 @@ describe('html attributes', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
-            lang: 'en',
             // @ts-expect-error "pre-existing"
             amp: undefined,
+            lang: 'en',
           }}
         />,
       );
@@ -95,8 +95,8 @@ describe('html attributes', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
-            lang: 'ja',
             id: 'html-tag',
+            lang: 'ja',
             title: 'html tag',
           }}
         />,
@@ -108,16 +108,16 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,lang,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
       renderClient(
         <Helmet
           htmlAttributes={{
-            lang: 'en',
             // @ts-expect-error "pre-existing"
             amp: undefined,
+            lang: 'en',
           }}
         />,
       );
@@ -228,6 +228,7 @@ describe('html attributes', () => {
       /* eslint-disable react/no-unknown-property */
       renderClient(
         <Helmet>
+          {/* eslint-disable jsx-a11y/html-has-lang */}
           <html
             // @ts-expect-error "pre-existing"
             amp
@@ -247,9 +248,9 @@ describe('html attributes', () => {
       renderClient(
         <Helmet>
           <html
-            lang="en"
             // @ts-expect-error "pre-existing"
             amp
+            lang="en"
           />
         </Helmet>,
       );
@@ -269,9 +270,9 @@ describe('html attributes', () => {
       renderClient(
         <Helmet>
           <html
-            lang="en"
             // @ts-expect-error "pre-existing"
             amp
+            lang="en"
           />
         </Helmet>,
       );
@@ -279,7 +280,7 @@ describe('html attributes', () => {
 
       renderClient(
         <Helmet>
-          <html lang="ja" id="html-tag" title="html tag" />
+          <html id="html-tag" lang="ja" title="html tag" />
         </Helmet>,
       );
 
@@ -289,7 +290,7 @@ describe('html attributes', () => {
       expect(htmlTag).toHaveAttribute('lang', 'ja');
       expect(htmlTag).toHaveAttribute('id', 'html-tag');
       expect(htmlTag).toHaveAttribute('title', 'html tag');
-      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,id,title');
+      expect(htmlTag).toHaveAttribute(HELMET_ATTRIBUTE, 'id,lang,title');
     });
 
     it('updates with multiple additions and removals - all new', () => {
@@ -297,9 +298,9 @@ describe('html attributes', () => {
       renderClient(
         <Helmet>
           <html
-            lang="en"
             // @ts-expect-error "pre-existing"
             amp
+            lang="en"
           />
         </Helmet>,
       );

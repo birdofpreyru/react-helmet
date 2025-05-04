@@ -9,7 +9,7 @@ describe('Helmet Data', () => {
   describe('browser', () => {
     it('renders without context', () => {
       renderClient(
-        <Helmet base={{ target: '_blank', href: 'http://localhost/' }} />,
+        <Helmet base={{ href: 'http://localhost/', target: '_blank' }} />,
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
@@ -27,7 +27,7 @@ describe('Helmet Data', () => {
     it('renders declarative without context', () => {
       renderClient(
         <Helmet>
-          <base target="_blank" href="http://localhost/" />
+          <base href="http://localhost/" target="_blank" />
         </Helmet>,
       );
 

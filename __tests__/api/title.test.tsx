@@ -131,7 +131,7 @@ describe('title', () => {
         />,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(document.title).toMatchSnapshot();
       expect(titleTag).toHaveAttribute('itemprop', 'name');
@@ -298,7 +298,7 @@ describe('title', () => {
         </Helmet>,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(document.title).toMatchSnapshot();
       expect(titleTag).toHaveAttribute('itemprop', 'name');
@@ -309,7 +309,7 @@ describe('title', () => {
 
       renderClient(
         <Helmet>
-          <meta name="keywords" content="stuff" />
+          <meta content="stuff" name="keywords" />
         </Helmet>,
       );
 
@@ -320,7 +320,7 @@ describe('title', () => {
       renderClient(
         <Helmet>
           <title>Existing Title</title>
-          <meta name="keywords" content="stuff" />
+          <meta content="stuff" name="keywords" />
         </Helmet>,
       );
 
@@ -329,7 +329,7 @@ describe('title', () => {
       renderClient(
         <Helmet>
           <title />
-          <meta name="keywords" content="stuff" />
+          <meta content="stuff" name="keywords" />
         </Helmet>,
       );
 

@@ -10,12 +10,12 @@ describe('server', () => {
         <Helmet
           style={[
             {
-              type: 'text/css',
               cssText: 'body {background-color: green;}',
+              type: 'text/css',
             },
             {
-              type: 'text/css',
               cssText: 'p {font-size: 12px;}',
+              type: 'text/css',
             },
           ]}
         />,
@@ -26,7 +26,7 @@ describe('server', () => {
 
       const styleComponent = head?.style.toComponent();
 
-      expect(styleComponent).toEqual(isArray);
+      expect(styleComponent).toStrictEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
       const markup = renderToStaticMarkup(styleComponent);
@@ -39,12 +39,12 @@ describe('server', () => {
         <Helmet
           style={[
             {
-              type: 'text/css',
               cssText: 'body {background-color: green;}',
+              type: 'text/css',
             },
             {
-              type: 'text/css',
               cssText: 'p {font-size: 12px;}',
+              type: 'text/css',
             },
           ]}
         />,
@@ -70,7 +70,7 @@ describe('server', () => {
 
       const styleComponent = head?.style.toComponent();
 
-      expect(styleComponent).toEqual(isArray);
+      expect(styleComponent).toStrictEqual(isArray);
       expect(styleComponent).toHaveLength(2);
 
       const markup = renderToStaticMarkup(styleComponent);

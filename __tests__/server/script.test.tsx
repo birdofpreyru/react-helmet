@@ -28,11 +28,11 @@ describe('server', () => {
       const scriptComponent
         = head?.script.toComponent() as unknown as Element[];
 
-      expect(scriptComponent).toEqual(isArray);
+      expect(scriptComponent).toStrictEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
 
       scriptComponent.forEach((script: Element) => {
-        expect(script).toEqual(expect.objectContaining({ type: 'script' }));
+        expect(script).toStrictEqual(expect.objectContaining({ type: 'script' }));
       });
 
       const markup = renderToStaticMarkup(scriptComponent as ReactNode);
@@ -77,11 +77,11 @@ describe('server', () => {
       const scriptComponent
         = head?.script.toComponent() as unknown as Element[];
 
-      expect(scriptComponent).toEqual(isArray);
+      expect(scriptComponent).toStrictEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
 
       scriptComponent.forEach((script: Element) => {
-        expect(script).toEqual(expect.objectContaining({ type: 'script' }));
+        expect(script).toStrictEqual(expect.objectContaining({ type: 'script' }));
       });
 
       const markup = renderToStaticMarkup(scriptComponent as ReactNode);

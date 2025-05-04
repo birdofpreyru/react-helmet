@@ -51,8 +51,8 @@ export type HelmetTags = {
 };
 
 export type HelmetDatum<T = ReactNode> = {
-  toString(this: void): string;
-  toComponent(this: void): T;
+  toString(): string;
+  toComponent(): T;
 };
 
 export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;

@@ -1,3 +1,5 @@
+/* global module */
+
 module.exports = {
   plugins: [
     '@babel/transform-runtime',

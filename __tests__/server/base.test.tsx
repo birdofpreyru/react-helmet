@@ -7,7 +7,7 @@ describe('server', () => {
   describe('API', () => {
     it('renders base tag as React component', () => {
       const head = renderContextServer(
-        <Helmet base={{ target: '_blank', href: 'http://localhost/' }} />,
+        <Helmet base={{ href: 'http://localhost/', target: '_blank' }} />,
       );
 
       expect(head?.base).toBeDefined();
@@ -15,11 +15,11 @@ describe('server', () => {
 
       const baseComponent = head?.base.toComponent();
 
-      expect(baseComponent).toEqual(isArray);
+      expect(baseComponent).toStrictEqual(isArray);
       expect(baseComponent).toHaveLength(1);
 
       (baseComponent as unknown as Element[]).forEach((base: Element) => {
-        expect(base).toEqual(expect.objectContaining({ type: 'base' }));
+        expect(base).toStrictEqual(expect.objectContaining({ type: 'base' }));
       });
 
       const markup = renderToStaticMarkup(baseComponent);
@@ -29,7 +29,7 @@ describe('server', () => {
 
     it('renders base tags as string', () => {
       const head = renderContextServer(
-        <Helmet base={{ target: '_blank', href: 'http://localhost/' }} />,
+        <Helmet base={{ href: 'http://localhost/', target: '_blank' }} />,
       );
       expect(head?.base).toBeDefined();
       expect(head?.base.toString).toBeDefined();
@@ -41,7 +41,7 @@ describe('server', () => {
     it('renders base tag as React component', () => {
       const head = renderContextServer(
         <Helmet>
-          <base target="_blank" href="http://localhost/" />
+          <base href="http://localhost/" target="_blank" />
         </Helmet>,
       );
 
@@ -50,11 +50,11 @@ describe('server', () => {
 
       const baseComponent = head?.base.toComponent();
 
-      expect(baseComponent).toEqual(isArray);
+      expect(baseComponent).toStrictEqual(isArray);
       expect(baseComponent).toHaveLength(1);
 
       (baseComponent as unknown as Element[]).forEach((base: Element) => {
-        expect(base).toEqual(expect.objectContaining({ type: 'base' }));
+        expect(base).toStrictEqual(expect.objectContaining({ type: 'base' }));
       });
 
       const markup = renderToStaticMarkup(baseComponent);
@@ -65,7 +65,7 @@ describe('server', () => {
     it('renders base tags as string', () => {
       const head = renderContextServer(
         <Helmet>
-          <base target="_blank" href="http://localhost/" />
+          <base href="http://localhost/" target="_blank" />
         </Helmet>,
       );
 

@@ -19,7 +19,7 @@ describe('title attributes', () => {
         />,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('itemprop', 'name');
       expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'itemprop');
@@ -30,8 +30,8 @@ describe('title attributes', () => {
         <div>
           <Helmet
             titleAttributes={{
-              lang: 'en',
               hidden: undefined,
+              lang: 'en',
             }}
           />
           <Helmet
@@ -42,11 +42,11 @@ describe('title attributes', () => {
         </div>,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('lang', 'ja');
       expect(titleTag).toHaveAttribute('hidden', '');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,hidden');
+      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden,lang');
     });
 
     it('handles valueless attributes', () => {
@@ -58,7 +58,7 @@ describe('title attributes', () => {
         />,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('hidden', '');
       expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
@@ -68,15 +68,15 @@ describe('title attributes', () => {
       renderClient(
         <Helmet
           titleAttributes={{
-            lang: 'en',
             hidden: undefined,
+            lang: 'en',
           }}
         />,
       );
 
       renderClient(<Helmet />);
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).not.toHaveAttribute('lang');
       expect(titleTag).not.toHaveAttribute('hidden');
@@ -92,7 +92,7 @@ describe('title attributes', () => {
         </Helmet>,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('itemprop', 'name');
       expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'itemprop');
@@ -102,7 +102,7 @@ describe('title attributes', () => {
       renderClient(
         <div>
           <Helmet>
-            <title lang="en" hidden />
+            <title hidden lang="en" />
           </Helmet>
           <Helmet>
             <title lang="ja" />
@@ -110,11 +110,11 @@ describe('title attributes', () => {
         </div>,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('lang', 'ja');
       expect(titleTag).toHaveAttribute('hidden', 'true');
-      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'lang,hidden');
+      expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden,lang');
     });
 
     it('handles valueless attributes', () => {
@@ -124,7 +124,7 @@ describe('title attributes', () => {
         </Helmet>,
       );
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).toHaveAttribute('hidden', 'true');
       expect(titleTag).toHaveAttribute(HELMET_ATTRIBUTE, 'hidden');
@@ -133,13 +133,13 @@ describe('title attributes', () => {
     it('clears title attributes that are handled within helmet', () => {
       renderClient(
         <Helmet>
-          <title lang="en" hidden />
+          <title hidden lang="en" />
         </Helmet>,
       );
 
       renderClient(<Helmet />);
 
-      const titleTag = document.getElementsByTagName('title')[0];
+      const [titleTag] = document.getElementsByTagName('title');
 
       expect(titleTag).not.toHaveAttribute('lang');
       expect(titleTag).not.toHaveAttribute('hidden');

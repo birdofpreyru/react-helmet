@@ -26,8 +26,8 @@ describe('script tags', () => {
               type: 'text/javascript',
             },
             {
-              type: 'application/ld+json',
               innerHTML: scriptInnerHTML,
+              type: 'application/ld+json',
             },
           ]}
         />,
@@ -38,12 +38,16 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test.js'
           && tag.getAttribute('type') === 'text/javascript'
         ) || (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test2.js'
           && tag.getAttribute('type') === 'text/javascript'
+          // eslint-disable-next-line jest/no-conditional-in-test
         ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
@@ -125,8 +129,8 @@ describe('script tags', () => {
         <Helmet
           script={[
             {
-              src: 'foo.js',
               async: undefined,
+              src: 'foo.js',
             },
           ]}
         />,
@@ -196,12 +200,16 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test.js'
           && tag.getAttribute('type') === 'text/javascript'
         ) || (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test2.js'
           && tag.getAttribute('type') === 'text/javascript'
+          // eslint-disable-next-line jest/no-conditional-in-test
         ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
@@ -270,7 +278,7 @@ describe('script tags', () => {
     it('sets undefined attribute values to empty strings', () => {
       renderClient(
         <Helmet>
-          <script src="foo.js" async={undefined} />
+          <script async={undefined} src="foo.js" />
         </Helmet>,
       );
 

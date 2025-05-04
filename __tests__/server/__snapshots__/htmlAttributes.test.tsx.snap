@@ -2,8 +2,8 @@
 
 exports[`server API renders html attributes as component 1`] = `"<html lang="ga" class="myClassName"><head></head></html>"`;
 
-exports[`server API renders html attributes as string 1`] = `"lang="ga" class="myClassName""`;
+exports[`server API renders html attributes as string 1`] = `"class="myClassName" lang="ga""`;
 
 exports[`server Declarative API renders html attributes as component 1`] = `"<html lang="ga" class="myClassName"><head></head></html>"`;
 
-exports[`server Declarative API renders html attributes as string 1`] = `"lang="ga" class="myClassName""`;
+exports[`server Declarative API renders html attributes as string 1`] = `"class="myClassName" lang="ga""`;

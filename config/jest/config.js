@@ -1,3 +1,5 @@
+/* global module */
+
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
@@ -5,18 +7,18 @@ module.exports = {
   ],
   coverageDirectory: '__coverage__',
   rootDir: '../..',
+  setupFilesAfterEnv: [
+    '<rootDir>/config/jest/setup.ts',
+  ],
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
   testMatch: ['**/__tests__/**/*.{js,jsx,mjs,ts,tsx}'],
   testPathIgnorePatterns: [
     '/__assets__/',
     '/node_modules/',
   ],
-  testEnvironmentOptions: {
-    url: 'http://localhost',
-  },
   transform: {
     '\\.(m?(j|t)sx?)$': 'babel-jest',
   },
-  setupFilesAfterEnv: [
-    '<rootDir>/config/jest/setup.ts',
-  ],
 };

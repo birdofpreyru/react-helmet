@@ -12,17 +12,17 @@ describe('meta tags', () => {
           meta={[
             { charSet: 'utf-8' },
             {
-              name: 'description',
               content: 'Test description',
+              name: 'description',
             },
             {
-              httpEquiv: 'content-type',
               content: 'text/html',
+              httpEquiv: 'content-type',
             },
-            { property: 'og:type', content: 'article' },
+            { content: 'article', property: 'og:type' },
             {
-              itemProp: 'name',
               content: 'Test name itemprop',
+              itemProp: 'name',
             },
           ]}
         />,
@@ -33,16 +33,20 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => tag.getAttribute('charset') === 'utf-8'
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('name') === 'description'
             && tag.getAttribute('content') === 'Test description'
           )
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('http-equiv') === 'content-type'
             && tag.getAttribute('content') === 'text/html'
           )
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('itemprop') === 'name'
             && tag.getAttribute('content') === 'Test name itemprop'
           ),
@@ -52,7 +56,7 @@ describe('meta tags', () => {
     });
 
     it('clears all meta tags if none are specified', () => {
-      renderClient(<Helmet meta={[{ name: 'description', content: 'Test description' }]} />);
+      renderClient(<Helmet meta={[{ content: 'Test description', name: 'description' }]} />);
 
       renderClient(<Helmet />);
 
@@ -87,18 +91,18 @@ describe('meta tags', () => {
             meta={[
               { charSet: 'utf-8' },
               {
-                name: 'description',
                 content: 'Test description',
+                name: 'description',
               },
             ]}
           />
           <Helmet
             meta={[
               {
-                name: 'description',
                 content: 'Inner description',
+                name: 'description',
               },
-              { name: 'keywords', content: 'test,meta,tags' },
+              { content: 'test,meta,tags', name: 'keywords' },
             ]}
           />
         </div>,
@@ -133,12 +137,12 @@ describe('meta tags', () => {
         <Helmet
           meta={[
             {
-              name: 'description',
               content: 'Test description',
+              name: 'description',
             },
             {
-              name: 'description',
               content: 'Duplicate description',
+              name: 'description',
             },
           ]}
         />,
@@ -169,20 +173,20 @@ describe('meta tags', () => {
           <Helmet
             meta={[
               {
-                name: 'description',
                 content: 'Test description',
+                name: 'description',
               },
               {
-                name: 'description',
                 content: 'Duplicate description',
+                name: 'description',
               },
             ]}
           />
           <Helmet
             meta={[
               {
-                name: 'description',
                 content: 'Inner description',
+                name: 'description',
               },
             ]}
           />
@@ -208,20 +212,20 @@ describe('meta tags', () => {
           <Helmet
             meta={[
               {
-                name: 'description',
                 content: 'Test description',
+                name: 'description',
               },
             ]}
           />
           <Helmet
             meta={[
               {
-                name: 'description',
                 content: 'Inner description',
+                name: 'description',
               },
               {
-                name: 'description',
                 content: 'Inner duplicate description',
+                name: 'description',
               },
             ]}
           />
@@ -252,8 +256,8 @@ describe('meta tags', () => {
         <Helmet
           meta={[
             {
-              name: undefined,
               content: 'Inner duplicate description',
+              name: undefined,
             },
           ]}
         />,
@@ -267,13 +271,15 @@ describe('meta tags', () => {
 
     it('fails gracefully when meta is wrong shape', () => {
       const originalConsole = global.console;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.warn = jest.fn();
 
       renderClient(
         <Helmet
           meta={
             // @ts-expect-error "pre-existing"
-            { name: 'title', content: 'some title' }
+            { content: 'some title', name: 'title' }
           }
         />,
       );
@@ -283,8 +289,12 @@ describe('meta tags', () => {
 
       expect(existingTags).toHaveLength(0);
 
+      // TODO: Revise.
+      // eslint-disable-next-line no-console, jest/prefer-called-with
       expect(console.warn).toHaveBeenCalled();
 
+      // TODO: Revise
+      // eslint-disable-next-line no-console, jest/prefer-jest-mocked
       expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0])
         .toMatchSnapshot();
 
@@ -297,10 +307,10 @@ describe('meta tags', () => {
       renderClient(
         <Helmet>
           <meta charSet="utf-8" />
-          <meta name="description" content="Test description" />
-          <meta httpEquiv="content-type" content="text/html" />
-          <meta property="og:type" content="article" />
-          <meta itemProp="name" content="Test name itemprop" />
+          <meta content="Test description" name="description" />
+          <meta content="text/html" httpEquiv="content-type" />
+          <meta content="article" property="og:type" />
+          <meta content="Test name itemprop" itemProp="name" />
         </Helmet>,
       );
 
@@ -309,16 +319,20 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => tag.getAttribute('charset') === 'utf-8'
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('name') === 'description'
             && tag.getAttribute('content') === 'Test description'
           )
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('http-equiv') === 'content-type'
             && tag.getAttribute('content') === 'text/html'
           )
           || (
+            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('itemprop') === 'name'
             && tag.getAttribute('content') === 'Test name itemprop'
           ),
@@ -330,7 +344,7 @@ describe('meta tags', () => {
     it('clears all meta tags if none are specified', () => {
       renderClient(
         <Helmet>
-          <meta name="description" content="Test description" />
+          <meta content="Test description" name="description" />
         </Helmet>,
       );
 
@@ -363,11 +377,11 @@ describe('meta tags', () => {
         <div>
           <Helmet>
             <meta charSet="utf-8" />
-            <meta name="description" content="Test description" />
+            <meta content="Test description" name="description" />
           </Helmet>
           <Helmet>
-            <meta name="description" content="Inner description" />
-            <meta name="keywords" content="test,meta,tags" />
+            <meta content="Inner description" name="description" />
+            <meta content="test,meta,tags" name="keywords" />
           </Helmet>
         </div>,
       );
@@ -399,8 +413,8 @@ describe('meta tags', () => {
     it('allows duplicate meta tags if specified in the same component', () => {
       renderClient(
         <Helmet>
-          <meta name="description" content="Test description" />
-          <meta name="description" content="Duplicate description" />
+          <meta content="Test description" name="description" />
+          <meta content="Duplicate description" name="description" />
         </Helmet>,
       );
 
@@ -427,11 +441,11 @@ describe('meta tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <meta name="description" content="Test description" />
-            <meta name="description" content="Duplicate description" />
+            <meta content="Test description" name="description" />
+            <meta content="Duplicate description" name="description" />
           </Helmet>
           <Helmet>
-            <meta name="description" content="Inner description" />
+            <meta content="Inner description" name="description" />
           </Helmet>
         </div>,
       );
@@ -453,11 +467,11 @@ describe('meta tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <meta name="description" content="Test description" />
+            <meta content="Test description" name="description" />
           </Helmet>
           <Helmet>
-            <meta name="description" content="Inner description" />
-            <meta name="description" content="Inner duplicate description" />
+            <meta content="Inner description" name="description" />
+            <meta content="Inner duplicate description" name="description" />
           </Helmet>
         </div>,
       );
@@ -484,7 +498,7 @@ describe('meta tags', () => {
     it('does not render tag when primary attribute is null', () => {
       renderClient(
         <Helmet>
-          <meta name={undefined} content="Inner duplicate description" />
+          <meta content="Inner duplicate description" name={undefined} />
         </Helmet>,
       );
 

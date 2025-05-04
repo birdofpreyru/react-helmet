@@ -44,6 +44,7 @@ function getInnermostProperty<T extends keyof HelmetProps>(
     const value = props[i]![1][propName];
     if (value !== undefined) return value;
   }
+  return undefined;
 }
 
 export function getTitleFromPropsList(
@@ -104,9 +105,8 @@ export function aggregateBaseProps(
     const res = props[i]![1].base;
     if (res?.href) return res;
   }
+  return undefined;
 }
-
-const warn = (msg: string) => console && typeof console.warn === 'function' && console.warn(msg);
 
 /**
  * Determines the primary key in the given `props` object, accoding to the given
@@ -171,7 +171,8 @@ export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
         return true;
       }
       if (typeof props[tagName] !== 'undefined') {
-        warn(
+        // eslint-disable-next-line no-console
+        console.warn(
           `Helmet: ${tagName} should be of type "Array". Instead found type "${typeof props[
             tagName
           ]}"`,
@@ -183,7 +184,7 @@ export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
     .reverse()
 
     // From last to first.
-    .reduce<PropArrayItem<T>[]>((approvedTags, instanceTags) => {
+    .reduce<Array<PropArrayItem<T>>>((approvedTags, instanceTags) => {
       const instanceSeenTags: SeenTags<T> = {};
 
       instanceTags!.filter((tag: PropArrayItem<T>) => {
@@ -246,7 +247,7 @@ function getAnyTrueFromPropsArray<T extends keyof HelmetPropBooleans>(
   return false;
 }
 
-export function flattenArray(possibleArray: string[] | string) {
+export function flattenArray(possibleArray: string[] | string): string {
   return Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray;
 }
 
@@ -268,8 +269,8 @@ export function prioritizer<T extends keyof HelmetPropArrays>(
   propsArray: HelmetPropArrays[T],
   propsToMatch: MatchProps,
 ): {
-    default: PropArrayItem<T>[];
-    priority: PropArrayItem<T>[];
+    default: Array<PropArrayItem<T>>;
+    priority: Array<PropArrayItem<T>>;
   } {
   const res = {
     default: Array<PropArrayItem<T>>(),
@@ -289,12 +290,12 @@ export function prioritizer<T extends keyof HelmetPropArrays>(
   return res;
 }
 
-export const without = (obj: PropList, key: string) => {
-  return {
-    ...obj,
-    [key]: undefined,
-  };
-};
+// TODO: Perhaps, we better destruct the `obj` first, and then create the result
+// not including the key altogether?
+export const without = (obj: PropList, key: string): PropList => ({
+  ...obj,
+  [key]: undefined,
+});
 
 type UnknownObject = Record<number | string | symbol, unknown>;
 
@@ -314,11 +315,11 @@ export function cloneProps(props: HelmetProps): HelmetProps {
 /**
  * Merges `source` props into `target`, mutating the `target` object.
  */
-export function mergeProps(target: HelmetProps, source: HelmetProps) {
+export function mergeProps(target: HelmetProps, source: HelmetProps): void {
   const tgt = target as UnknownObject;
   for (const [key, srcValue] of Object.entries(source)) {
     if (Array.isArray(srcValue)) {
-      const tgtValue = tgt[key] as unknown[];
+      const tgtValue = tgt[key] as unknown[] | undefined;
       tgt[key] = tgtValue ? tgtValue.concat(srcValue) : srcValue;
     } else tgt[key] = srcValue;
   }
@@ -332,9 +333,9 @@ export function pushToPropArray<K extends keyof HelmetPropArrays>(
   target: HelmetProps,
   array: K,
   item: Exclude<HelmetPropArrays[K], undefined>[number],
-) {
+): void {
   type A = Array<typeof item>;
-  const tgt = target[array] as A;
+  const tgt = target[array] as A | undefined;
   if (tgt) tgt.push(item);
   else (target[array] as A) = [item];
 }

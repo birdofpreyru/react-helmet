@@ -34,6 +34,7 @@ type TagUpdateList = Record<string, TagUpdates>;
 function updateTags(type: string, tags: HelmetChildProps[]) {
   // TODO: Do we really need the fallback here? document.head is supposed to be
   // always defined.
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   const headElement = document.head || document.querySelector(TAG_NAMES.HEAD);
 
   const tagNodes = headElement.querySelectorAll<HTMLElement>(`${type}[${HELMET_ATTRIBUTE}]`);
@@ -46,6 +47,8 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     // TODO: Well, the typing within this block is bad, and should be improved.
     for (const [key, value] of Object.entries(tag)) {
+      // TODO: Revisit layer.
+      // eslint-disable-next-line prefer-object-has-own
       if (Object.prototype.hasOwnProperty.call(tag, key)) {
         const name = HTML_TAG_MAP[key] ?? key;
         if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
@@ -63,7 +66,7 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
             ));
           }
         } else {
-          newElement.setAttribute(name, (value as string) ?? '');
+          newElement.setAttribute(name, (value as string | undefined) ?? '');
         }
       }
     }
@@ -96,13 +99,13 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
   // that have been removed from DOM already?
   return {
     allTags,
-    oldTags,
     newTags,
+    oldTags,
   };
 }
 
 function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
-  const elementTag = document.getElementsByTagName(tagName)[0];
+  const [elementTag] = document.getElementsByTagName(tagName);
 
   if (!elementTag) {
     return;
@@ -127,7 +130,7 @@ function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
       // TODO: That ?? '' piece is here to keep the legacy behavior for now,
       // I guess later we should prefer to consider attrbiutes with "undefined"
       // value as not set.
-      elementTag.setAttribute(attr, value as string ?? '');
+      elementTag.setAttribute(attr, value as string | undefined ?? '');
     }
 
     if (!helmetAttributes.includes(attr)) {
@@ -165,7 +168,7 @@ function updateTitle(
 export function commitTagChanges(
   newState: AggregatedState,
   firstRender: boolean,
-) {
+): void {
   const {
     base,
     bodyAttributes,

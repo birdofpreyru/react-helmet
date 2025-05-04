@@ -31,13 +31,17 @@ function assertChildType(
   childType: ReactElement['type'],
   nestedChildren: ReactNode,
 ): asserts childType is TAG_NAMES {
-  if (typeof childType !== 'string') throw Error(
-    'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
-  );
+  if (typeof childType !== 'string') {
+    throw Error(
+      'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
+    );
+  }
 
-  if (!(VALID_TAG_NAMES as string[]).includes(childType)) throw Error(
-    `Only elements types ${VALID_TAG_NAMES.join(', ')} are allowed. Helmet does not support rendering <${childType}> elements. Refer to our API for more information.`,
-  );
+  if (!(VALID_TAG_NAMES as string[]).includes(childType)) {
+    throw Error(
+      `Only elements types ${VALID_TAG_NAMES.join(', ')} are allowed. Helmet does not support rendering <${childType}> elements. Refer to our API for more information.`,
+    );
+  }
 
   if (
     !nestedChildren
@@ -62,9 +66,12 @@ function assertChildType(
  */
 function getPropName(key: string): keyof HelmetChildProps {
   const res = REACT_TAG_MAP[key];
-  if (res) console.warn(
-    `"${key}" is not a valid JSX prop, replace it by "${res}"`,
-  );
+  if (res) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `"${key}" is not a valid JSX prop, replace it by "${res}"`,
+    );
+  }
   return (res ?? key) as keyof HelmetChildProps;
 }
 
@@ -85,6 +92,9 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
   for (const item of Object.values(props)) {
     if (Array.isArray(item)) {
       for (const it of item) {
+        // TODO: This condition is actually needed to prevent some test failures,
+        // I guess, something is messed up with related types?
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (it) {
           for (const key of Object.keys(it)) {
             const p = getPropName(key);
@@ -107,12 +117,15 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
     }
   }
 
+  // eslint-disable-next-line complexity
   Children.forEach(props.children, (child) => {
     if (child === undefined || child === null) return;
 
-    if (typeof child !== 'object' || !('props' in child)) throw Error(
-      `"${typeof child}" is not a valid <Helmet> descendant`,
-    );
+    if (typeof child !== 'object' || !('props' in child)) {
+      throw Error(
+        `"${typeof child}" is not a valid <Helmet> descendant`,
+      );
+    }
 
     let nestedChildren: ReactNode;
     const childProps: HelmetChildProps = {};
@@ -127,10 +140,11 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
     if (typeof type === 'symbol') type = (type as 'symbol').toString();
     assertChildType(type, nestedChildren);
 
-    function assertStringChild(child: ReactNode): asserts child is string {
-      if (typeof child !== 'string') {
+    function assertStringChild(child2: ReactNode): asserts child2 is string {
+      if (typeof child2 !== 'string') {
         // TODO: We want to throw, but the legacy code did not, so we won't for
         // now.
+        // eslint-disable-next-line no-console
         console.error(`child of ${type as string} element should be a string`);
 
         /*
@@ -162,9 +176,11 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
 
       case TAG_NAMES.LINK:
       case TAG_NAMES.META:
-        if (nestedChildren) throw Error(
-          `<${type} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
-        );
+        if (nestedChildren) {
+          throw Error(
+            `<${type} /> elements are self-closing and can not contain children. Refer to our API for more information.`,
+          );
+        }
         pushToPropArray(res, type, childProps as LinkProps | MetaProps);
         break;
 
@@ -194,6 +210,7 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
         else if (Array.isArray(nestedChildren)) res.title = nestedChildren.join('');
         break;
 
+      case TAG_NAMES.HEAD:
       default: {
         // TODO: Perhaps, we should remove HEAD entry from TAG_NAMES?
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -209,9 +226,11 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
 const Helmet: FunctionComponent<HelmetProps> = (props) => {
   const context = use(Context);
 
-  if (!context) throw Error(
-    '<Helmet> component must be within a <HelmetProvider> children tree',
-  );
+  if (!context) {
+    throw Error(
+      '<Helmet> component must be within a <HelmetProvider> children tree',
+    );
+  }
 
   const id = useId();
 
@@ -231,7 +250,9 @@ const Helmet: FunctionComponent<HelmetProps> = (props) => {
     context.clientApply();
   });
 
-  useEffect(() => () => context.update(id, undefined), [context, id]);
+  useEffect(() => () => {
+    context.update(id, undefined);
+  }, [context, id]);
 
   return null;
 };

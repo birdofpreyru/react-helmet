@@ -28,11 +28,14 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('href') === 'http://localhost/style.css'
           && tag.getAttribute('rel') === 'stylesheet'
           && tag.getAttribute('type') === 'text/css'
         ) || (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('href') === 'http://localhost/helmet'
           && tag.getAttribute('rel') === 'canonical'
         ),
@@ -87,8 +90,8 @@ describe('link tags', () => {
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/new',
+                rel: 'canonical',
               },
             ]}
           />
@@ -123,19 +126,19 @@ describe('link tags', () => {
             link={[
               {
                 href: 'http://localhost/style.css',
+                media: 'all',
                 rel: 'stylesheet',
                 type: 'text/css',
-                media: 'all',
               },
             ]}
           />
           <Helmet
             link={[
               {
-                rel: 'stylesheet',
                 href: 'http://localhost/inner.css',
-                type: 'text/css',
                 media: 'all',
+                rel: 'stylesheet',
+                type: 'text/css',
               },
             ]}
           />
@@ -171,28 +174,28 @@ describe('link tags', () => {
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet',
+                rel: 'canonical',
               },
               {
                 href: 'http://localhost/style.css',
+                media: 'all',
                 rel: 'stylesheet',
                 type: 'text/css',
-                media: 'all',
               },
             ]}
           />
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/innercomponent',
+                rel: 'canonical',
               },
               {
                 href: 'http://localhost/inner.css',
+                media: 'all',
                 rel: 'stylesheet',
                 type: 'text/css',
-                media: 'all',
               },
             ]}
           />
@@ -233,12 +236,12 @@ describe('link tags', () => {
         <Helmet
           link={[
             {
-              rel: 'canonical',
               href: 'http://localhost/helmet',
+              rel: 'canonical',
             },
             {
-              rel: 'canonical',
               href: 'http://localhost/helmet/component',
+              rel: 'canonical',
             },
           ]}
         />,
@@ -269,20 +272,20 @@ describe('link tags', () => {
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet',
+                rel: 'canonical',
               },
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/component',
+                rel: 'canonical',
               },
             ]}
           />
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/innercomponent',
+                rel: 'canonical',
               },
             ]}
           />
@@ -308,20 +311,20 @@ describe('link tags', () => {
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet',
+                rel: 'canonical',
               },
             ]}
           />
           <Helmet
             link={[
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/component',
+                rel: 'canonical',
               },
               {
-                rel: 'canonical',
                 href: 'http://localhost/helmet/innercomponent',
+                rel: 'canonical',
               },
             ]}
           />
@@ -352,10 +355,10 @@ describe('link tags', () => {
         <Helmet
           link={[
             // @ts-expect-error "pre-existing"
-            { rel: 'icon', sizes: '192x192', href: null },
+            { href: null, rel: 'icon', sizes: '192x192' },
             {
-              rel: 'canonical',
               href: 'http://localhost/helmet/component',
+              rel: 'canonical',
             },
           ]}
         />,
@@ -389,11 +392,14 @@ describe('link tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
+        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('href') === 'http://localhost/style.css'
           && tag.getAttribute('rel') === 'stylesheet'
           && tag.getAttribute('type') === 'text/css'
         ) || (
+          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('href') === 'http://localhost/helmet'
           && tag.getAttribute('rel') === 'canonical'
         ),
@@ -442,7 +448,7 @@ describe('link tags', () => {
             <link href="http://localhost/helmet" rel="canonical" />
           </Helmet>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet/new" />
+            <link href="http://localhost/helmet/new" rel="canonical" />
           </Helmet>
           <Helmet>
             <link href="http://localhost/helmet/newest" rel="canonical" />
@@ -467,10 +473,10 @@ describe('link tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <link href="http://localhost/style.css" rel="stylesheet" type="text/css" media="all" />
+            <link href="http://localhost/style.css" media="all" rel="stylesheet" type="text/css" />
           </Helmet>
           <Helmet>
-            <link rel="stylesheet" href="http://localhost/inner.css" type="text/css" media="all" />
+            <link href="http://localhost/inner.css" media="all"rel="stylesheet" type="text/css" />
           </Helmet>
         </div>,
       );
@@ -502,12 +508,12 @@ describe('link tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet" />
-            <link href="http://localhost/style.css" rel="stylesheet" type="text/css" media="all" />
+            <link href="http://localhost/helmet" rel="canonical" />
+            <link href="http://localhost/style.css" media="all" rel="stylesheet" type="text/css" />
           </Helmet>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet/innercomponent" />
-            <link href="http://localhost/inner.css" rel="stylesheet" type="text/css" media="all" />
+            <link href="http://localhost/helmet/innercomponent" rel="canonical" />
+            <link href="http://localhost/inner.css" media="all" rel="stylesheet" type="text/css" />
           </Helmet>
         </div>,
       );
@@ -544,8 +550,8 @@ describe('link tags', () => {
     it('allows duplicate link tags if specified in the same component', () => {
       renderClient(
         <Helmet>
-          <link rel="canonical" href="http://localhost/helmet" />
-          <link rel="canonical" href="http://localhost/helmet/component" />
+          <link href="http://localhost/helmet" rel="canonical" />
+          <link href="http://localhost/helmet/component" rel="canonical" />
         </Helmet>,
       );
 
@@ -572,11 +578,11 @@ describe('link tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet" />
-            <link rel="canonical" href="http://localhost/helmet/component" />
+            <link href="http://localhost/helmet" rel="canonical" />
+            <link href="http://localhost/helmet/component" rel="canonical" />
           </Helmet>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet/innercomponent" />
+            <link href="http://localhost/helmet/innercomponent" rel="canonical" />
           </Helmet>
         </div>,
       );
@@ -598,11 +604,11 @@ describe('link tags', () => {
       renderClient(
         <div>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet" />
+            <link href="http://localhost/helmet" rel="canonical" />
           </Helmet>
           <Helmet>
-            <link rel="canonical" href="http://localhost/helmet/component" />
-            <link rel="canonical" href="http://localhost/helmet/innercomponent" />
+            <link href="http://localhost/helmet/component" rel="canonical" />
+            <link href="http://localhost/helmet/innercomponent" rel="canonical" />
           </Helmet>
         </div>,
       );
@@ -630,12 +636,12 @@ describe('link tags', () => {
       renderClient(
         <Helmet>
           <link
-            rel="icon"
-            sizes="192x192"
             // @ts-expect-error "pre-existing"
             href={null}
+            rel="icon"
+            sizes="192x192"
           />
-          <link rel="canonical" href="http://localhost/helmet/component" />
+          <link href="http://localhost/helmet/component" rel="canonical" />
         </Helmet>,
       );
 

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Helmet Data browser renders declarative without context 1`] = `"<base target="_blank" href="http://localhost/" data-rh="true">"`;
+exports[`Helmet Data browser renders declarative without context 1`] = `"<base href="http://localhost/" target="_blank" data-rh="true">"`;
 
-exports[`Helmet Data browser renders without context 1`] = `"<base target="_blank" href="http://localhost/" data-rh="true">"`;
+exports[`Helmet Data browser renders without context 1`] = `"<base href="http://localhost/" target="_blank" data-rh="true">"`;
 
 exports[`Helmet Data browser sets base tag based on deepest nested component 1`] = `"<base href="http://mysite.com/public" data-rh="true">"`;

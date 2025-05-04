@@ -28,11 +28,11 @@ describe('server', () => {
       const noscriptComponent
         = head?.noscript.toComponent() as unknown as Element[];
 
-      expect(noscriptComponent).toEqual(isArray);
+      expect(noscriptComponent).toStrictEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
 
       noscriptComponent.forEach((noscript: Element) => {
-        expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
+        expect(noscript).toStrictEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -58,11 +58,11 @@ describe('server', () => {
       const noscriptComponent
         = head?.noscript.toComponent() as unknown as Element[];
 
-      expect(noscriptComponent).toEqual(isArray);
+      expect(noscriptComponent).toStrictEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
 
       noscriptComponent.forEach((noscript: Element) => {
-        expect(noscript).toEqual(expect.objectContaining({ type: 'noscript' }));
+        expect(noscript).toStrictEqual(expect.objectContaining({ type: 'noscript' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(

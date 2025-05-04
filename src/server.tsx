@@ -34,9 +34,7 @@ const SELF_CLOSING_TAGS: string[] = [
 ];
 
 const encodeSpecialCharacters = (str: string, encode = true) => {
-  if (encode === false) {
-    return String(str);
-  }
+  if (!encode) return str;
 
   return String(str)
     .replace(/&/g, '&amp;')
@@ -78,7 +76,7 @@ const generateTitleAsString = (
 
 function generateTagsAsString<T>(
   type: string,
-  tags: HTMLAttributes<T>[],
+  tags: Array<HTMLAttributes<T>>,
   encode: boolean,
 ): string {
   let res = '';
@@ -144,6 +142,8 @@ function renderTitle(title: string, attrs: TitleProps): ReactNode {
   return [
     <title
       key={title}
+      // TODO: Can we avoid violating the rule?
+      // eslint-disable-next-line react/jsx-props-no-spreading
       {...mapElementAttributesToProps(attrs, { addHelmetDataAttr: true })}
     >
       {title}
@@ -164,7 +164,7 @@ function renderElement<T>(
 
 function renderElements<T>(
   type: string,
-  attrs: HTMLAttributes<T>[],
+  attrs: Array<HTMLAttributes<T>>,
 ): ReactNode[] {
   const res: ReactNode[] = [];
   for (let i = 0; i < attrs.length; ++i) {
@@ -172,88 +172,6 @@ function renderElements<T>(
   }
   return res;
 }
-
-/*
-
-function newHelmetDatumForTitle(
-  title: string,
-  attrs: Attributes = {},
-  encode: boolean,
-): HelmetDatum {
-  return {
-
-  };
-}
-
-const getPriorityMethods = ({
-  metaTags,
-  linkTags,
-  scriptTags,
-  encode,
-}: MappedServerState) => {
-  const meta = prioritizer(metaTags, SEO_PRIORITY_TAGS.meta);
-  const link = prioritizer(linkTags, SEO_PRIORITY_TAGS.link);
-  const script = prioritizer(scriptTags, SEO_PRIORITY_TAGS.script);
-
-  // need to have toComponent() and toString()
-  const priorityMethods = {
-    toComponent: () => [
-      ...renderElements(TAG_NAMES.META, meta.priority),
-      ...renderElements(TAG_NAMES.LINK, link.priority),
-      ...renderElements(TAG_NAMES.SCRIPT, script.priority),
-    ],
-
-    // generate all the tags as strings and concatenate them
-    toString: () => `${
-      generateTagsAsString(TAG_NAMES.META, meta.priority, encode)} ${
-      generateTagsAsString(TAG_NAMES.LINK, link.priority, encode)} ${
-      generateTagsAsString(TAG_NAMES.SCRIPT, script.priority, encode)}`,
-  };
-
-  return {
-    priorityMethods,
-    metaTags: meta.default as HTMLMetaElement[],
-    linkTags: link.default as HTMLLinkElement[],
-    scriptTags: script.default as HTMLScriptElement[],
-  };
-};
-
-/*
-function mapStateOnServer(props: MappedServerState): HelmetServerState {
-  const {
-    baseTag,
-    bodyAttributes,
-    encode = true,
-    htmlAttributes,
-    noscriptTags,
-    prioritizeSeoTags,
-    styleTags,
-    title = '',
-    titleAttributes,
-  } = props;
-  let { linkTags, metaTags, scriptTags } = props;
-  let priorityMethods: HelmetDatum = {
-    toComponent: () => null,
-    toString: () => '',
-  };
-  if (prioritizeSeoTags) {
-    ({
-      priorityMethods,
-      linkTags,
-      metaTags,
-      scriptTags,
-    } = getPriorityMethods(props));
-  }
-  return {
-    priority: priorityMethods,
-  };
-}
-*/
-
-// export default mapStateOnServer;
-
-// TODO: So... refactor it, it should be based on the Helmet provider
-// heap, and it should calculate its state into that, and then use it.
 
 export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
   // TODO: Should this function to be attached to the heap itself?
@@ -367,7 +285,7 @@ export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
       },
     },
     title: {
-      toComponent() {
+      toComponent(): ReactNode {
         const s = getState();
         return renderTitle(s.title ?? '', s.titleAttributes ?? {});
       },

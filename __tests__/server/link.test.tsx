@@ -25,11 +25,11 @@ describe('server', () => {
 
       const linkComponent = head?.link.toComponent() as unknown as Element[];
 
-      expect(linkComponent).toEqual(isArray);
+      expect(linkComponent).toStrictEqual(isArray);
       expect(linkComponent).toHaveLength(2);
 
-      linkComponent?.forEach((link: Element) => {
-        expect(link).toEqual(expect.objectContaining({ type: 'link' }));
+      linkComponent.forEach((link: Element) => {
+        expect(link).toStrictEqual(expect.objectContaining({ type: 'link' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -73,11 +73,11 @@ describe('server', () => {
 
       const linkComponent = head?.link.toComponent() as unknown as Element[];
 
-      expect(linkComponent).toEqual(isArray);
+      expect(linkComponent).toStrictEqual(isArray);
       expect(linkComponent).toHaveLength(2);
 
       linkComponent.forEach((link: Element) => {
-        expect(link).toEqual(expect.objectContaining({ type: 'link' }));
+        expect(link).toStrictEqual(expect.objectContaining({ type: 'link' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(

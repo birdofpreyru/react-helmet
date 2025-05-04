@@ -20,8 +20,8 @@ describe('style tags', () => {
       <Helmet
         style={[
           {
-            type: 'text/css',
             cssText: cssText1,
+            type: 'text/css',
           },
           {
             cssText: cssText2,
@@ -39,11 +39,11 @@ describe('style tags', () => {
     expect(firstTag).toBeInstanceOf(Element);
     expect(firstTag!.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag?.innerHTML).toEqual(cssText1);
+    expect(firstTag?.innerHTML).toStrictEqual(cssText1);
     expect(firstTag?.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag?.innerHTML).toEqual(cssText2);
+    expect(secondTag?.innerHTML).toStrictEqual(cssText2);
     expect(secondTag?.outerHTML).toMatchSnapshot();
   });
 
@@ -57,8 +57,8 @@ describe('style tags', () => {
       <Helmet
         style={[
           {
-            type: 'text/css',
             cssText,
+            type: 'text/css',
           },
         ]}
       />,
@@ -128,11 +128,11 @@ describe('Declarative API', () => {
     expect(firstTag).toBeInstanceOf(Element);
     expect(firstTag!.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag?.innerHTML).toEqual(cssText1);
+    expect(firstTag?.innerHTML).toStrictEqual(cssText1);
     expect(firstTag?.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag?.innerHTML).toEqual(cssText2);
+    expect(secondTag?.innerHTML).toStrictEqual(cssText2);
     expect(secondTag?.outerHTML).toMatchSnapshot();
   });
 
@@ -157,7 +157,9 @@ describe('Declarative API', () => {
   });
 
   it('tags without \'cssText\' are not accepted', () => {
+    // eslint-disable-next-line no-console
     const origConsoleError = console.error;
+    // eslint-disable-next-line no-console
     console.error = () => undefined;
     try {
       /* eslint-disable react/no-unknown-property */
@@ -173,12 +175,15 @@ describe('Declarative API', () => {
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     } finally {
+      // eslint-disable-next-line no-console
       console.error = origConsoleError;
     }
   });
 
   it('does not render tag when primary attribute is null', () => {
+    // eslint-disable-next-line no-console
     const origConsoleError = console.error;
+    // eslint-disable-next-line no-console
     console.error = () => undefined;
     try {
       renderClient(
@@ -192,6 +197,7 @@ describe('Declarative API', () => {
 
       expect(existingTags).toHaveLength(0);
     } finally {
+      // eslint-disable-next-line no-console
       console.error = origConsoleError;
     }
   });

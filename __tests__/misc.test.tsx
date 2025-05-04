@@ -1,8 +1,7 @@
 /** @jest-environment jsdom */
 
-import { Helmet } from '../src';
+import { type OnChangeClientState, Helmet } from '../src';
 import { HELMET_ATTRIBUTE } from '../src/constants';
-import type { OnChangeClientState } from '../src';
 
 import { renderClient } from '../jest/browser-utils';
 
@@ -13,15 +12,15 @@ describe('misc', () => {
         <Helmet
           meta={[
             {
-              name: 'description',
               content: 'This is "quoted" text and & and \'.',
+              name: 'description',
             },
           ]}
         />,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
-      const existingTag = existingTags[0];
+      const [existingTag] = existingTags;
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
@@ -38,18 +37,18 @@ describe('misc', () => {
 
       renderClient(
         <Helmet
-          meta={[{ name: 'description', content: 'Test description' }]}
-          title="Test Title"
+          meta={[{ content: 'Test description', name: 'description' }]}
           onChangeClientState={onChange}
+          title="Test Title"
         />,
       );
 
       // Re-rendering will pass new props to an already mounted Helmet
       renderClient(
         <Helmet
-          meta={[{ name: 'description', content: 'Test description' }]}
-          title="Test Title"
+          meta={[{ content: 'Test description', name: 'description' }]}
           onChangeClientState={onChange}
+          title="Test Title"
         />,
       );
 
@@ -62,24 +61,27 @@ describe('misc', () => {
       const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       renderClient(
         <Helmet
+          onChangeClientState={onChange}
           script={[
             {
               src: 'http://localhost/test.js',
               type: 'text/javascript',
             },
           ]}
-          onChangeClientState={onChange}
         />,
       );
 
+      // TODO: Adjust to the rule later.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
       const [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
-      expect(addedTags).toEqual({});
-      expect(removedTags).toEqual({});
+      expect(addedTags).toStrictEqual({});
+      expect(removedTags).toStrictEqual({});
     });
 
+    // eslint-disable-next-line complexity
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
       const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
       let addedTags;
@@ -93,15 +95,16 @@ describe('misc', () => {
               type: 'text/css',
             },
           ]}
-          meta={[{ name: 'description', content: 'Test description' }]}
+          meta={[{ content: 'Test description', name: 'description' }]}
           onChangeClientState={onChange}
         />,
       );
 
+      // TODO: Adjust to the rule later.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      addedTags = onChange.mock.calls[0]![1];
-      removedTags = onChange.mock.calls[0]![2];
+      [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -109,7 +112,7 @@ describe('misc', () => {
       expect(addedTags).toHaveProperty('linkTags');
       expect(addedTags.linkTags?.[0]).toBeDefined();
       expect(addedTags.linkTags?.[0]?.outerHTML).toMatchSnapshot();
-      expect(removedTags).toEqual({});
+      expect(removedTags).toStrictEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
       renderClient(
@@ -126,7 +129,7 @@ describe('misc', () => {
               type: 'text/css',
             },
           ]}
-          meta={[{ name: 'description', content: 'New description' }]}
+          meta={[{ content: 'New description', name: 'description' }]}
           onChangeClientState={onChange}
         />,
       );
@@ -150,6 +153,8 @@ describe('misc', () => {
 
     it('does not accept nested Helmets', () => {
       const consoleError = global.console.error;
+      // TODO: Adjust to the rule later.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
@@ -171,7 +176,7 @@ describe('misc', () => {
       renderClient(<Helmet meta={[{ content: 'Test Description', name: 'description' }]} />);
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
-      const existingTag = existingTags[0];
+      const [existingTag] = existingTags;
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
@@ -183,28 +188,26 @@ describe('misc', () => {
       expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
-    it('requestAnimationFrame works as expected', () => {
-      return new Promise((resolve) => {
-        requestAnimationFrame((cb) => {
-          expect(cb).toBeDefined();
-          expect(typeof cb).toBe('number');
+    it('requestAnimationFrame works as expected', async () => new Promise((resolve) => {
+      requestAnimationFrame((cb) => {
+        expect(cb).toBeDefined();
+        expect(typeof cb).toBe('number');
 
-          resolve(true);
-        });
+        resolve(true);
       });
-    });
+    }));
   });
 
   describe('Declarative API', () => {
     it('encodes special characters', () => {
       renderClient(
         <Helmet>
-          <meta name="description" content={'This is "quoted" text and & and \'.'} />
+          <meta content={'This is "quoted" text and & and \'.'} name="description" />
         </Helmet>,
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
-      const existingTag = existingTags[0];
+      const [existingTag] = existingTags;
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
@@ -219,7 +222,7 @@ describe('misc', () => {
       const onChange = jest.fn();
       renderClient(
         <Helmet onChangeClientState={onChange}>
-          <meta name="description" content="Test description" />
+          <meta content="Test description" name="description" />
           <title>Test Title</title>
         </Helmet>,
       );
@@ -227,7 +230,7 @@ describe('misc', () => {
       // Re-rendering will pass new props to an already mounted Helmet
       renderClient(
         <Helmet onChangeClientState={onChange}>
-          <meta name="description" content="Test description" />
+          <meta content="Test description" name="description" />
           <title>Test Title</title>
         </Helmet>,
       );
@@ -245,12 +248,14 @@ describe('misc', () => {
         </Helmet>,
       );
 
+      // TODO: Adjust to the rule later.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
       const [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
-      expect(addedTags).toEqual({});
-      expect(removedTags).toEqual({});
+      expect(addedTags).toStrictEqual({});
+      expect(removedTags).toStrictEqual({});
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
@@ -261,14 +266,15 @@ describe('misc', () => {
       renderClient(
         <Helmet onChangeClientState={onChange}>
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
-          <meta name="description" content="Test description" />
+          <meta content="Test description" name="description" />
         </Helmet>,
       );
 
+      // TODO: Adjust to the rule later.
+      // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      addedTags = onChange.mock.calls[0]![1];
-      removedTags = onChange.mock.calls[0]![2];
+      [, addedTags, removedTags] = onChange.mock.calls[0]!;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -276,21 +282,20 @@ describe('misc', () => {
       expect(addedTags).toHaveProperty('linkTags');
       expect(addedTags.linkTags?.[0]).toBeDefined();
       expect(addedTags.linkTags?.[0]?.outerHTML).toMatchSnapshot();
-      expect(removedTags).toEqual({});
+      expect(removedTags).toStrictEqual({});
 
       // Re-rendering will pass new props to an already mounted Helmet
       renderClient(
         <Helmet onChangeClientState={onChange}>
           <link href="http://localhost/style.css" rel="stylesheet" type="text/css" />
           <link href="http://localhost/style2.css" rel="stylesheet" type="text/css" />
-          <meta name="description" content="New description" />
+          <meta content="New description" name="description" />
         </Helmet>,
       );
 
       expect(onChange).toHaveBeenCalledTimes(2);
 
-      addedTags = onChange.mock.calls[1]![1];
-      removedTags = onChange.mock.calls[1]![2];
+      [, addedTags, removedTags] = onChange.mock.calls[1]!;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -306,6 +311,8 @@ describe('misc', () => {
 
     it('does not accept nested Helmets', () => {
       const consoleError = global.console.error;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
@@ -328,6 +335,8 @@ describe('misc', () => {
 
     it('throws on invalid elements', () => {
       const consoleError = global.console.error;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
@@ -350,6 +359,8 @@ describe('misc', () => {
 
     it('throws on invalid self-closing elements', () => {
       const consoleError = global.console.error;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
@@ -375,12 +386,16 @@ describe('misc', () => {
 
     it('throws on invalid strings as children', () => {
       const consoleError = global.console.error;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
         renderClient(
           <Helmet>
             <title>Test Title</title>
+            { // TODO: Revise!.
+            /* eslint-disable-next-line react/void-dom-elements-no-children */}
             <link href="http://localhost/helmet" rel="canonical">
               test
             </link>
@@ -397,6 +412,8 @@ describe('misc', () => {
 
     it('throws on invalid children', () => {
       const consoleError = global.console.error;
+      // TODO: Revise.
+      // eslint-disable-next-line jest/prefer-spy-on
       global.console.error = jest.fn();
 
       const renderInvalid = () => {
@@ -422,7 +439,11 @@ describe('misc', () => {
 
       renderClient(
         <Helmet>
-          {charSet && <meta charSet={charSet} />}
+          {
+            // TODO: Revise the second rule hit.
+            // eslint-disable-next-line jest/no-conditional-in-test, @typescript-eslint/no-unnecessary-condition
+            charSet ? <meta charSet={charSet} /> : null
+          }
           <title>Test Title</title>
         </Helmet>,
       );
@@ -438,7 +459,7 @@ describe('misc', () => {
       );
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
-      const existingTag = existingTags[0];
+      const [existingTag] = existingTags;
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
@@ -449,14 +470,12 @@ describe('misc', () => {
       expect(existingTag?.outerHTML).toMatchSnapshot();
     });
 
-    it('requestAnimationFrame works as expected', () => {
-      return new Promise((resolve) => {
-        requestAnimationFrame((cb) => {
-          expect(cb).toBeDefined();
-          expect(typeof cb).toBe('number');
-          resolve(true);
-        });
+    it('requestAnimationFrame works as expected', async () => new Promise((resolve) => {
+      requestAnimationFrame((cb) => {
+        expect(cb).toBeDefined();
+        expect(typeof cb).toBe('number');
+        resolve(true);
       });
-    });
+    }));
   });
 });

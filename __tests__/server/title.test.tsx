@@ -42,11 +42,11 @@ describe('server', () => {
 
       const titleComponent = head?.title.toComponent() as unknown as Element[];
 
-      expect(titleComponent).toEqual(isArray);
+      expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
 
       titleComponent.forEach((title: Element) => {
-        expect(title).toEqual(expect.objectContaining({ type: 'title' }));
+        expect(title).toStrictEqual(expect.objectContaining({ type: 'title' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -66,11 +66,11 @@ describe('server', () => {
 
       const titleComponent = head?.title.toComponent() as unknown as Element[];
 
-      expect(titleComponent).toEqual(isArray);
+      expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
 
       titleComponent.forEach((title: Element) => {
-        expect(title).toEqual(expect.objectContaining({ type: 'title' }));
+        expect(title).toStrictEqual(expect.objectContaining({ type: 'title' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -153,11 +153,11 @@ describe('server', () => {
 
       const titleComponent = head?.title.toComponent() as unknown as Element[];
 
-      expect(titleComponent).toEqual(isArray);
+      expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
 
       titleComponent.forEach((title: Element) => {
-        expect(title).toEqual(expect.objectContaining({ type: 'title' }));
+        expect(title).toStrictEqual(expect.objectContaining({ type: 'title' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -179,11 +179,11 @@ describe('server', () => {
 
       const titleComponent = head?.title.toComponent() as unknown as Element[];
 
-      expect(titleComponent).toEqual(isArray);
+      expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
 
       titleComponent.forEach((title: Element) => {
-        expect(title).toEqual(expect.objectContaining({ type: 'title' }));
+        expect(title).toStrictEqual(expect.objectContaining({ type: 'title' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(
@@ -276,11 +276,11 @@ describe('server', () => {
 
       const titleComponent = head?.title.toComponent() as unknown as Element[];
 
-      expect(titleComponent).toEqual(isArray);
+      expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
 
       titleComponent.forEach((title: Element) => {
-        expect(title).toEqual(expect.objectContaining({ type: 'title' }));
+        expect(title).toStrictEqual(expect.objectContaining({ type: 'title' }));
       });
 
       const markup = ReactServer.renderToStaticMarkup(

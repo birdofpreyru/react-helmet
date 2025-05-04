@@ -12,12 +12,12 @@ describe('server', () => {
           meta={[
             { charSet: 'utf-8' },
             {
-              name: 'description',
               content: 'Test description & encoding of special characters like \' " > < `',
+              name: 'description',
             },
-            { httpEquiv: 'content-type', content: 'text/html' },
-            { property: 'og:type', content: 'article' },
-            { itemProp: 'name', content: 'Test name itemprop' },
+            { content: 'text/html', httpEquiv: 'content-type' },
+            { content: 'article', property: 'og:type' },
+            { content: 'Test name itemprop', itemProp: 'name' },
           ]}
         />,
       );
@@ -27,11 +27,11 @@ describe('server', () => {
 
       const metaComponent = head?.meta.toComponent() as unknown as Element[];
 
-      expect(metaComponent).toEqual(isArray);
+      expect(metaComponent).toStrictEqual(isArray);
       expect(metaComponent).toHaveLength(5);
 
       metaComponent.forEach((meta: Element) => {
-        expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
+        expect(meta).toStrictEqual(expect.objectContaining({ type: 'meta' }));
       });
 
       const markup = renderToStaticMarkup(metaComponent as ReactNode);
@@ -45,12 +45,12 @@ describe('server', () => {
           meta={[
             { charSet: 'utf-8' },
             {
-              name: 'description',
               content: 'Test description & encoding of special characters like \' " > < `',
+              name: 'description',
             },
-            { httpEquiv: 'content-type', content: 'text/html' },
-            { property: 'og:type', content: 'article' },
-            { itemProp: 'name', content: 'Test name itemprop' },
+            { content: 'text/html', httpEquiv: 'content-type' },
+            { content: 'article', property: 'og:type' },
+            { content: 'Test name itemprop', itemProp: 'name' },
           ]}
         />,
       );
@@ -67,12 +67,12 @@ describe('server', () => {
         <Helmet>
           <meta charSet="utf-8" />
           <meta
-            name="description"
             content={'Test description & encoding of special characters like \' " > < `'}
+            name="description"
           />
-          <meta httpEquiv="content-type" content="text/html" />
-          <meta property="og:type" content="article" />
-          <meta itemProp="name" content="Test name itemprop" />
+          <meta content="text/html" httpEquiv="content-type" />
+          <meta content="article" property="og:type" />
+          <meta content="Test name itemprop" itemProp="name" />
         </Helmet>,
       );
 
@@ -81,11 +81,11 @@ describe('server', () => {
 
       const metaComponent = head?.meta.toComponent() as unknown as Element[];
 
-      expect(metaComponent).toEqual(isArray);
+      expect(metaComponent).toStrictEqual(isArray);
       expect(metaComponent).toHaveLength(5);
 
       metaComponent.forEach((meta: Element) => {
-        expect(meta).toEqual(expect.objectContaining({ type: 'meta' }));
+        expect(meta).toStrictEqual(expect.objectContaining({ type: 'meta' }));
       });
 
       const markup = renderToStaticMarkup(metaComponent as ReactNode);
@@ -98,12 +98,12 @@ describe('server', () => {
         <Helmet>
           <meta charSet="utf-8" />
           <meta
-            name="description"
             content='Test description &amp; encoding of special characters like &#x27; " &gt; &lt; `'
+            name="description"
           />
-          <meta httpEquiv="content-type" content="text/html" />
-          <meta property="og:type" content="article" />
-          <meta itemProp="name" content="Test name itemprop" />
+          <meta content="text/html" httpEquiv="content-type" />
+          <meta content="article" property="og:type" />
+          <meta content="Test name itemprop" itemProp="name" />
         </Helmet>,
       );
 

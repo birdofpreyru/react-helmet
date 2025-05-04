@@ -9,7 +9,7 @@ describe('Helmet Data', () => {
   describe('server', () => {
     it('renders without context', () => {
       const head = renderContextServer(
-        <Helmet base={{ target: '_blank', href: 'http://localhost/' }} />,
+        <Helmet base={{ href: 'http://localhost/', target: '_blank' }} />,
       );
 
       expect(head?.base).toBeDefined();
@@ -20,7 +20,7 @@ describe('Helmet Data', () => {
     it('renders declarative without context', () => {
       const head = renderContextServer(
         <Helmet>
-          <base target="_blank" href="http://localhost/" />
+          <base href="http://localhost/" target="_blank" />
         </Helmet>,
       );
 
