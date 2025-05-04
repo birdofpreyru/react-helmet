@@ -45,7 +45,7 @@
     "@babel/preset-env": "^7.27.1",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
-    "@dr.pogodin/eslint-configs": "^0.0.4",
+    "@dr.pogodin/eslint-configs": "^0.0.5",
     "@jest/globals": "^29.7.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.3.0",

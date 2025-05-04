@@ -354,11 +354,15 @@ describe('link tags', () => {
       renderClient(
         <Helmet
           link={[
+            // TODO: Note, the order of attributes in this case matter, as both
+            // "rel" and "href" are primary attributes, and thus the latter of
+            // them is treated as the actual primary attribute. Does not look as
+            // a good, intuitive behavior to me... perhaps to be reworked.
             // @ts-expect-error "pre-existing"
-            { href: null, rel: 'icon', sizes: '192x192' },
+            { rel: 'icon', sizes: '192x192', href: null }, // eslint-disable-line sort-keys
             {
-              href: 'http://localhost/helmet/component',
               rel: 'canonical',
+              href: 'http://localhost/helmet/component', // eslint-disable-line sort-keys
             },
           ]}
         />,
@@ -636,10 +640,14 @@ describe('link tags', () => {
       renderClient(
         <Helmet>
           <link
-            // @ts-expect-error "pre-existing"
-            href={null}
             rel="icon"
             sizes="192x192"
+            // TODO: Note, the order of attributes in this case matter, as both
+            // "rel" and "href" are primary attributes, and thus the latter of
+            // them is treated as the actual primary attribute. Does not look as
+            // a good, intuitive behavior to me... perhaps to be reworked.
+            // @ts-expect-error "pre-existing"
+            href={null} // eslint-disable-line react/jsx-sort-props, @stylistic/jsx-sort-props
           />
           <link href="http://localhost/helmet/component" rel="canonical" />
         </Helmet>,
