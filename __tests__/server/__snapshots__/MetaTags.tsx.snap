@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`base scenario 1`] = `"<title data-rh="true">Test Title</title>"`;
+
+exports[`base scenario 2`] = `"<meta data-rh="true" content="Test description" name="description"/><meta data-rh="true" content="summary_large_image" name="twitter:card"/><meta data-rh="true" content="Test Title" name="twitter:title"/><meta data-rh="true" content="Test description" name="twitter:description"/><meta data-rh="true" content="Test Title" name="og:title"/><meta data-rh="true" content="Test description" name="og:description"/>"`;
+
+exports[`with all props 1`] = `"<title data-rh="true">Test Title</title>"`;
+
+exports[`with all props 2`] = `"<meta data-rh="true" content="Test description" name="description"/><meta data-rh="true" content="summary_large_image" name="twitter:card"/><meta data-rh="true" content="Social title" name="twitter:title"/><meta data-rh="true" content="Social description" name="twitter:description"/><meta data-rh="true" content="https://some.url.com/image.png" name="twitter:image"/><meta data-rh="true" content="@Test web site" name="twitter:site"/><meta data-rh="true" content="Social title" name="og:title"/><meta data-rh="true" content="https://some.url.com/image.png" name="og:image"/><meta data-rh="true" content="Social title" name="og:image:alt"/><meta data-rh="true" content="Social description" name="og:description"/><meta data-rh="true" content="Test web site" name="og:sitename"/><meta data-rh="true" content="https://some.url.com" name="og:url"/><meta data-rh="true" content="extra meta tag content" name="extra meta tag"/>"`;

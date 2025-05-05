@@ -29,7 +29,10 @@ successor of now unmaintained and stale
     overriden.
   - [HelmetDataContext] &mdash; context object for server-side rendering (SSR)
     purposes.
-  - [HelmetProvider] &mdash; provides [React Context] to [Helmet] components
+  - [HelmetProvider] &mdash; provides [React Context] to [Helmet] components.
+  - [MetaTags] &mdash; helper component for easier rendering of page title,
+    description, and meta-data for search engines, and social graphs (_i.e._
+    previews of linked pages in social networks, messengers, _etc._).
 
 ## Getting Started
 [Getting Started]: #getting-started
@@ -384,4 +387,119 @@ descendants of a single [HelmetProvider] instance.
 - `context` &mdash; [HelmetDataContext] | **undefined** &mdash; Optional.
   A user-provided context object for server-side rendering (SSR) purposes.
 
+### MetaTags
+[MetaTags]: #metatags
+The [MetaTags] component is a helper for easier rendering of page title,
+description, and misc meta tags for search engines and social graphs (_i.e._ for
+previews of linked pages in social media, messengers, _etc._). Based on provided
+properties it uses [Helmet] to render:
+- `<title>` and `<meta name="description">` tags.
+- Meta tags for [Open Graph].
+- Meta tags for [Twitter (X) Cards].
+
+```tsx
+// Simple Example.
+
+import type { FunctionComponent } from 'react';
+import { MetaTags } from '@dr.pogodin/react-helmet';
+
+const Example: FunctionComponent = () => (
+  <MetaTags
+    description="Example page description"
+    title="Example page title"
+  />
+);
+
+// It is completely equivalent to:
+
+import type { FunctionComponent } from 'react';
+import { Helmet } from '@dr.pogodin/react-helmet';
+
+const EquivalentComponent: FunctionComponent = () => (
+  <Helmet>
+    <title>Example page title</title>
+    <meta content="Example page description" name="description" />
+
+    <meta content="summary_large_image" name="twitter:card" />
+    <meta content="Example page title" name="twitter:title" />
+    <meta content="Example page description" name="twitter:description" />
+
+    <meta content="Example page title" name="og:title" />
+    <meta content="Example page description" name="og:description" />
+  </Helmet>
+);
+```
+As this example demonstrates, [MetaTags] must not be wrapped into [Helmet],
+as it will render its instance itself, but the same as [Helmet] components,
+all [MetaTags] instances should be descendants of [HelmetProvider] within
+the application component tree.
+
+Multiple [MetaTags] within the application tree override the tags they manage
+according to the usual [Helmet] logic.
+
+**Required Properties**:
+
+- `description` &mdash; **string** &mdash; Page description to use in
+  the _description_ meta tag, and as the default description in [Open Graph]
+  and [Twitter (X) Cards].
+
+- `title` &mdash; **string** &mdash; The page name to use in the `<title>` tag,
+  and as the default title in [Open Graph] and [Twitter (X) Cards].
+
+**Optional Properties**:
+
+- `children` &mdash; **ReactNode** &mdash; Component children, if any,
+  are rendered at the component's place.
+
+  All meta data injected by [MetaTags] instance are passed down the children
+  tree using an auxiliary context, thus facilitating tags modification
+  by children. For example:
+
+  ```tsx
+  import { type FunctionComponent, use } from 'react';
+  import { MetaTags } from '@dr.pogodin/react-helmet';
+
+  const Child: FunctionComponent = () => {
+    // These are values injected by parent <MetaTags> component, if any.
+    const { title, description, ...rest } = use(MetaTags.Context);
+
+    // Say, you may modify the "parent" title like this:
+    return <MetaTags title={`${title} / Child Component`} />;
+  };
+
+  const Parent: FunctionComponent = () => (
+    <MetaTags title="Parent Component">
+      <Child />
+    </MetaTags>
+  );
+  ```
+
+- `extraMetaTags` &mdash; **Array&lt;\{ content: string; name: string \}&gt;**
+  &mdash; Allows to add additional, arbitrary `<meta>` tags to the page, with
+  given `content` and `name` strings.
+
+- `image` &mdash; **string** &mdash; The absolute URL of thumbnail image to use
+  in [Open Graph] and [Twitter (X) Cards] meta tags (`twitter:image`,
+  and `og:image`). By default these tags are not injected.
+
+  **BEWARE:** The value must be a complete, absolute URL, including the correct
+  website domain and HTTP schema.
+
+- `siteName` &mdash; **string** &mdash; The site name to use in `twitter:site`,
+  and `og:sitename` meta tags. By default these tags are not injected.
+
+- `socialDescription` &mdash; **string** &mdash; The site description to use in
+  `twitter:description` and `og:description` meta tags. By default the value of
+  `description` prop is used.
+
+- `socialTitle` &mdash; **string** &mdash; The page title to use in `twitter:title`,
+  `og:title`, and `og:image:alt` meta tags. By default the value of `title` prop
+  is used. Also the `og:image:alt` tag is only injected if `image` prop
+  is present.
+
+- `url` &mdash; **string** &mdash; The page URL to use in `og:url` meta tag.
+  By default the tag is not injected.
+
+[Open Graph]: https://ogp.me
 [React Context]: https://react.dev/learn/passing-data-deeply-with-context
+[Twitter (X) Cards]: https://developer.x.com/en/docs/x-for-websites/cards/overview/abouts-cards
