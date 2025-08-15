@@ -18,7 +18,8 @@
     "lint": "eslint",
     "test": "npm run lint && npm run typecheck && npm run jest",
     "typecheck": "tsc",
-    "jest": "jest --config config/jest/config.js"
+    "jest": "jest --config config/jest/config.js",
+    "postinstall": "build"
   },
   "repository": {
     "type": "github",
