@@ -111,9 +111,16 @@ describe('body attributes', () => {
       </Helmet>,
     );
 
-    renderClient(<Helmet />);
-
     const bodyTag = document.body;
+
+    expect(bodyTag).toHaveAttribute('lang');
+    expect(bodyTag).toHaveAttribute('hidden');
+    expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE);
+
+    // NOTE: Originally an empty <Helmet /> component was rendered here,
+    // and it actually cleaned-up the DOM on its mount, thus we now render
+    // just a <div /> to verify that unmounting <Helmet /> does the clean-up.
+    renderClient(<div />);
 
     expect(bodyTag).not.toHaveAttribute('lang');
     expect(bodyTag).not.toHaveAttribute('hidden');

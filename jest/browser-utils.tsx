@@ -1,4 +1,10 @@
-import { type ReactNode, act, StrictMode } from 'react';
+import {
+  type FunctionComponent,
+  type ReactNode,
+  act,
+  StrictMode,
+} from 'react';
+
 import { createRoot, type Root } from 'react-dom/client';
 
 import Provider from '../src/Provider';
@@ -13,6 +19,17 @@ export const unmount = (): void => {
   });
 };
 
+type WrapperProps = {
+  children?: ReactNode;
+  context?: HelmetDataContext;
+};
+
+const Wrapper: FunctionComponent<WrapperProps> = ({ children, context }) => (
+  <StrictMode>
+    <Provider context={context}>{children}</Provider>
+  </StrictMode>
+);
+
 export const renderClient = (node: ReactNode, context = {}): void => {
   if (!root) {
     const elem = document.getElementById('mount');
@@ -21,11 +38,7 @@ export const renderClient = (node: ReactNode, context = {}): void => {
   }
 
   act(() => {
-    root?.render(
-      <StrictMode>
-        <Provider context={context}>{node}</Provider>
-      </StrictMode>,
-    );
+    root?.render(<Wrapper context={context}>{node}</Wrapper>);
   });
 };
 

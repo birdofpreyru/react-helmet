@@ -253,6 +253,7 @@ const Helmet: FunctionComponent<HelmetProps> = (props) => {
 
   useEffect(() => () => {
     context.update(id, undefined);
+    context.clientApply();
   }, [context, id]);
 
   return null;
