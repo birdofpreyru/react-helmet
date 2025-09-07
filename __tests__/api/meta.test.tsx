@@ -290,11 +290,11 @@ describe('meta tags', () => {
       expect(existingTags).toHaveLength(0);
 
       // TODO: Revise.
-      // eslint-disable-next-line no-console, jest/prefer-called-with
+      // eslint-disable-next-line jest/prefer-called-with
       expect(console.warn).toHaveBeenCalled();
 
       // TODO: Revise
-      // eslint-disable-next-line no-console, jest/prefer-jest-mocked
+      // eslint-disable-next-line jest/prefer-jest-mocked
       expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0])
         .toMatchSnapshot();
 

@@ -29,8 +29,8 @@ export type StyleProps = StyleHTMLAttributes<HTMLStyleElement> & {
 
 export type TitleProps = HTMLAttributes<HTMLTitleElement>;
 
-export type HelmetChildProps =
-  | BaseProps | BodyProps | HtmlProps | LinkProps | MetaProps | NoscriptProps
+export type HelmetChildProps = BaseProps | BodyProps | HtmlProps | LinkProps
+  | MetaProps | NoscriptProps
   | ScriptProps | StyleProps | TitleProps;
 
 /**
@@ -57,8 +57,8 @@ export type HelmetDatum<T = ReactNode> = {
 
 export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;
 
-export type HelmetHTMLElementDatum =
-  HelmetDatum<HTMLAttributes<HTMLHtmlElement>>;
+export type HelmetHTMLElementDatum = HelmetDatum<
+  HTMLAttributes<HTMLHtmlElement>>;
 
 export type HelmetServerState = {
   base: HelmetDatum;

@@ -2,7 +2,6 @@
 // module.
 
 import { type ReactNode, StrictMode } from 'react';
-
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import Provider from '../src/Provider';

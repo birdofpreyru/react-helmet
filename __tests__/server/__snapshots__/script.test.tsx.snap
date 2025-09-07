@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API renders script tags as React components 1`] = `"<script data-rh="true" src="http://localhost/test.js" type="text/javascript"></script><script data-rh="true" src="http://localhost/test2.js" type="text/javascript"></script>"`;
 

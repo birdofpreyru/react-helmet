@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Helmet Data browser renders declarative without context 1`] = `"<base href="http://localhost/" target="_blank" data-rh="true">"`;
 

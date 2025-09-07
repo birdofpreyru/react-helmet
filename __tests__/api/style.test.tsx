@@ -157,9 +157,7 @@ describe('Declarative API', () => {
   });
 
   it('tags without \'cssText\' are not accepted', () => {
-    // eslint-disable-next-line no-console
     const origConsoleError = console.error;
-    // eslint-disable-next-line no-console
     console.error = () => undefined;
     try {
       /* eslint-disable react/no-unknown-property */
@@ -175,15 +173,12 @@ describe('Declarative API', () => {
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(0);
     } finally {
-      // eslint-disable-next-line no-console
       console.error = origConsoleError;
     }
   });
 
   it('does not render tag when primary attribute is null', () => {
-    // eslint-disable-next-line no-console
     const origConsoleError = console.error;
-    // eslint-disable-next-line no-console
     console.error = () => undefined;
     try {
       renderClient(
@@ -197,7 +192,6 @@ describe('Declarative API', () => {
 
       expect(existingTags).toHaveLength(0);
     } finally {
-      // eslint-disable-next-line no-console
       console.error = origConsoleError;
     }
   });

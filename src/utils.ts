@@ -269,9 +269,9 @@ export function prioritizer<T extends keyof HelmetPropArrays>(
   propsArray: HelmetPropArrays[T],
   propsToMatch: MatchProps,
 ): {
-    default: Array<PropArrayItem<T>>;
-    priority: Array<PropArrayItem<T>>;
-  } {
+  default: Array<PropArrayItem<T>>;
+  priority: Array<PropArrayItem<T>>;
+} {
   const res = {
     default: Array<PropArrayItem<T>>(),
     priority: Array<PropArrayItem<T>>(),
@@ -337,6 +337,8 @@ export function pushToPropArray<K extends keyof HelmetPropArrays>(
   type A = Array<typeof item>;
   const tgt = target[array] as A | undefined;
   if (tgt) tgt.push(item);
+
+  // eslint-disable-next-line no-param-reassign
   else (target[array] as A) = [item];
 }
 

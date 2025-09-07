@@ -137,6 +137,7 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
     }
 
     let { type } = child;
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-conversion
     if (typeof type === 'symbol') type = (type as 'symbol').toString();
     assertChildType(type, nestedChildren);
 

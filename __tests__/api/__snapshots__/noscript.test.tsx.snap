@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`noscript tags API updates noscript tags 1`] = `"<noscript id="bar" data-rh="true"><link rel="stylesheet" type="text/css" href="foo.css" /></noscript>"`;
 

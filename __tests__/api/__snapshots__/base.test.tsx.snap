@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`base tag API sets base tag based on deepest nested component 1`] = `"<base href="http://mysite.com/public" data-rh="true">"`;
 

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API renders link tags as React components 1`] = `"<link data-rh="true" href="http://localhost/helmet" rel="canonical"/><link data-rh="true" href="http://localhost/style.css" rel="stylesheet" type="text/css"/>"`;
 

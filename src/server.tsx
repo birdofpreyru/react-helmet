@@ -36,8 +36,7 @@ const SELF_CLOSING_TAGS: string[] = [
 const encodeSpecialCharacters = (str: string, encode = true) => {
   if (!encode) return str;
 
-  return String(str)
-    .replace(/&/g, '&amp;')
+  return str.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
@@ -176,6 +175,7 @@ function renderElements<T>(
 export function newServerState(heap: HelmetProviderHeap): HelmetServerState {
   // TODO: Should this function to be attached to the heap itself?
   const getState = () => {
+    // eslint-disable-next-line no-param-reassign
     heap.state ??= calcAggregatedState(heap.helmets);
     return heap.state;
   };

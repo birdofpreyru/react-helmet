@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API renders style tags as React components 1`] = `"<style data-rh="true" type="text/css">body {background-color: green;}</style><style data-rh="true" type="text/css">p {font-size: 12px;}</style>"`;
 

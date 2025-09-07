@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`meta tags API allows duplicate meta tags if specified in the same component 1`] = `"<meta content="Test description" name="description" data-rh="true">"`;
 

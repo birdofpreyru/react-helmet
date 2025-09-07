@@ -1,8 +1,8 @@
+import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { Helmet } from '../../src';
 import { renderContextServer, isArray } from '../../jest/server-utils';
-import type { ReactNode } from 'react';
 
 describe('server', () => {
   describe('API', () => {

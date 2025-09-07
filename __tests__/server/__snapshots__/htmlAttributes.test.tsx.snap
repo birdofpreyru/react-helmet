@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API renders html attributes as component 1`] = `"<html lang="ga" class="myClassName"><head></head></html>"`;
 

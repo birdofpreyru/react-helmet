@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API renders meta tags as React components 1`] = `"<meta data-rh="true" charSet="utf-8"/><meta data-rh="true" content="Test description &amp; encoding of special characters like &#x27; &quot; &gt; &lt; \`" name="description"/><meta data-rh="true" content="text/html" http-equiv="content-type"/><meta data-rh="true" content="article" property="og:type"/><meta data-rh="true" content="Test name itemprop" itemProp="name"/>"`;
 

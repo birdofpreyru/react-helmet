@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`script tags API sets script tags based on deepest nested component 1`] = `"<script src="http://localhost/test.js" type="text/javascript" data-rh="true"></script>"`;
 

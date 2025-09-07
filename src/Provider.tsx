@@ -72,6 +72,8 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
 
   if (context && (!context.helmet || context.helmet !== heap.serverState)) {
     heap.serverState ??= newServerState(heap);
+
+    // eslint-disable-next-line no-param-reassign
     context.helmet = heap.serverState;
   }
 

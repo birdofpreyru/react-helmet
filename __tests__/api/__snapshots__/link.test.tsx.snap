@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`link tags API allows duplicate link tags if specified in the same component 1`] = `"<link href="http://localhost/helmet" rel="canonical" data-rh="true">"`;
 

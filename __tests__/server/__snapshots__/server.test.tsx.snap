@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`server API does not render undefined attribute values 1`] = `"<script data-rh="true" async src="foo.js"></script>"`;
 
