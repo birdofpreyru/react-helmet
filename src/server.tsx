@@ -88,7 +88,17 @@ function generateTagsAsString<T>(
       if (!(name === TAG_PROPERTIES.INNER_HTML as string
         || name === TAG_PROPERTIES.CSS_TEXT as string)) {
         const attrName = HTML_TAG_MAP[name] ?? name;
-        const attr = value === undefined ? attrName : `${attrName}="${encodeSpecialCharacters(value as string, encode)}"`;
+
+        let attr: string;
+        if (value === undefined) attr = attrName;
+        else {
+          // Perhaps, if `value` is not a string we should just do
+          // "attr = attrName", as in the case just above. Playing
+          // it safe now, to avoid changes from the original code.
+          const valStr = typeof value === 'string' ? value : String(value);
+          attr = `${attrName}="${encodeSpecialCharacters(valStr, encode)}"`;
+        }
+
         if (attributeHtml) attributeHtml += ` ${attr}`;
         else attributeHtml = attr;
       }
