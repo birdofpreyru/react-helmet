@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`with "prioritizeSeoTags" 1`] = `
+[
+  <meta
+    content="Test description"
+    data-rh="true"
+    name="description"
+  />,
+  <meta
+    content="summary_large_image"
+    data-rh="true"
+    name="twitter:card"
+  />,
+  <meta
+    content="Social title"
+    data-rh="true"
+    name="twitter:title"
+  />,
+  <meta
+    content="Social description"
+    data-rh="true"
+    name="twitter:description"
+  />,
+  <meta
+    content="https://some.url.com/image.png"
+    data-rh="true"
+    name="twitter:image"
+  />,
+  <meta
+    content="@Test web site"
+    data-rh="true"
+    name="twitter:site"
+  />,
+  <meta
+    content="Social title"
+    data-rh="true"
+    name="og:title"
+  />,
+  <meta
+    content="https://some.url.com/image.png"
+    data-rh="true"
+    name="og:image"
+  />,
+  <meta
+    content="Social title"
+    data-rh="true"
+    name="og:image:alt"
+  />,
+  <meta
+    content="Social description"
+    data-rh="true"
+    name="og:description"
+  />,
+  <meta
+    content="Test web site"
+    data-rh="true"
+    name="og:sitename"
+  />,
+  <meta
+    content="https://some.url.com"
+    data-rh="true"
+    name="og:url"
+  />,
+  <meta
+    content="extra meta tag content"
+    data-rh="true"
+    name="extra meta tag"
+  />,
+]
+`;

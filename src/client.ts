@@ -165,6 +165,7 @@ function updateTitle(
   updateAttributes(TAG_NAMES.TITLE, attributes);
 }
 
+// eslint-disable-next-line complexity
 export function commitTagChanges(
   newState: AggregatedState,
   firstRender: boolean,
@@ -178,6 +179,7 @@ export function commitTagChanges(
     meta,
     noscript,
     onChangeClientState,
+    priority,
     script,
     style,
     title,
@@ -190,10 +192,24 @@ export function commitTagChanges(
 
   const tagUpdates: TagUpdateList = {
     baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),
-    linkTags: updateTags(TAG_NAMES.LINK, links ?? []),
-    metaTags: updateTags(TAG_NAMES.META, meta ?? []),
+
+    linkTags: updateTags(TAG_NAMES.LINK, [
+      ...priority?.links ?? [],
+      ...links ?? [],
+    ]),
+
+    metaTags: updateTags(TAG_NAMES.META, [
+      ...priority?.meta ?? [],
+      ...meta ?? [],
+    ]),
+
     noscriptTags: updateTags(TAG_NAMES.NOSCRIPT, noscript ?? []),
-    scriptTags: updateTags(TAG_NAMES.SCRIPT, script ?? []),
+
+    scriptTags: updateTags(TAG_NAMES.SCRIPT, [
+      ...priority?.script ?? [],
+      ...script ?? [],
+    ]),
+
     styleTags: updateTags(TAG_NAMES.STYLE, style ?? []),
   };
 
