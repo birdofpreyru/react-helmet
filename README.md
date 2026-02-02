@@ -19,6 +19,7 @@ successor of now unmaintained and stale
 [<img width=36 src="https://avatars.githubusercontent.com/u/17030877?v=4&s=36" />](https://github.com/RigoOnRails)
 
 ### [Contributors](https://github.com/birdofpreyru/react-helmet/graphs/contributors)
+[<img width=36 src="https://avatars.githubusercontent.com/u/5297725?v=4&s=36" />](https://github.com/vegerot)
 [<img width=36 src="https://avatars.githubusercontent.com/u/20144632?s=36" />](https://github.com/birdofpreyru)
 
 ## Table of Contents
