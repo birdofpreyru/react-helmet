@@ -30,8 +30,21 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it('tags without \'href\' are not accepted', () => {
-      renderClient(<Helmet base={{ property: 'won\'t work' }} />);
+    it("tags with only 'target' are accepted", () => {
+      renderClient(<Helmet base={{ target: '_blank' }} />);
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
+
+      expect(existingTags).toBeDefined();
+      expect(existingTags).toHaveLength(1);
+      const firstTag = existingTags[0]!;
+      expect(firstTag).toBeInstanceOf(Element);
+      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag).toHaveAttribute('target', '_blank');
+      expect(firstTag).not.toHaveAttribute('href');
+    });
+
+    it("tags without 'href' or 'target' are not accepted", () => {
+      renderClient(<Helmet base={{ property: "won't work" }} />);
       const existingTags = document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`);
 
       expect(existingTags).toBeDefined();
@@ -97,7 +110,25 @@ describe('base tag', () => {
       expect(existingTags).toHaveLength(0);
     });
 
-    it('tags without \'href\' are not accepted', () => {
+    it("tags with only 'target' are accepted", () => {
+      renderClient(
+        <Helmet>
+          <base target="_blank" />
+        </Helmet>,
+      );
+
+      const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
+
+      expect(existingTags).toBeDefined();
+      expect(existingTags).toHaveLength(1);
+      const firstTag = existingTags[0]!;
+      expect(firstTag).toBeInstanceOf(Element);
+      expect(firstTag.getAttribute).toBeDefined();
+      expect(firstTag).toHaveAttribute('target', '_blank');
+      expect(firstTag).not.toHaveAttribute('href');
+    });
+
+    it("tags without 'href' or 'target' are not accepted", () => {
       /* eslint-disable react/no-unknown-property */
       renderClient(
         <Helmet>

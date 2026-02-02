@@ -103,7 +103,7 @@ export function aggregateBaseProps(
 ): BaseProps | undefined {
   for (let i = props.length - 1; i >= 0; --i) {
     const res = props[i]![1].base;
-    if (res?.href) return res;
+    if (res?.href || res?.target) return res;
   }
   return undefined;
 }
