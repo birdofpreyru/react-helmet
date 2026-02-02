@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
+import { renderClient } from '../../jest/browser-utils';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { renderClient } from '../../jest/browser-utils';
 
 describe('meta tags', () => {
   describe('API', () => {
@@ -273,7 +273,7 @@ describe('meta tags', () => {
       const originalConsole = global.console;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.warn = jest.fn();
+      global.console.warn = jest.fn<undefined, []>();
 
       renderClient(
         <Helmet

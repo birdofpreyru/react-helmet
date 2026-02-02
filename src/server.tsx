@@ -7,10 +7,10 @@ import {
 
 import {
   HELMET_ATTRIBUTE,
-  TAG_NAMES,
-  REACT_TAG_MAP,
-  TAG_PROPERTIES,
   HTML_TAG_MAP,
+  REACT_TAG_MAP,
+  TAG_NAMES,
+  TAG_PROPERTIES,
 } from './constants';
 
 import type {

@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
+import { renderClient } from '../../jest/browser-utils';
 import { type BodyProps, Helmet } from '../../src';
 import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
-import { renderClient } from '../../jest/browser-utils';
 
 describe('body attributes', () => {
   describe('valid attributes', () => {

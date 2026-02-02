@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
+import { isArray, renderContextServer } from '../../jest/server-utils';
 import { Helmet } from '../../src';
-import { renderContextServer, isArray } from '../../jest/server-utils';
 
 describe('server', () => {
   describe('API', () => {
@@ -34,6 +34,30 @@ describe('server', () => {
       expect(head?.base).toBeDefined();
       expect(head?.base.toString).toBeDefined();
       expect(head?.base.toString()).toMatchSnapshot();
+    });
+
+    it("renders base tag with only 'target' as React component", () => {
+      const head = renderContextServer(<Helmet base={{ target: '_blank' }} />);
+
+      expect(head?.base).toBeDefined();
+      expect(head?.base.toComponent).toBeDefined();
+
+      const baseComponent = head?.base.toComponent();
+
+      expect(baseComponent).toStrictEqual(isArray);
+      expect(baseComponent).toHaveLength(1);
+
+      const markup = renderToStaticMarkup(baseComponent);
+      expect(markup).toContain('target="_blank"');
+      expect(markup).not.toContain('href=');
+    });
+
+    it("renders base tag with only 'target' as string", () => {
+      const head = renderContextServer(<Helmet base={{ target: '_blank' }} />);
+      expect(head?.base).toBeDefined();
+      expect(head?.base.toString).toBeDefined();
+      expect(head?.base.toString()).toContain('target="_blank"');
+      expect(head?.base.toString()).not.toContain('href=');
     });
   });
 
@@ -72,6 +96,40 @@ describe('server', () => {
       expect(head?.base).toBeDefined();
       expect(head!.base.toString).toBeDefined();
       expect(head?.base.toString()).toMatchSnapshot();
+    });
+
+    it("renders base tag with only 'target' as React component", () => {
+      const head = renderContextServer(
+        <Helmet>
+          <base target="_blank" />
+        </Helmet>,
+      );
+
+      expect(head?.base).toBeDefined();
+      expect(head?.base.toComponent).toBeDefined();
+
+      const baseComponent = head?.base.toComponent();
+
+      expect(baseComponent).toStrictEqual(isArray);
+      expect(baseComponent).toHaveLength(1);
+
+      const markup = renderToStaticMarkup(baseComponent);
+
+      expect(markup).toContain('target="_blank"');
+      expect(markup).not.toContain('href=');
+    });
+
+    it("renders base tag with only 'target' as string", () => {
+      const head = renderContextServer(
+        <Helmet>
+          <base target="_blank" />
+        </Helmet>,
+      );
+
+      expect(head?.base).toBeDefined();
+      expect(head?.base.toString).toBeDefined();
+      expect(head?.base.toString()).toContain('target="_blank"');
+      expect(head?.base.toString()).not.toContain('href=');
     });
   });
 });

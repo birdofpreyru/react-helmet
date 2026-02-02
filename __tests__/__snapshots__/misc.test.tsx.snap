@@ -27,3 +27,7 @@ exports[`misc Declarative API only adds new tags and preserves tags when renderi
 exports[`misc Declarative API only adds new tags and preserves tags when rendering additional Helmet instances 5`] = `"<meta content="Test description" name="description" data-rh="true">"`;
 
 exports[`misc Declarative API recognizes valid tags regardless of attribute ordering 1`] = `"<meta content="Test Description" name="description" data-rh="true">"`;
+
+exports[`misc Declarative API throws on invalid elements 1`] = `"Only elements types base, body, Symbol(react.fragment), head, html, link, meta, noscript, script, style, title are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information."`;
+
+exports[`misc Declarative API throws on invalid self-closing elements 1`] = `"Only elements types base, body, Symbol(react.fragment), head, html, link, meta, noscript, script, style, title are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information."`;

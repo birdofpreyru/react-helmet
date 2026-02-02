@@ -1,16 +1,16 @@
 import {
+  Children,
   type FunctionComponent,
   type ReactElement,
   type ReactNode,
-  Children,
   use,
   useEffect,
   useId,
 } from 'react';
 
-import { REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants';
-
 import { Context } from './Provider';
+
+import { REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants';
 
 import type {
   BaseProps,

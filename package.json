@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-helmet",
-  "version": "3.0.5",
+  "version": "3.0.6",
   "description": "Thread-safe Helmet for React 19+ and friends",
   "main": "./build/common/index.js",
   "module": "./build/module/index.js",
@@ -15,7 +15,7 @@
     "build:common": "rimraf build/common && babel src -x .ts,.tsx --out-dir build/common --source-maps",
     "build:module": "rimraf build/module && babel src -x .ts,.tsx --out-dir build/module --source-maps --config-file ./babel.module.config.js",
     "build:types": "rimraf build/types && tsc --project tsconfig.types.json",
-    "lint": "eslint",
+    "lint": "eslint --cache",
     "test": "npm run lint && npm run typecheck && npm run jest",
     "typecheck": "tsc",
     "jest": "jest --config config/jest/config.js"
@@ -37,27 +37,27 @@
   },
   "homepage": "https://github.com/birdofpreyru/react-helmet#readme",
   "dependencies": {
-    "@babel/runtime": "^7.28.4"
+    "@babel/runtime": "^7.28.6"
   },
   "devDependencies": {
-    "@babel/cli": "^7.28.3",
-    "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
+    "@babel/cli": "^7.28.6",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
-    "@dr.pogodin/eslint-configs": "^0.1.2",
+    "@dr.pogodin/eslint-configs": "^0.2.6",
     "@jest/globals": "^30.2.0",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "16.3.0",
+    "@testing-library/react": "16.3.2",
     "@tsconfig/recommended": "^1.0.13",
     "@types/jest": "^30.0.0",
-    "@types/react": "^19.2.7",
+    "@types/react": "^19.2.10",
     "@types/react-dom": "^19.2.3",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "raf": "^3.4.1",
-    "react": "^19.2.2",
-    "react-dom": "^19.2.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "rimraf": "6.1.2"
   },
   "peerDependencies": {
