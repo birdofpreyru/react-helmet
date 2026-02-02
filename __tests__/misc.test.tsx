@@ -1,9 +1,9 @@
 /** @jest-environment jsdom */
 
-import { type OnChangeClientState, Helmet } from '../src';
-import { HELMET_ATTRIBUTE } from '../src/constants';
-
 import { renderClient } from '../jest/browser-utils';
+import { Helmet, type OnChangeClientState } from '../src';
+
+import { HELMET_ATTRIBUTE } from '../src/constants';
 
 describe('misc', () => {
   describe('API', () => {
@@ -33,7 +33,7 @@ describe('misc', () => {
     });
 
     it('does not change the DOM if it recevies identical props', () => {
-      const onChange = jest.fn();
+      const onChange = jest.fn<undefined, []>();
 
       renderClient(
         <Helmet
@@ -58,7 +58,7 @@ describe('misc', () => {
     it('does not write the DOM if the client and server are identical', () => {
       document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       renderClient(
         <Helmet
           onChangeClientState={onChange}
@@ -83,7 +83,7 @@ describe('misc', () => {
 
     // eslint-disable-next-line complexity
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       let addedTags;
       let removedTags;
       renderClient(
@@ -155,7 +155,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Adjust to the rule later.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -219,7 +219,7 @@ describe('misc', () => {
     });
 
     it('does not change the DOM if it recevies identical props', () => {
-      const onChange = jest.fn();
+      const onChange = jest.fn<undefined, []>();
       renderClient(
         <Helmet onChangeClientState={onChange}>
           <meta content="Test description" name="description" />
@@ -241,7 +241,7 @@ describe('misc', () => {
     it('does not write the DOM if the client and server are identical', () => {
       document.head.innerHTML = `<script ${HELMET_ATTRIBUTE}="true" src="http://localhost/test.js" type="text/javascript" />`;
 
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       renderClient(
         <Helmet onChangeClientState={onChange}>
           <script src="http://localhost/test.js" type="text/javascript" />
@@ -259,7 +259,7 @@ describe('misc', () => {
     });
 
     it('only adds new tags and preserves tags when rendering additional Helmet instances', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       let addedTags;
       let removedTags;
 
@@ -313,7 +313,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -337,7 +337,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -361,7 +361,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         /* eslint-disable react/no-unknown-property */
@@ -388,7 +388,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -414,7 +414,7 @@ describe('misc', () => {
       const consoleError = global.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn();
+      global.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(

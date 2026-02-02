@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
+import { renderClient } from '../../jest/browser-utils';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { renderClient } from '../../jest/browser-utils';
 
 describe('link tags', () => {
   describe('API', () => {
@@ -359,10 +359,10 @@ describe('link tags', () => {
             // them is treated as the actual primary attribute. Does not look as
             // a good, intuitive behavior to me... perhaps to be reworked.
             // @ts-expect-error "pre-existing"
-            { rel: 'icon', sizes: '192x192', href: null }, // eslint-disable-line sort-keys
+            { rel: 'icon', sizes: '192x192', href: null }, // eslint-disable-line perfectionist/sort-objects
             {
               rel: 'canonical',
-              href: 'http://localhost/helmet/component', // eslint-disable-line sort-keys
+              href: 'http://localhost/helmet/component', // eslint-disable-line perfectionist/sort-objects
             },
           ]}
         />,
@@ -647,7 +647,7 @@ describe('link tags', () => {
             // them is treated as the actual primary attribute. Does not look as
             // a good, intuitive behavior to me... perhaps to be reworked.
             // @ts-expect-error "pre-existing"
-            href={null} // eslint-disable-line react/jsx-sort-props, @stylistic/jsx-sort-props
+            href={null} // eslint-disable-line perfectionist/sort-jsx-props
           />
           <link href="http://localhost/helmet/component" rel="canonical" />
         </Helmet>,

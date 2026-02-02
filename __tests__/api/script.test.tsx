@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
+import { renderClient } from '../../jest/browser-utils';
 import { Helmet } from '../../src';
 import { HELMET_ATTRIBUTE } from '../../src/constants';
-import { renderClient } from '../../jest/browser-utils';
 
 describe('script tags', () => {
   describe('API', () => {

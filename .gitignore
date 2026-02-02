@@ -2,3 +2,4 @@ __coverage__
 *.tgz
 build
 node_modules
+/.eslintcache

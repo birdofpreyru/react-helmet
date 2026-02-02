@@ -19,22 +19,22 @@ version: 2.1
 jobs:
   test-node-20: # Maintenance LTS, EOL 2026.04.30
     docker:
-      - image: cimg/node:20.19
+      - image: cimg/node:20.20
     steps:
       *install-and-test
   test-node-22: # Maintenance LTS, EOL 2027.04.30
     docker:
-      - image: cimg/node:22.21
+      - image: cimg/node:22.22
     steps:
       *install-and-test
   test-node-24: # Active LTS, EOL 2028.04.30
     docker:
-      - image: cimg/node:24.12
+      - image: cimg/node:24.13
     steps:
       *install-and-test
   test-node-25: # Current, EOL 2026.06.01
     docker:
-      - image: cimg/node:25.2
+      - image: cimg/node:25.5
     steps:
       *install-and-test
   build-and-test:

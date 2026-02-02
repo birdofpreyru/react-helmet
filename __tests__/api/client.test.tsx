@@ -1,14 +1,14 @@
 /** @jest-environment jsdom */
 
-import { type OnChangeClientState, Helmet } from '../../src';
-
 import { renderClient } from '../../jest/browser-utils';
+
+import { Helmet, type OnChangeClientState } from '../../src';
 
 describe('onChangeClientState', () => {
   describe('API', () => {
     // eslint-disable-next-line complexity
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       renderClient(
         <div>
           <Helmet
@@ -105,7 +105,7 @@ describe('onChangeClientState', () => {
   describe('Declarative API', () => {
     // eslint-disable-next-line complexity
     it('when handling client state change, calls the function with new state, addedTags and removedTags', () => {
-      const onChange = jest.fn<unknown, Parameters<OnChangeClientState>>();
+      const onChange = jest.fn<undefined, Parameters<OnChangeClientState>>();
       renderClient(
         <div>
           <Helmet onChangeClientState={onChange}>
