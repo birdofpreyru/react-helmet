@@ -5,17 +5,17 @@ import {
   useRef,
 } from 'react';
 
+import { commitTagChanges } from './client';
+
+import { IS_DOM_ENVIRONMENT } from './constants';
+import { newServerState } from './server';
 import type {
   ContextValue,
   HelmetDataContext,
   HelmetProps,
   HelmetProviderHeap,
 } from './types';
-
-import { newServerState } from './server';
-import { IS_DOM_ENVIRONMENT } from './constants';
 import { calcAggregatedState } from './utils';
-import { commitTagChanges } from './client';
 
 export const Context = createContext<ContextValue | undefined>(undefined);
 

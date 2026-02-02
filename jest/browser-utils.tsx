@@ -1,11 +1,11 @@
 import {
   type FunctionComponent,
   type ReactNode,
-  act,
   StrictMode,
+  act,
 } from 'react';
 
-import { createRoot, type Root } from 'react-dom/client';
+import { type Root, createRoot } from 'react-dom/client';
 
 import Provider from '../src/Provider';
 import type { HelmetDataContext, HelmetServerState } from '../src/types';

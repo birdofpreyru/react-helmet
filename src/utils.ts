@@ -1,8 +1,8 @@
 import {
   HTML_TAG_MAP,
+  SEO_PRIORITY_TAGS,
   TAG_NAMES,
   TAG_PROPERTIES,
-  SEO_PRIORITY_TAGS,
 } from './constants';
 
 import type {
@@ -28,7 +28,7 @@ type SeenTags<T extends keyof HelmetPropArrays> = {
   [key in keyof PropArrayItem<T>]?: Record<string, boolean>
 };
 
-type MatchProps = Record<string, string | AttributeList>;
+type MatchProps = Record<string, AttributeList | string>;
 
 /**
  * Finds the last object in the given array of registered props,
@@ -215,7 +215,9 @@ export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
       }).reverse()
 
         // so approved tags are accumulated from last to first
-        .forEach((tag: PropArrayItem<T>) => approvedTags.push(tag));
+        .forEach((tag: PropArrayItem<T>) => {
+          approvedTags.push(tag);
+        });
 
       // Update seen tags with tags from this instance
       const keys = Object.keys(instanceSeenTags) as
@@ -247,7 +249,7 @@ function getAnyTrueFromPropsArray<T extends keyof HelmetPropBooleans>(
   return false;
 }
 
-export function flattenArray(possibleArray: string[] | string): string {
+export function flattenArray(possibleArray: string | string[]): string {
   return Array.isArray(possibleArray) ? possibleArray.join('') : possibleArray;
 }
 
@@ -319,7 +321,7 @@ export function mergeProps(target: HelmetProps, source: HelmetProps): void {
   const tgt = target as UnknownObject;
   for (const [key, srcValue] of Object.entries(source)) {
     if (Array.isArray(srcValue)) {
-      const tgtValue = tgt[key] as unknown[] | undefined;
+      const tgtValue = tgt[key] as undefined | unknown[];
       tgt[key] = tgtValue ? tgtValue.concat(srcValue) : srcValue;
     } else tgt[key] = srcValue;
   }

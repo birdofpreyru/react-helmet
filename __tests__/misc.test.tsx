@@ -350,9 +350,7 @@ describe('misc', () => {
         );
       };
 
-      expect(renderInvalid).toThrow(
-        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.',
-      );
+      expect(renderInvalid).toThrowErrorMatchingSnapshot();
 
       global.console.error = consoleError;
     });
@@ -377,9 +375,7 @@ describe('misc', () => {
         /* eslint-enable react/no-unknown-property */
       };
 
-      expect(renderInvalid).toThrow(
-        'Only elements types base, body, head, html, link, meta, noscript, script, style, title, Symbol(react.fragment) are allowed. Helmet does not support rendering <div> elements. Refer to our API for more information.',
-      );
+      expect(renderInvalid).toThrowErrorMatchingSnapshot();
 
       global.console.error = consoleError;
     });

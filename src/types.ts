@@ -1,7 +1,7 @@
 import type {
   BaseHTMLAttributes,
-  HtmlHTMLAttributes,
   HTMLAttributes,
+  HtmlHTMLAttributes,
   LinkHTMLAttributes,
   MetaHTMLAttributes,
   ReactNode,
@@ -51,8 +51,8 @@ export type HelmetTags = {
 };
 
 export type HelmetDatum<T = ReactNode> = {
-  toString(): string;
   toComponent(): T;
+  toString(): string;
 };
 
 export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;
@@ -138,8 +138,8 @@ export type HelmetPropBooleans = {
  * Properties accepted by <Helmet> components.
  */
 export type HelmetProps = HelmetPropArrays
-  & HelmetPropObjects
   & HelmetPropBooleans
+  & HelmetPropObjects
   & {
     base?: BaseProps;
     children?: ReactNode;

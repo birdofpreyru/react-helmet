@@ -18,8 +18,8 @@ import { flattenArray } from './utils';
 
 type TagUpdates = {
   allTags: HTMLElement[];
-  oldTags: HTMLElement[];
   newTags: HTMLElement[];
+  oldTags: HTMLElement[];
 };
 
 type TagUpdateList = Record<string, TagUpdates>;
@@ -92,8 +92,13 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
     }
   }
 
-  oldTags.forEach((tag: Node) => tag.parentNode?.removeChild(tag));
-  newTags.forEach((tag) => headElement.appendChild(tag));
+  oldTags.forEach((tag: Node) => {
+    tag.parentNode?.removeChild(tag);
+  });
+
+  newTags.forEach((tag) => {
+    headElement.appendChild(tag);
+  });
 
   // TODO: Do we really need this return value anywhere? Especially `oldTags`
   // that have been removed from DOM already?

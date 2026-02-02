@@ -21,6 +21,7 @@ export enum ATTRIBUTE_NAMES {
 export enum TAG_NAMES {
   BASE = 'base',
   BODY = 'body',
+  FRAGMENT = 'Symbol(react.fragment)',
   HEAD = 'head',
   HTML = 'html',
   LINK = 'link',
@@ -29,7 +30,6 @@ export enum TAG_NAMES {
   SCRIPT = 'script',
   STYLE = 'style',
   TITLE = 'title',
-  FRAGMENT = 'Symbol(react.fragment)',
 }
 
 export const SEO_PRIORITY_TAGS = {
