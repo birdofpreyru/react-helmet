@@ -106,14 +106,14 @@ const MetaTags: FunctionComponent<PropsT> & {
         }
 
         {/* Open Graph data. */}
-        <meta content={socTitle} name="og:title" />
-        { image ? <meta content={image} name="og:image" /> : null }
-        { image ? <meta content={socTitle} name="og:image:alt" /> : null }
-        <meta content={socDesc} name="og:description" />
+        <meta content={socTitle} property="og:title" />
+        { image ? <meta content={image} property="og:image" /> : null }
+        { image ? <meta content={socTitle} property="og:image:alt" /> : null }
+        <meta content={socDesc} property="og:description" />
         {
-          siteName ? <meta content={siteName} name="og:sitename" /> : null
+          siteName ? <meta content={siteName} property="og:site_name" /> : null
         }
-        { url ? <meta content={url} name="og:url" /> : null }
+        { url ? <meta content={url} property="og:url" /> : null }
         {extra}
       </Helmet>
       {

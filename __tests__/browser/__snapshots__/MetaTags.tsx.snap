@@ -8,6 +8,31 @@ exports[`with "prioritizeSeoTags" 1`] = `
     name="description"
   />,
   <meta
+    content="Social title"
+    data-rh="true"
+    property="og:title"
+  />,
+  <meta
+    content="https://some.url.com/image.png"
+    data-rh="true"
+    property="og:image"
+  />,
+  <meta
+    content="Social title"
+    data-rh="true"
+    property="og:image:alt"
+  />,
+  <meta
+    content="Social description"
+    data-rh="true"
+    property="og:description"
+  />,
+  <meta
+    content="https://some.url.com"
+    data-rh="true"
+    property="og:url"
+  />,
+  <meta
     content="summary_large_image"
     data-rh="true"
     name="twitter:card"
@@ -33,34 +58,9 @@ exports[`with "prioritizeSeoTags" 1`] = `
     name="twitter:site"
   />,
   <meta
-    content="Social title"
-    data-rh="true"
-    name="og:title"
-  />,
-  <meta
-    content="https://some.url.com/image.png"
-    data-rh="true"
-    name="og:image"
-  />,
-  <meta
-    content="Social title"
-    data-rh="true"
-    name="og:image:alt"
-  />,
-  <meta
-    content="Social description"
-    data-rh="true"
-    name="og:description"
-  />,
-  <meta
     content="Test web site"
     data-rh="true"
-    name="og:sitename"
-  />,
-  <meta
-    content="https://some.url.com"
-    data-rh="true"
-    name="og:url"
+    property="og:site_name"
   />,
   <meta
     content="extra meta tag content"
