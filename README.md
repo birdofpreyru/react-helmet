@@ -425,8 +425,8 @@ const EquivalentComponent: FunctionComponent = () => (
     <meta content="Example page title" name="twitter:title" />
     <meta content="Example page description" name="twitter:description" />
 
-    <meta content="Example page title" name="og:title" />
-    <meta content="Example page description" name="og:description" />
+    <meta content="Example page title" property="og:title" />
+    <meta content="Example page description" property="og:description" />
   </Helmet>
 );
 ```
