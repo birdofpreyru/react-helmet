@@ -6,11 +6,13 @@
 [![GitHub repo stars](https://img.shields.io/github/stars/birdofpreyru/react-helmet?style=social)](https://github.com/birdofpreyru/react-helmet)
 [![Dr. Pogodin Studio](https://raw.githubusercontent.com/birdofpreyru/react-helmet/master/.README/logo-dr-pogodin-studio.svg)](https://dr.pogodin.studio/docs/react-helmet)
 
+[react-helmet-async]: https://github.com/staylor/react-helmet-async
+
 Advanced management of document head's elements (`<base>`, `<link>`, `<meta>`,
 `<noscript>`, `<script>`, `<style>`, `<title>`), and of attributes of `<body>`
 and `<html>` elements in React 19+ applications. This library is a proud
 successor of now unmaintained and stale
-[react-helmet-async](https://github.com/staylor/react-helmet-async) and
+[react-helmet-async]<sup>([note][`@dr.pogodin/react-helmet` _vs_ `react-helmet-async`])</sup> and
 [react-helmet](https://github.com/nfl/react-helmet) libraries.
 
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/js-utils/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
@@ -25,6 +27,7 @@ successor of now unmaintained and stale
 ## Table of Contents
 - [Getting Started]
   - [`@dr.pogodin/react-helmet` _vs_ pure React]
+  - [`@dr.pogodin/react-helmet` _vs_ `react-helmet-async`]
 - [Prioritizing Tags for SEO]
 - [Reference]
   - [Helmet] &mdash; specifies elements and attributes to be created / set /
@@ -158,7 +161,7 @@ async function yourServerSideRenderingFunction() {
 ```
 
 ### `@dr.pogodin/react-helmet` _vs_ pure React
-[`@dr.pogodin/react-helmet` _vs_ pure React]: #dr.pogodin-react-helmet-vs-pure-react
+[`@dr.pogodin/react-helmet` _vs_ pure React]: #drpogodinreact-helmet-vs-pure-react
 
 There is some confusion regarding the need for React Helmet since React v19
 release, which
@@ -209,14 +212,69 @@ render:
 <meta content="Overriden Component Description" name="description">
 ```
 
-such HTML is just against
-[the specification](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element),
-which tells
+Such HTML is just against the specifications which tells,
+[for example](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element):
 
 > _There **must be no more than one** `title` element per document._
 
 and you are at the mercy of different browsers, protocols, and web crawlers
 handling such code in their own ways.
+
+### `@dr.pogodin/react-helmet` _vs_ `react-helmet-async`
+[`@dr.pogodin/react-helmet` _vs_ `react-helmet-async`]: #drpogodinreact-helmet-vs-react-helmet-async
+
+You may have noticed that the claim that [react-helmet-async] is _unmaintained
+and stale_ does not hold now, after its sudden v3.0.0 release on March 3, 2026.
+The following timeline explains the situation best:
+
+- About **December 2023** the latest pre-v3 version of [react-helmet-async] (v2.0.5)
+  was released (the latest React version was v18.2.0 back then).
+
+- **December 2024** React v19.0.0 was released, which broke the latest
+  [react-helmet-async] v2.0.5. Corresponding (duplicated) issue tickets started
+  to pop-up in the [react-helmet-async] repo right away:
+  [#237](https://github.com/staylor/react-helmet-async/issues/237),
+  [#238](https://github.com/staylor/react-helmet-async/issues/238),
+  [#239](https://github.com/staylor/react-helmet-async/issues/239),
+  [#244](https://github.com/staylor/react-helmet-async/issues/244),
+  [#249](https://github.com/staylor/react-helmet-async/issues/249).
+  There was no reaction from the repository owner / maintainer, nor any other
+  signs of activity in the project.
+
+- **February 2025**, after waiting for a few months, and seeing no reaction from
+  the project owner, I decided to take the matter into my own hands, by forking,
+  fixing, and further maintaining the library; which I
+  [announced right away](https://github.com/staylor/react-helmet-async/issues/244#issuecomment-2676342557),
+  to save other people from duplicating the efforts on the same open source work,
+  which generates no direct revenue to anybody.
+
+- **April 2025**, I posted additional announcement in the [react-helmet-async]
+  repo [#254](https://github.com/staylor/react-helmet-async/issues/254) that
+  the project has been taken over.
+
+- **March 2026**, out of the blue the owner of [react-helmet-async] publishes
+  a new, upgraded version v3.0.0, and closes all aforementioned tickets without
+  any comments.
+
+In the view of this development, here are several reasons why you should still
+stick (or migrate) to this `@dr.pogodin/react-helmet` library, and stay away
+from [react-helmet-async]:
+
+- The owner of [react-helmet-async] has actually fallen into the pitfal of
+  _React v19 native support for meta tags_, explained
+  [above][`@dr.pogodin/react-helmet` _vs_ pure React],
+  and broke his library &mdash; when running within React v19 environment it now
+  &laquo;_renders actual DOM elements and lets React handle hoisting them to
+  `<head>`_&raquo;. As the result (as of its v3.0.0) it now fails to dedupe
+  meta tags as it was supposed to do (_e.g._ it will render multiple `<title>`
+  tags into `<head>`, similarly to the pure React); and drops support of some
+  features (_e.g._ [Prioritizing Tags for SEO]).
+
+- This (`@dr.pogodin/react-helmet`) library has some new features
+  (_e.g._ [MetaTags] component) absent in [react-helmet-async].
+
+- This (`@dr.pogodin/react-helmet`) library is properly, and timely maintained,
+  and it will be maintained so in the foreseeable future.
 
 ## Prioritizing Tags for SEO
 [Prioritizing Tags for SEO]: #prioritizing-tags-for-seo
