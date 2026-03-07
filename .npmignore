@@ -1,5 +1,7 @@
 .*
 __coverage__
 __tests__
+/config
+/jest
 dr.pogodin-react-helmet-*.tgz
 src
