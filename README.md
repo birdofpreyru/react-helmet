@@ -24,6 +24,7 @@ successor of now unmaintained and stale
 
 ## Table of Contents
 - [Getting Started]
+  - [`@dr.pogodin/react-helmet` _vs_ pure React]
 - [Prioritizing Tags for SEO]
 - [Reference]
   - [Helmet] &mdash; specifies elements and attributes to be created / set /
@@ -63,6 +64,11 @@ to set / modify document head's elements, or supported attributes of `<body>`
 and `<html>` elements. Instances of [Helmet] component within the application
 tree add or override elements and attributes in the order these [Helmet]
 instances are rendered.
+
+<a id="example"></a>
+
+[Example]: #example
+
 ```tsx
 import type { FunctionComponent } from 'react';
 import { Helmet } from '@dr.pogodin/react-helmet';
@@ -150,6 +156,67 @@ async function yourServerSideRenderingFunction() {
   const metaElements = context.helmet.meta?.toString();
 }
 ```
+
+### `@dr.pogodin/react-helmet` _vs_ pure React
+[`@dr.pogodin/react-helmet` _vs_ pure React]: #dr.pogodin-react-helmet-vs-pure-react
+
+There is some confusion regarding the need for React Helmet since React v19
+release, which
+[natively supports document meta tags](https://react.dev/blog/2024/12/05/react-19#support-for-metadata-tags)
+ like `<title>`, `<link>`,
+and `<meta>`; although the official React documentation is crystal clear in this
+regard, [noting](https://react.dev/blog/2024/12/05/react-19#you-may-still-want-a-metadata-library):
+
+> _**You may still want a Metadata library**_
+>
+> _For simple use cases, rendering Document Metadata as tags may be suitable,
+> but libraries can offer more powerful features like **overriding generic metadata
+> with specific metadata based on the current route**. These features make it easier
+> for frameworks and libraries like react-helmet to support metadata tags, rather
+> than replace them._
+
+then React's documentation for `<title>`
+[warns further](https://react.dev/reference/react-dom/components/title#special-rendering-behavior):
+
+> _**Pitfall**_
+>
+> _Only render a single `<title>` at a time. If more than one component renders
+> a `<title>` tag at the same time, React will place all of those titles in
+> the document head. When this happens, the behavior of browsers and search
+> engines is undefined._
+
+In other words, React only hoists up to the document head all `<title>`,
+`<link>`, `<meta>`, and other meta tags it encounters up to the document head,
+but it does not dedupe them, as this React Helmet library does.
+
+Thus, while the [Example] given above (this library) renders to your document
+head the following:
+```html
+<title>Overriden Title</title>
+<link href="http://mysite.com/example" rel="canonical" data-rh="true">
+<meta charset="utf-8" data-rh="true">
+<meta content="Overriden Component Description" name="description" data-rh="true">
+```
+
+the equivalent code relying on pure React, without a meta-data library will
+render:
+```html
+<title>Overriden Title</title>
+<title>My Title</title>
+<link href="http://mysite.com/example" rel="canonical">
+<meta charset="utf-8">
+<meta content="Some Component" name="description">
+<meta content="Overriden Component Description" name="description">
+```
+
+such HTML is just against
+[the specification](https://html.spec.whatwg.org/multipage/semantics.html#the-title-element),
+which tells
+
+> _There **must be no more than one** `title` element per document._
+
+and you are at the mercy of different browsers, protocols, and web crawlers
+handling such code in their own ways.
 
 ## Prioritizing Tags for SEO
 [Prioritizing Tags for SEO]: #prioritizing-tags-for-seo
