@@ -60,6 +60,10 @@ export type HelmetHTMLBodyDatum = HelmetDatum<HTMLAttributes<HTMLBodyElement>>;
 export type HelmetHTMLElementDatum = HelmetDatum<
   HTMLAttributes<HTMLHtmlElement>>;
 
+// TODO: Rename into StateFactory? (because it is now passed as an argument
+// to the Provider's optional onStateFactory() callback, and at the moment
+// I haven't come up with a better name for that callback). Perhaps... just
+// wait with renaming for now.
 export type HelmetServerState = {
   base: HelmetDatum;
   bodyAttributes: HelmetHTMLBodyDatum;
@@ -179,35 +183,13 @@ export type AggregatedState = {
   titleAttributes: TitleProps | undefined;
 };
 
-export type MappedServerState = HelmetTags & { encode?: boolean };
-
-/**
- * Server-side rendering context.
- */
-export type HelmetDataContext = {
-  helmet?: HelmetServerState;
-};
-
 /**
  * The value of internal context used by Helmet to communicate between its
  * context provider and <Helmet> components within its children tree.
  */
 export type ContextValue = {
-  clientApply: () => void;
-
   /** One function to register, update, and un-register <Helmet> instances
    *  (or, more precisely their current aggregated props, aggregated between
    *  the actual props of <Helmet> instance and its children). */
   update: (id: string, props: HelmetProps | undefined) => void;
-};
-
-export type HelmetProviderHeap = {
-  // TODO: Temporary, to keep legacy behavior to call onChange client-side
-  // callback on the first render.
-  firstRender: boolean;
-
-  helmets: RegisteredHelmetPropsArray;
-  nextAnimFrameId?: number;
-  serverState?: HelmetServerState;
-  state: AggregatedState | undefined;
 };

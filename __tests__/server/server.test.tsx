@@ -222,7 +222,6 @@ describe('server', () => {
         <Helmet prioritizeSeoTags>
           <link
             href="https://www.chipotle.com"
-            // eslint-disable-next-line react/no-invalid-html-attribute
             rel="notImportant"
           />
           <link href="https://www.tacobell.com" rel="canonical" />
@@ -253,7 +252,6 @@ describe('server', () => {
         <Helmet>
           <link
             href="https://www.chipotle.com"
-            // eslint-disable-next-line react/no-invalid-html-attribute
             rel="notImportant"
           />
           <link href="https://www.tacobell.com" rel="canonical" />

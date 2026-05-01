@@ -19,7 +19,6 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
-      // eslint-disable-next-line react/jsx-props-no-spreading
       const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();
@@ -53,7 +52,6 @@ describe('server', () => {
 
       expect(attrs).toBeDefined();
 
-      // eslint-disable-next-line react/jsx-props-no-spreading
       const markup = renderToStaticMarkup(<html lang="en" {...attrs} />);
 
       expect(markup).toMatchSnapshot();

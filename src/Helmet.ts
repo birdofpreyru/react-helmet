@@ -248,12 +248,10 @@ const Helmet: FunctionComponent<HelmetProps> = (props) => {
   // for now to ensure backward compatibility.
   useEffect(() => {
     context.update(id, reduceChildrenAndProps(props));
-    context.clientApply();
   });
 
   useEffect(() => () => {
     context.update(id, undefined);
-    context.clientApply();
   }, [context, id]);
 
   return null;

@@ -140,6 +140,8 @@ the [HelmetProvider], and after the render you use that object to retrieve
 the string, or component representation of the elements and attributes to be
 injected into the document head (if you use streaming for server side rendering
 you should output your `<head>` data outside `renderToNodeStream()`):
+
+- TODO: This is replaced by onStateFactory().
 ```tsx
 import type { FunctionComponent } from 'react';
 import { type HelmetDataContext, HelmetProvider } from '@dr.pogodin/react-helmet';
@@ -510,7 +512,10 @@ descendants of a single [HelmetProvider] instance.
 **Props**
 - `children` &mdash; **ReactNode** &mdash; The component tree to render in
   the place of [HelmetProvider].
-- `context` &mdash; [HelmetDataContext] | **undefined** &mdash; Optional.
+
+- TODO: This is replaced by onStateFactory().
+
+  `context` &mdash; [HelmetDataContext] | **undefined** &mdash; Optional.
   A user-provided context object for server-side rendering (SSR) purposes.
 
 ### MetaTags
