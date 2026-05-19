@@ -10,7 +10,7 @@ import '@testing-library/jest-dom';
 import { unmount } from '../../jest/browser-utils';
 
 // @ts-expect-error "that's fine"
-global.IS_REACT_ACT_ENVIRONMENT = true;
+globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 
 let headElement: HTMLHeadElement | undefined;
 

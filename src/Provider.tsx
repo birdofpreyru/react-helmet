@@ -3,40 +3,55 @@ import {
   type ReactNode,
   createContext,
   useRef,
+  useState,
 } from 'react';
 
 import { commitTagChanges } from './client';
 
 import { IS_DOM_ENVIRONMENT } from './constants';
 import { newServerState } from './server';
+
 import type {
   ContextValue,
-  HelmetDataContext,
   HelmetProps,
   HelmetProviderHeap,
+  HelmetServerState,
 } from './types';
+
 import { calcAggregatedState } from './utils';
 
 export const Context = createContext<ContextValue | undefined>(undefined);
 
 type ProviderProps = {
   children?: ReactNode;
-  context?: HelmetDataContext;
+  onServerState?: (state: HelmetServerState) => void;
 };
 
 const HelmetProvider: FunctionComponent<ProviderProps> = ({
   children,
-  context,
+  onServerState,
 }) => {
-  const { current: heap } = useRef<HelmetProviderHeap>({
-    firstRender: true,
-    helmets: [],
-    state: undefined,
-  });
+  const heapRef = useRef<HelmetProviderHeap>(null);
 
-  const contextValueRef = useRef<ContextValue>(null);
+  if (heapRef.current === null) {
+    const heap: HelmetProviderHeap = {
+      firstRender: true,
+      helmets: [],
+      state: undefined,
+    };
 
-  contextValueRef.current ??= {
+    if (onServerState) {
+      heap.serverState ??= newServerState(heap);
+      onServerState(heap.serverState);
+    }
+
+    heapRef.current = heap;
+  }
+
+  const heap = heapRef.current;
+
+  // eslint-disable-next-line react/hook-use-state
+  const [contextValue] = useState<ContextValue>(() => ({
     clientApply() {
       if (IS_DOM_ENVIRONMENT && !heap.state) {
         heap.state = calcAggregatedState(heap.helmets);
@@ -68,16 +83,9 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
         heap.helmets.push([id, props]);
       }
     },
-  };
+  }));
 
-  if (context && (!context.helmet || context.helmet !== heap.serverState)) {
-    heap.serverState ??= newServerState(heap);
-
-    // eslint-disable-next-line no-param-reassign
-    context.helmet = heap.serverState;
-  }
-
-  return <Context value={contextValueRef.current}>{children}</Context>;
+  return <Context value={contextValue}>{children}</Context>;
 };
 
 export default HelmetProvider;

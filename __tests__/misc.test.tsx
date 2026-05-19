@@ -152,10 +152,10 @@ describe('misc', () => {
     });
 
     it('does not accept nested Helmets', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Adjust to the rule later.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -169,7 +169,7 @@ describe('misc', () => {
         'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
       );
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('recognizes valid tags regardless of attribute ordering', () => {
@@ -310,10 +310,10 @@ describe('misc', () => {
     });
 
     it('does not accept nested Helmets', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -330,14 +330,14 @@ describe('misc', () => {
         'You may be attempting to nest <Helmet> components within each other, which is not allowed. Refer to our API for more information.',
       );
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('throws on invalid elements', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -352,14 +352,14 @@ describe('misc', () => {
 
       expect(renderInvalid).toThrowErrorMatchingSnapshot();
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('throws on invalid self-closing elements', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         /* eslint-disable react/no-unknown-property */
@@ -377,14 +377,14 @@ describe('misc', () => {
 
       expect(renderInvalid).toThrowErrorMatchingSnapshot();
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('throws on invalid strings as children', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -403,14 +403,14 @@ describe('misc', () => {
         '<link /> elements are self-closing and can not contain children. Refer to our API for more information.',
       );
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('throws on invalid children', () => {
-      const consoleError = global.console.error;
+      const consoleError = globalThis.console.error;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.error = jest.fn<undefined, []>();
+      globalThis.console.error = jest.fn<undefined, []>();
 
       const renderInvalid = () => {
         renderClient(
@@ -427,7 +427,7 @@ describe('misc', () => {
         'Helmet expects a string as a child of <script>. Did you forget to wrap your children in braces? ( <script>{``}</script> ) Refer to our API for more information.',
       );
 
-      global.console.error = consoleError;
+      globalThis.console.error = consoleError;
     });
 
     it('handles undefined children', () => {

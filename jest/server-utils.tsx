@@ -5,16 +5,19 @@ import { type ReactNode, StrictMode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import Provider from '../src/Provider';
-import type { HelmetDataContext, HelmetServerState } from '../src/types';
+import type { HelmetServerState } from '../src/types';
 
 /**
  * Renders the given `node` within the provided `context` into HTML markup,
  * using server-side rendering API.
  */
-export function renderServer(node: ReactNode, context = {}): string {
+export function renderServer(
+  node: ReactNode,
+  onServerState?: (state: HelmetServerState) => void,
+): string {
   return renderToStaticMarkup(
     <StrictMode>
-      <Provider context={context}>{node}</Provider>
+      <Provider onServerState={onServerState}>{node}</Provider>
     </StrictMode>,
   );
 }
@@ -22,9 +25,11 @@ export function renderServer(node: ReactNode, context = {}): string {
 export function renderContextServer(
   node: ReactNode,
 ): HelmetServerState | undefined {
-  const context: HelmetDataContext = {};
-  renderServer(node, context);
-  return context.helmet;
+  let state: HelmetServerState | undefined;
+  renderServer(node, (s) => {
+    state = s;
+  });
+  return state;
 }
 
 // TODO: Get rid of this method.

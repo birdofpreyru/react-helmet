@@ -8,7 +8,7 @@ import {
 import { type Root, createRoot } from 'react-dom/client';
 
 import Provider from '../src/Provider';
-import type { HelmetDataContext, HelmetServerState } from '../src/types';
+import type { HelmetServerState } from '../src/types';
 
 let root: Root | null = null;
 
@@ -21,16 +21,22 @@ export const unmount = (): void => {
 
 type WrapperProps = {
   children?: ReactNode;
-  context?: HelmetDataContext;
+  onServerState?: (state: HelmetServerState) => void;
 };
 
-const Wrapper: FunctionComponent<WrapperProps> = ({ children, context }) => (
+const Wrapper: FunctionComponent<WrapperProps> = ({
+  children,
+  onServerState,
+}) => (
   <StrictMode>
-    <Provider context={context}>{children}</Provider>
+    <Provider onServerState={onServerState}>{children}</Provider>
   </StrictMode>
 );
 
-export const renderClient = (node: ReactNode, context = {}): void => {
+export const renderClient = (
+  node: ReactNode,
+  onServerState?: (state: HelmetServerState) => void,
+): void => {
   if (!root) {
     const elem = document.getElementById('mount');
     if (!elem) throw Error('Internal error');
@@ -38,16 +44,18 @@ export const renderClient = (node: ReactNode, context = {}): void => {
   }
 
   act(() => {
-    root?.render(<Wrapper context={context}>{node}</Wrapper>);
+    root?.render(<Wrapper onServerState={onServerState}>{node}</Wrapper>);
   });
 };
 
 export const renderContextClient = (
   node: ReactNode,
 ): HelmetServerState | undefined => {
-  const context: HelmetDataContext = {};
-  renderClient(node, context);
-  return context.helmet;
+  let state: HelmetServerState | undefined;
+  renderClient(node, (s) => {
+    state = s;
+  });
+  return state;
 };
 
 // TODO: Get rid of this method.

@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
 import { isArray, renderContextServer } from '../../jest/server-utils';
@@ -22,9 +21,7 @@ describe('server', () => {
       expect(head.title.toString()).toMatchSnapshot();
       expect(head.title.toComponent).toBeDefined();
 
-      const markup = renderToStaticMarkup(
-        head.title.toComponent() as unknown as ReactNode,
-      );
+      const markup = renderToStaticMarkup(head.title.toComponent());
 
       expect(markup).toMatchSnapshot();
 
@@ -135,9 +132,7 @@ describe('server', () => {
       expect(head?.title.toString()).toMatchSnapshot();
       expect(head!.title.toComponent).toBeDefined();
 
-      const markup = renderToStaticMarkup(
-        head?.title.toComponent() as unknown as ReactNode,
-      );
+      const markup = renderToStaticMarkup(head?.title.toComponent());
 
       expect(markup).toMatchSnapshot();
 

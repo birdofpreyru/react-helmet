@@ -32,7 +32,7 @@ successor of now unmaintained and stale
 - [Reference]
   - [Helmet] &mdash; specifies elements and attributes to be created / set /
     overriden.
-  - [HelmetDataContext] &mdash; context object for server-side rendering (SSR)
+  - [HelmetServerState] &mdash; State object for server-side rendering (SSR)
     purposes.
   - [HelmetProvider] &mdash; provides [React Context] to [Helmet] components.
   - [MetaTags] &mdash; helper component for easier rendering of page title,
@@ -135,28 +135,34 @@ const SomeComponent: FunctionComponent = () => {
 };
 ```
 
-For the server-side rendering purposes you pass in a `context` object to
-the [HelmetProvider], and after the render you use that object to retrieve
-the string, or component representation of the elements and attributes to be
-injected into the document head (if you use streaming for server side rendering
-you should output your `<head>` data outside `renderToNodeStream()`):
+For the server-side rendering (SSR) purposes you pass in a `onServerState()`
+callback to the [HelmetProvider], and use the argument received by this callback
+to retrieve the string, or component representation of the elements and attributes
+to be injected into the document head (if you use streaming for server side
+rendering, you should output your `<head>` data outside `renderToNodeStream()`):
 ```tsx
 import type { FunctionComponent } from 'react';
-import { type HelmetDataContext, HelmetProvider } from '@dr.pogodin/react-helmet';
+import { type HelmetServerState, HelmetProvider } from '@dr.pogodin/react-helmet';
 
 async function yourServerSideRenderingFunction() {
   // ...
-  const context: HelmetDataContext = {};
+  let state: HelmetServerState | undefined;
   const { prelude } = await prerenderToNodeStream(
-    <HelmetProvider context={context}>
+    <HelmetProvider
+      onServerState={(s) => {
+        state = s;
+      }}
+    >
       { /* Your application tree. */ }
     </HelmetProvider>
   );
   // ...
 
+  if (!state) throw Error('SSR failed');
+
   // For example, this is how you get the string representation of <meta> tags
   // to be injected into your document head.
-  const metaElements = context.helmet.meta?.toString();
+  const metaElements = state.meta?.toString();
 }
 ```
 
@@ -371,7 +377,7 @@ as additional JSX children, appearing prior the explicitly provided JSX children
 
 - `encodeSpecialCharacters` &mdash; **boolean** | **undefined** &mdash;
   Optional. Defaults _true_. Set _false_ to disable string encoding by
-  `.toString()` methods of [HelmetDataContext].
+  `.toString()` methods of [HelmetServerState].
 
 - `htmlAttributes` &mdash; _To be documented_
 
@@ -468,32 +474,31 @@ as additional JSX children, appearing prior the explicitly provided JSX children
 </Helmet>
 ```
 
-### HelmetDataContext
-[HelmetDataContext]: #helmetdatacontext
+### HelmetServerState
+[HelmetServerState]: #helmetserverstate
 
-The [HelmetDataContext] (it may be initialized as just an empty object) can be
-provided to [HelmetProvider] for server-side rendering (SSR) purposes. After
-the component tree has been rendered, the `helmet` field will be attached to
-this context:
+The [HelmetServerState] object allows to get all elements and attributes
+to be rendered accoding to all [Helmet] instances within [HelmetProvider] tree.
+It is primarily intended for server-side rendering (SSR) purposes. It is defined
+as:
 ```tsx
-type HelmetDataContext = {
-  helmet?: {
-    base: HelmetDatum;
-    bodyAttributes: HelmetDatum;
-    htmlAttributes: HelmetDatum;
-    link: HelmetDatum;
-    meta: HelmetDatum;
-    noscript: HelmetDatum;
-    script: HelmetDatum;
-    style: HelmetDatum;
-    title: HelmetDatum;
-    titleAttributes?: HelmetDatum;
-    priority: HelmetDatum;
-  };
+type HelmetServerState = {
+  base: HelmetDatum;
+  bodyAttributes: HelmetDatum;
+  htmlAttributes: HelmetDatum;
+  link: HelmetDatum;
+  meta: HelmetDatum;
+  noscript: HelmetDatum;
+  script: HelmetDatum;
+  style: HelmetDatum;
+  title: HelmetDatum;
+  titleAttributes?: HelmetDatum;
+  priority: HelmetDatum;
 };
-
-// where each HelmetDatum has two methods allowing to get string and component
-// representations of the corresponding elements or attrbiutes:
+```
+Where each `HelmetDatum` has two methods allowing to get string and component
+representation of the corresponding elements or attributes:
+```tsx
 type HelmetDatum = {
   toString(): string;
   toComponent(): ReactNode;
@@ -510,8 +515,9 @@ descendants of a single [HelmetProvider] instance.
 **Props**
 - `children` &mdash; **ReactNode** &mdash; The component tree to render in
   the place of [HelmetProvider].
-- `context` &mdash; [HelmetDataContext] | **undefined** &mdash; Optional.
-  A user-provided context object for server-side rendering (SSR) purposes.
+- `onServerState` &mdash; **(state: [HelmetServerState]) => void** &mdash;
+  Optional. Callback to receive the state object for server-side rendering (SSR)
+  purposes.
 
 ### MetaTags
 [MetaTags]: #metatags

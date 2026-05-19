@@ -270,10 +270,10 @@ describe('meta tags', () => {
     });
 
     it('fails gracefully when meta is wrong shape', () => {
-      const originalConsole = global.console;
+      const originalConsole = globalThis.console;
       // TODO: Revise.
       // eslint-disable-next-line jest/prefer-spy-on
-      global.console.warn = jest.fn<undefined, []>();
+      globalThis.console.warn = jest.fn<undefined, []>();
 
       renderClient(
         <Helmet
@@ -298,7 +298,7 @@ describe('meta tags', () => {
       expect((console.warn as jest.Mock<unknown, unknown[]>).mock.calls[0]?.[0])
         .toMatchSnapshot();
 
-      global.console = originalConsole;
+      globalThis.console = originalConsole;
     });
   });
 

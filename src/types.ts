@@ -182,13 +182,6 @@ export type AggregatedState = {
 export type MappedServerState = HelmetTags & { encode?: boolean };
 
 /**
- * Server-side rendering context.
- */
-export type HelmetDataContext = {
-  helmet?: HelmetServerState;
-};
-
-/**
  * The value of internal context used by Helmet to communicate between its
  * context provider and <Helmet> components within its children tree.
  */
