@@ -5,6 +5,7 @@
     "module": "Preserve",
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
+    "target": "es2017",
     "verbatimModuleSyntax": true
   }
 }

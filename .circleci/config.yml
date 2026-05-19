@@ -17,11 +17,6 @@ test-filters: &test-filters
 
 version: 2.1
 jobs:
-  test-node-20: # Maintenance LTS, EOL 2026.04.30
-    docker:
-      - image: cimg/node:20.20
-    steps:
-      *install-and-test
   test-node-22: # Maintenance LTS, EOL 2027.04.30
     docker:
       - image: cimg/node:22.22
@@ -32,9 +27,14 @@ jobs:
       - image: cimg/node:24.15
     steps:
       *install-and-test
-  test-node-25: # Current, EOL 2026.06.01
+  test-node-25: # Maintenance, EOL 2026.06.01
     docker:
       - image: cimg/node:25.9
+    steps:
+      *install-and-test
+  test-node-26: # Current, EOL 2029.04.30
+    docker:
+      - image: cimg/node:26.1
     steps:
       *install-and-test
   build-and-test:
@@ -63,21 +63,21 @@ workflows:
   version: 2
   build:
     jobs:
-      - test-node-20:
-          <<: *test-filters
       - test-node-22:
           <<: *test-filters
       - test-node-24:
           <<: *test-filters
       - test-node-25:
           <<: *test-filters
+      - test-node-26:
+          <<: *test-filters
       - build-and-test:
           <<: *test-filters
           requires:
-            - test-node-20
             - test-node-22
             - test-node-24
             - test-node-25
+            - test-node-26
       - release:
           filters:
             branches:

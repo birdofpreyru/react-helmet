@@ -51,7 +51,7 @@
     "@testing-library/react": "16.3.2",
     "@tsconfig/recommended": "^1.0.13",
     "@types/jest": "^30.0.0",
-    "@types/react": "^19.2.14",
+    "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
