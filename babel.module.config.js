@@ -2,6 +2,7 @@
 
 module.exports = {
   plugins: [
+    'babel-plugin-react-compiler',
     '@babel/transform-runtime',
   ],
   presets: [

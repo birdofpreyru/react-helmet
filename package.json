@@ -37,7 +37,8 @@
   },
   "homepage": "https://github.com/birdofpreyru/react-helmet#readme",
   "dependencies": {
-    "@babel/runtime": "^7.29.2"
+    "@babel/runtime": "^7.29.2",
+    "react-compiler-runtime": "^1.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.28.6",
@@ -53,6 +54,7 @@
     "@types/jest": "^30.0.0",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "^1.0.0",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "raf": "^3.4.1",
