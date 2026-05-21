@@ -141,7 +141,6 @@ to retrieve the string, or component representation of the elements and attribut
 to be injected into the document head (if you use streaming for server side
 rendering, you should output your `<head>` data outside `renderToNodeStream()`):
 ```tsx
-import type { FunctionComponent } from 'react';
 import { type HelmetServerState, HelmetProvider } from '@dr.pogodin/react-helmet';
 
 async function yourServerSideRenderingFunction() {
