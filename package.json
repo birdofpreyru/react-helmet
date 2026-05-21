@@ -1,6 +1,6 @@
 {
   "name": "@dr.pogodin/react-helmet",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "Thread-safe Helmet for React 19+ and friends",
   "main": "./build/common/index.js",
   "module": "./build/module/index.js",

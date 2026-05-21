@@ -56,7 +56,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: npm publish --access public
+      - run: |
+          export NPM_ID_TOKEN=$(circleci run oidc get --claims '{"aud": "npm:registry.npmjs.org"}')
+          npm publish --access public
 workflows:
   version: 2
   build:
