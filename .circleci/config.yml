@@ -24,7 +24,7 @@ jobs:
       *install-and-test
   test-node-24: # Active LTS, EOL 2028.04.30
     docker:
-      - image: cimg/node:24.15
+      - image: cimg/node:24.16
     steps:
       *install-and-test
   test-node-25: # Maintenance, EOL 2026.06.01
@@ -34,7 +34,7 @@ jobs:
       *install-and-test
   test-node-26: # Current, EOL 2029.04.30
     docker:
-      - image: cimg/node:26.1
+      - image: cimg/node:26.2
     steps:
       *install-and-test
   build-and-test:
@@ -56,9 +56,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-          npm publish --access public
+      - run: npm publish --access public
 workflows:
   version: 2
   build:
