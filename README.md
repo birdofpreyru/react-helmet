@@ -15,6 +15,8 @@ successor of now unmaintained and stale
 [react-helmet-async]<sup>([note][`@dr.pogodin/react-helmet` _vs_ `react-helmet-async`])</sup> and
 [react-helmet](https://github.com/nfl/react-helmet) libraries.
 
+[**1 million monthly downloads on NPM**](https://www.linkedin.com/pulse/drpogodinreact-helmet-one-million-monthly-downloads-sergey-pogodin--uclse/) 🥳
+
 [![Sponsor](https://raw.githubusercontent.com/birdofpreyru/js-utils/master/.README/sponsor.svg)](https://github.com/sponsors/birdofpreyru)
 
 ### Sponsored By
