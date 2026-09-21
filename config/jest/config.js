@@ -1,6 +1,4 @@
-/* global module */
-
-module.exports = {
+export default {
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.{js,jsx,mjs,ts,tsx}',
