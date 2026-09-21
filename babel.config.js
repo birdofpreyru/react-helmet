@@ -7,5 +7,4 @@ export default {
     '@babel/react',
     '@babel/typescript',
   ],
-  targets: 'maintained node versions',
 };
