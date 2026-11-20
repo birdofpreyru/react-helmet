@@ -1,14 +1,13 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { isArray, renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { isArray, renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('API', () => {
     it('rewind() provides a fallback object for empty Helmet state', () => {
       const head = renderContextServer(<div />);
-      // eslint-disable-next-line jest/no-conditional-in-test
-      if (!head) throw Error('Failed');
+      if (!head) throw Error('Missing head');
 
       expect(head.htmlAttributes).toBeDefined();
       expect(head.htmlAttributes.toString).toBeDefined();
@@ -111,95 +110,96 @@ describe('server', () => {
     it('provides initial values if no state is found', () => {
       const head = renderContextServer(<div />);
 
-      expect(head?.meta).toBeDefined();
-      expect(head!.meta.toString).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.meta).toBeDefined();
+      expect(head.meta.toString).toBeDefined();
 
-      expect(head?.meta.toString()).toBe('');
+      expect(head.meta.toString()).toBe('');
     });
 
-    // eslint-disable-next-line complexity
     it('rewind() provides a fallback object for empty Helmet state', () => {
       const head = renderContextServer(<div />);
+      if (!head) throw Error('Missing head');
 
-      expect(head?.htmlAttributes).toBeDefined();
-      expect(head!.htmlAttributes.toString).toBeDefined();
-      expect(head?.htmlAttributes.toString()).toBe('');
-      expect(head!.htmlAttributes.toComponent).toBeDefined();
-      expect(head?.htmlAttributes.toComponent()).toStrictEqual({});
+      expect(head.htmlAttributes).toBeDefined();
+      expect(head.htmlAttributes.toString).toBeDefined();
+      expect(head.htmlAttributes.toString()).toBe('');
+      expect(head.htmlAttributes.toComponent).toBeDefined();
+      expect(head.htmlAttributes.toComponent()).toStrictEqual({});
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
-      expect(head!.title.toComponent).toBeDefined();
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
+      expect(head.title.toComponent).toBeDefined();
 
-      const markup = renderToStaticMarkup(head?.title.toComponent());
+      const markup = renderToStaticMarkup(head.title.toComponent());
 
       expect(markup).toMatchSnapshot();
 
-      expect(head?.base).toBeDefined();
-      expect(head!.base.toString).toBeDefined();
-      expect(head?.base.toString()).toBe('');
-      expect(head!.base.toComponent).toBeDefined();
+      expect(head.base).toBeDefined();
+      expect(head.base.toString).toBeDefined();
+      expect(head.base.toString()).toBe('');
+      expect(head.base.toComponent).toBeDefined();
 
-      const baseComponent = head?.base.toComponent();
+      const baseComponent = head.base.toComponent();
 
       expect(baseComponent).toStrictEqual(isArray);
       expect(baseComponent).toHaveLength(0);
 
-      expect(head?.meta).toBeDefined();
-      expect(head!.meta.toString).toBeDefined();
-      expect(head?.meta.toString()).toBe('');
-      expect(head!.meta.toComponent).toBeDefined();
+      expect(head.meta).toBeDefined();
+      expect(head.meta.toString).toBeDefined();
+      expect(head.meta.toString()).toBe('');
+      expect(head.meta.toComponent).toBeDefined();
 
-      const metaComponent = head?.meta.toComponent();
+      const metaComponent = head.meta.toComponent();
 
       expect(metaComponent).toStrictEqual(isArray);
       expect(metaComponent).toHaveLength(0);
 
-      expect(head?.link).toBeDefined();
-      expect(head!.link.toString).toBeDefined();
-      expect(head?.link.toString()).toBe('');
-      expect(head!.link.toComponent).toBeDefined();
+      expect(head.link).toBeDefined();
+      expect(head.link.toString).toBeDefined();
+      expect(head.link.toString()).toBe('');
+      expect(head.link.toComponent).toBeDefined();
 
-      const linkComponent = head?.link.toComponent();
+      const linkComponent = head.link.toComponent();
 
       expect(linkComponent).toStrictEqual(isArray);
       expect(linkComponent).toHaveLength(0);
 
-      expect(head?.script).toBeDefined();
-      expect(head!.script.toString).toBeDefined();
-      expect(head?.script.toString()).toBe('');
-      expect(head!.script.toComponent).toBeDefined();
+      expect(head.script).toBeDefined();
+      expect(head.script.toString).toBeDefined();
+      expect(head.script.toString()).toBe('');
+      expect(head.script.toComponent).toBeDefined();
 
-      const scriptComponent = head?.script.toComponent();
+      const scriptComponent = head.script.toComponent();
 
       expect(scriptComponent).toStrictEqual(isArray);
       expect(scriptComponent).toHaveLength(0);
 
-      expect(head?.noscript).toBeDefined();
-      expect(head!.noscript.toString).toBeDefined();
-      expect(head?.noscript.toString()).toBe('');
-      expect(head!.noscript.toComponent).toBeDefined();
+      expect(head.noscript).toBeDefined();
+      expect(head.noscript.toString).toBeDefined();
+      expect(head.noscript.toString()).toBe('');
+      expect(head.noscript.toComponent).toBeDefined();
 
-      const noscriptComponent = head?.noscript.toComponent();
+      const noscriptComponent = head.noscript.toComponent();
 
       expect(noscriptComponent).toStrictEqual(isArray);
       expect(noscriptComponent).toHaveLength(0);
 
-      expect(head?.style).toBeDefined();
-      expect(head!.style.toString).toBeDefined();
-      expect(head?.style.toString()).toBe('');
-      expect(head!.style.toComponent).toBeDefined();
+      expect(head.style).toBeDefined();
+      expect(head.style.toString).toBeDefined();
+      expect(head.style.toString()).toBe('');
+      expect(head.style.toComponent).toBeDefined();
 
-      const styleComponent = head?.style.toComponent();
+      const styleComponent = head.style.toComponent();
 
       expect(styleComponent).toStrictEqual(isArray);
       expect(styleComponent).toHaveLength(0);
 
-      expect(head?.priority).toBeDefined();
-      expect(head!.priority.toString).toBeDefined();
-      expect(head?.priority.toString()).toBe('');
-      expect(head!.priority.toComponent).toBeDefined();
+      expect(head.priority).toBeDefined();
+      expect(head.priority.toString).toBeDefined();
+      expect(head.priority.toString()).toBe('');
+      expect(head.priority.toComponent).toBeDefined();
     });
 
     it('does not render undefined attribute values', () => {

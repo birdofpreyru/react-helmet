@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_ATTRIBUTE } from '../../build/constants.js';
+import { Helmet } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('style tags', () => {
   it('updates style tags', () => {
@@ -32,19 +32,20 @@ describe('style tags', () => {
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
     const [firstTag, secondTag] = existingTags;
+    if (!firstTag || !secondTag) throw Error('Missing tag');
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(2);
 
     expect(firstTag).toBeInstanceOf(Element);
-    expect(firstTag!.getAttribute).toBeDefined();
+    expect(firstTag.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag?.innerHTML).toStrictEqual(cssText1);
-    expect(firstTag?.outerHTML).toMatchSnapshot();
+    expect(firstTag.innerHTML).toStrictEqual(cssText1);
+    expect(firstTag.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag?.innerHTML).toStrictEqual(cssText2);
-    expect(secondTag?.outerHTML).toMatchSnapshot();
+    expect(secondTag.innerHTML).toStrictEqual(cssText2);
+    expect(secondTag.outerHTML).toMatchSnapshot();
   });
 
   it('clears all style tags if none are specified', () => {
@@ -121,19 +122,20 @@ describe('Declarative API', () => {
 
     const existingTags = [...document.head.querySelectorAll(`style[${HELMET_ATTRIBUTE}]`)];
     const [firstTag, secondTag] = existingTags;
+    if (!firstTag || !secondTag) throw Error('Missing tag');
 
     expect(existingTags).toBeDefined();
     expect(existingTags).toHaveLength(2);
 
     expect(firstTag).toBeInstanceOf(Element);
-    expect(firstTag!.getAttribute).toBeDefined();
+    expect(firstTag.getAttribute).toBeDefined();
     expect(firstTag).toHaveAttribute('type', 'text/css');
-    expect(firstTag?.innerHTML).toStrictEqual(cssText1);
-    expect(firstTag?.outerHTML).toMatchSnapshot();
+    expect(firstTag.innerHTML).toStrictEqual(cssText1);
+    expect(firstTag.outerHTML).toMatchSnapshot();
 
     expect(secondTag).toBeInstanceOf(Element);
-    expect(secondTag?.innerHTML).toStrictEqual(cssText2);
-    expect(secondTag?.outerHTML).toMatchSnapshot();
+    expect(secondTag.innerHTML).toStrictEqual(cssText2);
+    expect(secondTag.outerHTML).toMatchSnapshot();
   });
 
   it('clears all style tags if none are specified', () => {

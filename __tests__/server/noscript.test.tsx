@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import ReactServer from 'react-dom/server';
 
-import { isArray, renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { isArray, renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('API', () => {
@@ -22,11 +22,12 @@ describe('server', () => {
         />,
       );
 
-      expect(head?.noscript).toBeDefined();
-      expect(head!.noscript.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.noscript).toBeDefined();
+      expect(head.noscript.toComponent).toBeDefined();
 
       const noscriptComponent
-        = head?.noscript.toComponent() as unknown as Element[];
+        = head.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toStrictEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);
@@ -52,11 +53,12 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.noscript).toBeDefined();
-      expect(head!.noscript.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.noscript).toBeDefined();
+      expect(head.noscript.toComponent).toBeDefined();
 
       const noscriptComponent
-        = head?.noscript.toComponent() as unknown as Element[];
+        = head.noscript.toComponent() as unknown as Element[];
 
       expect(noscriptComponent).toStrictEqual(isArray);
       expect(noscriptComponent).toHaveLength(2);

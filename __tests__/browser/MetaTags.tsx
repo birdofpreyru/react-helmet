@@ -1,9 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-
-import { Helmet, MetaTags } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_ATTRIBUTE } from '../../build/constants.js';
+import { Helmet, MetaTags } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 test('with "prioritizeSeoTags"', () => {
   renderClient(

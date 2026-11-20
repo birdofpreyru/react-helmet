@@ -1,4 +1,4 @@
-_Copyright &copy; 2025, Dr. Sergey Pogodin_
+_Copyright &copy; 2025&ndash;2026, Dr. Sergey Pogodin_
    &mdash; <doc@pogodin.studio> (https://dr.pogodin.studio) \
 _Copyright &copy; 2018, The New York Times Company_
 

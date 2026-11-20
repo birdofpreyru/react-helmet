@@ -1,8 +1,7 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../jest/browser-utils';
-
-import { Helmet } from '../src';
+import { Helmet } from '../build/index.js';
+import { renderClient } from '../jest/browser-utils.tsx';
 
 describe('fragments', () => {
   it('parses Fragments', () => {

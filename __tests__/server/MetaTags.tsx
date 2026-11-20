@@ -1,6 +1,5 @@
-import { renderContextServer } from '../../jest/server-utils';
-
-import { MetaTags } from '../../src';
+import { MetaTags } from '../../build/index.js';
+import { renderContextServer } from '../../jest/server-utils.tsx';
 
 test('base scenario', () => {
   const head = renderContextServer(

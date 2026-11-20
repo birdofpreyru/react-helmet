@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import ReactServer from 'react-dom/server';
 
-import { isArray, renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { isArray, renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('API', () => {
@@ -10,18 +10,20 @@ describe('server', () => {
       const NullComponent = () => null;
 
       const head = renderContextServer(<NullComponent />);
+      if (!head) throw Error('Missing head');
 
-      expect(head?.meta).toBeDefined();
-      expect(head!.meta.toString).toBeDefined();
-      expect(head?.meta.toString()).toBe('');
+      expect(head.meta).toBeDefined();
+      expect(head.meta.toString).toBeDefined();
+      expect(head.meta.toString()).toBe('');
     });
 
     it('encodes special characters in title', () => {
       const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
+      if (!head) throw Error('Missing head');
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('opts out of string encoding', () => {
@@ -29,18 +31,20 @@ describe('server', () => {
         <Helmet encodeSpecialCharacters={false} title={'This is text and & and \'.'} />,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title as React component', () => {
       const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toComponent).toBeDefined();
 
-      const titleComponent = head?.title.toComponent() as unknown as Element[];
+      const titleComponent = head.title.toComponent() as unknown as Element[];
 
       expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
@@ -61,10 +65,11 @@ describe('server', () => {
         <Helmet title="Title with Itemprop" titleAttributes={{ itemProp: 'name' }} />,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toComponent).toBeDefined();
 
-      const titleComponent = head?.title.toComponent() as unknown as Element[];
+      const titleComponent = head.title.toComponent() as unknown as Element[];
 
       expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
@@ -83,9 +88,10 @@ describe('server', () => {
     it('renders title tag as string', () => {
       const head = renderContextServer(<Helmet title="Dangerous <script> include" />);
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title with itemprop name as string', () => {
@@ -93,10 +99,11 @@ describe('server', () => {
         <Helmet title="Title with Itemprop" titleAttributes={{ itemProp: 'name' }} />,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
 
-      const titleString = head?.title.toString();
+      const titleString = head.title.toString();
 
       expect(titleString).toMatchSnapshot();
     });
@@ -110,9 +117,10 @@ describe('server', () => {
         </div>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
   });
 
@@ -124,9 +132,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('opts out of string encoding', () => {
@@ -136,9 +145,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title as React component', () => {
@@ -148,10 +158,11 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toComponent).toBeDefined();
 
-      const titleComponent = head?.title.toComponent() as unknown as Element[];
+      const titleComponent = head.title.toComponent() as unknown as Element[];
 
       expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
@@ -174,10 +185,11 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toComponent).toBeDefined();
 
-      const titleComponent = head?.title.toComponent() as unknown as Element[];
+      const titleComponent = head.title.toComponent() as unknown as Element[];
 
       expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);
@@ -200,9 +212,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title and allows children containing expressions', () => {
@@ -214,9 +227,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title with itemprop name as string', () => {
@@ -226,10 +240,11 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
 
-      const titleString = head?.title.toString();
+      const titleString = head.title.toString();
 
       expect(titleString).toMatchSnapshot();
     });
@@ -245,9 +260,10 @@ describe('server', () => {
         </div>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
   });
 
@@ -259,9 +275,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toString).toBeDefined();
-      expect(head?.title.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toString).toBeDefined();
+      expect(head.title.toString()).toMatchSnapshot();
     });
 
     it('renders title as React component', () => {
@@ -271,10 +288,11 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.title).toBeDefined();
-      expect(head!.title.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.title).toBeDefined();
+      expect(head.title.toComponent).toBeDefined();
 
-      const titleComponent = head?.title.toComponent() as unknown as Element[];
+      const titleComponent = head.title.toComponent() as unknown as Element[];
 
       expect(titleComponent).toStrictEqual(isArray);
       expect(titleComponent).toHaveLength(1);

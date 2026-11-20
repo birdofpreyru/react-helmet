@@ -1,9 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../jest/browser-utils';
-import { Helmet, type OnChangeClientState } from '../src';
-
-import { HELMET_ATTRIBUTE } from '../src/constants';
+import { HELMET_ATTRIBUTE } from '../build/constants.js';
+import { Helmet, type OnChangeClientState } from '../build/index.js';
+import { renderClient } from '../jest/browser-utils.tsx';
 
 describe('misc', () => {
   describe('API', () => {
@@ -21,15 +20,16 @@ describe('misc', () => {
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const [existingTag] = existingTags;
+      if (!existingTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag!.getAttribute).toBeDefined();
+      expect(existingTag.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'This is "quoted" text and & and \'.');
-      expect(existingTag?.outerHTML).toMatchSnapshot();
+      expect(existingTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not change the DOM if it recevies identical props', () => {
@@ -75,7 +75,9 @@ describe('misc', () => {
       // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      const [, addedTags, removedTags] = onChange.mock.calls[0]!;
+      const [firstCall] = onChange.mock.calls;
+      if (!firstCall) throw Error('Missing call');
+      const [, addedTags, removedTags] = firstCall;
 
       expect(addedTags).toStrictEqual({});
       expect(removedTags).toStrictEqual({});
@@ -104,7 +106,9 @@ describe('misc', () => {
       // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      [, addedTags, removedTags] = onChange.mock.calls[0]!;
+      const [firstCall] = onChange.mock.calls;
+      if (!firstCall) throw Error('Missing call');
+      [, addedTags, removedTags] = firstCall;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -177,15 +181,16 @@ describe('misc', () => {
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const [existingTag] = existingTags;
+      if (!existingTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag!.getAttribute).toBeDefined();
+      expect(existingTag.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'Test Description');
-      expect(existingTag?.outerHTML).toMatchSnapshot();
+      expect(existingTag.outerHTML).toMatchSnapshot();
     });
 
     it('requestAnimationFrame works as expected', async () => new Promise((resolve) => {
@@ -208,14 +213,15 @@ describe('misc', () => {
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const [existingTag] = existingTags;
+      if (!existingTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag!.getAttribute).toBeDefined();
+      expect(existingTag.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'This is "quoted" text and & and \'.');
-      expect(existingTag?.outerHTML).toMatchSnapshot();
+      expect(existingTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not change the DOM if it recevies identical props', () => {
@@ -252,7 +258,9 @@ describe('misc', () => {
       // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      const [, addedTags, removedTags] = onChange.mock.calls[0]!;
+      const [firstCall] = onChange.mock.calls;
+      if (!firstCall) throw Error('Missing call');
+      const [, addedTags, removedTags] = firstCall;
 
       expect(addedTags).toStrictEqual({});
       expect(removedTags).toStrictEqual({});
@@ -274,7 +282,9 @@ describe('misc', () => {
       // eslint-disable-next-line jest/prefer-called-with
       expect(onChange).toHaveBeenCalled();
 
-      [, addedTags, removedTags] = onChange.mock.calls[0]!;
+      const [firstCall] = onChange.mock.calls;
+      if (!firstCall) throw Error('Missing call');
+      [, addedTags, removedTags] = firstCall;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -295,7 +305,9 @@ describe('misc', () => {
 
       expect(onChange).toHaveBeenCalledTimes(2);
 
-      [, addedTags, removedTags] = onChange.mock.calls[1]!;
+      const [, secondCall] = onChange.mock.calls;
+      if (!secondCall) throw Error('Missing call');
+      [, addedTags, removedTags] = secondCall;
 
       expect(addedTags).toHaveProperty('metaTags');
       expect(addedTags.metaTags?.[0]).toBeDefined();
@@ -431,15 +443,9 @@ describe('misc', () => {
     });
 
     it('handles undefined children', () => {
-      const charSet = undefined;
-
       renderClient(
         <Helmet>
-          {
-            // TODO: Revise the second rule hit.
-            // eslint-disable-next-line jest/no-conditional-in-test, @typescript-eslint/no-unnecessary-condition
-            charSet ? <meta charSet={charSet} /> : null
-          }
+          <meta charSet={undefined} />
           <title>Test Title</title>
         </Helmet>,
       );
@@ -456,14 +462,15 @@ describe('misc', () => {
 
       const existingTags = document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`);
       const [existingTag] = existingTags;
+      if (!existingTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
       expect(existingTag).toBeInstanceOf(Element);
-      expect(existingTag!.getAttribute).toBeDefined();
+      expect(existingTag.getAttribute).toBeDefined();
       expect(existingTag).toHaveAttribute('name', 'description');
       expect(existingTag).toHaveAttribute('content', 'Test Description');
-      expect(existingTag?.outerHTML).toMatchSnapshot();
+      expect(existingTag.outerHTML).toMatchSnapshot();
     });
 
     it('requestAnimationFrame works as expected', async () => new Promise((resolve) => {

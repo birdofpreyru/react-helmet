@@ -6,7 +6,7 @@ import {
   useMemo,
 } from 'react';
 
-import Helmet from './Helmet';
+import Helmet from './Helmet.js';
 
 type PropsT = {
   children?: ReactNode;
@@ -74,7 +74,9 @@ const MetaTags: FunctionComponent<PropsT> & {
   const extra: ReactNode[] = [];
   if (extraMetaTags?.length) {
     for (let i = 0; i < extraMetaTags.length; ++i) {
-      const { content, name } = extraMetaTags[i]!;
+      const tag = extraMetaTags[i];
+      if (!tag) throw Error('Missing tag');
+      const { content, name } = tag;
       extra.push(
         <meta
           content={content}

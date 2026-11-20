@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { isArray, renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { isArray, renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('API', () => {
@@ -69,10 +69,11 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.base).toBeDefined();
-      expect(head!.base.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.base).toBeDefined();
+      expect(head.base.toComponent).toBeDefined();
 
-      const baseComponent = head?.base.toComponent();
+      const baseComponent = head.base.toComponent();
 
       expect(baseComponent).toStrictEqual(isArray);
       expect(baseComponent).toHaveLength(1);
@@ -93,9 +94,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.base).toBeDefined();
-      expect(head!.base.toString).toBeDefined();
-      expect(head?.base.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.base).toBeDefined();
+      expect(head.base.toString).toBeDefined();
+      expect(head.base.toString()).toMatchSnapshot();
     });
 
     it("renders base tag with only 'target' as React component", () => {

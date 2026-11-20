@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_ATTRIBUTE } from '../../build/constants.js';
+import { Helmet } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('script tags', () => {
   describe('API', () => {
@@ -38,16 +38,12 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
-          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test.js'
           && tag.getAttribute('type') === 'text/javascript'
         ) || (
-          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test2.js'
           && tag.getAttribute('type') === 'text/javascript'
-          // eslint-disable-next-line jest/no-conditional-in-test
         ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
@@ -107,21 +103,22 @@ describe('script tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {
@@ -200,16 +197,12 @@ describe('script tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => (
-          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test.js'
           && tag.getAttribute('type') === 'text/javascript'
         ) || (
-          // eslint-disable-next-line jest/no-conditional-in-test
           tag.getAttribute('src') === 'http://localhost/test2.js'
           && tag.getAttribute('type') === 'text/javascript'
-          // eslint-disable-next-line jest/no-conditional-in-test
         ) || (tag.getAttribute('type') === 'application/ld+json' && tag.innerHTML === scriptInnerHTML),
       );
 
@@ -258,21 +251,22 @@ describe('script tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`script[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags.length).toBeGreaterThanOrEqual(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('src', 'http://localhost/test.js');
       expect(firstTag).toHaveAttribute('type', 'text/javascript');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('src', 'http://localhost/test2.js');
       expect(secondTag).toHaveAttribute('type', 'text/javascript');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('sets undefined attribute values to empty strings', () => {

@@ -11,7 +11,7 @@ import {
   REACT_TAG_MAP,
   TAG_NAMES,
   TAG_PROPERTIES,
-} from './constants';
+} from './constants.js';
 
 import type {
   HelmetProviderHeap,
@@ -19,13 +19,13 @@ import type {
   ScriptProps,
   StyleProps,
   TitleProps,
-} from './types';
+} from './types.js';
 
 import {
   calcAggregatedState,
   flattenArray,
   propToAttr,
-} from './utils';
+} from './utils.js';
 
 const SELF_CLOSING_TAGS: string[] = [
   TAG_NAMES.NOSCRIPT,
@@ -177,7 +177,9 @@ function renderElements<T>(
 ): ReactNode[] {
   const res: ReactNode[] = [];
   for (let i = 0; i < attrs.length; ++i) {
-    res.push(renderElement(type, attrs[i]!, i));
+    const attr = attrs[i];
+    if (!attr) throw Error('Missing attribute');
+    res.push(renderElement(type, attr, i));
   }
   return res;
 }

@@ -7,8 +7,8 @@ import {
 
 import { type Root, createRoot } from 'react-dom/client';
 
-import Provider from '../src/Provider';
-import type { HelmetServerState } from '../src/types';
+import Provider from '../build/Provider.js';
+import type { HelmetServerState } from '../build/types.js';
 
 let root: Root | null = null;
 

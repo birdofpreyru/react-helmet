@@ -1,9 +1,8 @@
 // TODO: Perhaps, just rename stuff with underscores.
 /* eslint-disable no-underscore-dangle */
 
-import { renderClient } from '../jest/browser-utils';
-
-import { Helmet } from '../src';
+import { Helmet } from '../build/index.js';
+import { renderClient } from '../jest/browser-utils.tsx';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

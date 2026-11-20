@@ -1,13 +1,13 @@
 // Polyfills requestAnimationFrame() in the test environment.
 // eslint-disable-next-line import/no-unassigned-import
-import 'raf/polyfill';
+import 'raf/polyfill.js';
 
 import { afterEach, beforeEach } from '@jest/globals';
 
 // eslint-disable-next-line import/no-unassigned-import
 import '@testing-library/jest-dom';
 
-import { unmount } from '../../jest/browser-utils';
+import { unmount } from '../../jest/browser-utils.tsx';
 
 // @ts-expect-error "that's fine"
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;

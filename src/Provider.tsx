@@ -6,19 +6,19 @@ import {
   useState,
 } from 'react';
 
-import { commitTagChanges } from './client';
+import { commitTagChanges } from './client.js';
 
-import { IS_DOM_ENVIRONMENT } from './constants';
-import { newServerState } from './server';
+import { IS_DOM_ENVIRONMENT } from './constants.js';
+import { newServerState } from './server.js';
 
 import type {
   ContextValue,
   HelmetProps,
   HelmetProviderHeap,
   HelmetServerState,
-} from './types';
+} from './types.js';
 
-import { calcAggregatedState } from './utils';
+import { calcAggregatedState } from './utils.js';
 
 export const Context = createContext<ContextValue | undefined>(undefined);
 
@@ -76,8 +76,11 @@ const HelmetProvider: FunctionComponent<ProviderProps> = ({
       const idx = heap.helmets.findIndex((item) => item[0] === id);
       if (idx >= 0) {
         delete heap.state;
-        if (props) heap.helmets[idx]![1] = props;
-        else heap.helmets.splice(idx, 1);
+        if (props) {
+          const helmet = heap.helmets[idx];
+          if (!helmet) throw Error('Missing helmet');
+          helmet[1] = props;
+        } else heap.helmets.splice(idx, 1);
       } else if (props) {
         delete heap.state;
         heap.helmets.push([id, props]);

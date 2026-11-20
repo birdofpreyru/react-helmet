@@ -4,9 +4,11 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "jsx": "react-jsx",
-    "module": "Preserve",
+    "isolatedModules": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noUncheckedIndexedAccess": true,
-    "outDir": "build/types",
+    "outDir": "build",
     "rootDir": "src",
     "target": "es2017",
     "verbatimModuleSyntax": true

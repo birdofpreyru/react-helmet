@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-import { type BodyProps, Helmet } from '../../src';
-import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../src/constants';
+import { HELMET_ATTRIBUTE, HTML_TAG_MAP } from '../../build/constants.js';
+import { type BodyProps, Helmet } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('body attributes', () => {
   describe('valid attributes', () => {
@@ -48,11 +48,7 @@ describe('body attributes', () => {
         );
 
         const bodyTag = document.body;
-
-        // TODO: Revisit.
-        // eslint-disable-next-line jest/no-conditional-in-test
         const reactCompatAttr = HTML_TAG_MAP[attribute] ?? attribute;
-
         expect(bodyTag).toHaveAttribute(reactCompatAttr, attrValue);
         expect(bodyTag).toHaveAttribute(HELMET_ATTRIBUTE, reactCompatAttr);
       });

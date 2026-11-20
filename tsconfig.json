@@ -1,8 +1,11 @@
 { 
   "extends": "@tsconfig/recommended",
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
-    "module": "Preserve",
+    "isolatedModules": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
     "target": "es2017",

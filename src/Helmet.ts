@@ -8,9 +8,9 @@ import {
   useId,
 } from 'react';
 
-import { Context } from './Provider';
+import { Context } from './Provider.js';
 
-import { REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants';
+import { REACT_TAG_MAP, TAG_NAMES, VALID_TAG_NAMES } from './constants.js';
 
 import type {
   BaseProps,
@@ -24,8 +24,9 @@ import type {
   ScriptProps,
   StyleProps,
   TitleProps,
-} from './types';
-import { cloneProps, mergeProps, pushToPropArray } from './utils';
+} from './types.js';
+
+import { cloneProps, mergeProps, pushToPropArray } from './utils.js';
 
 function assertChildType(
   childType: ReactElement['type'],
@@ -100,6 +101,7 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
             const p = getPropName(key);
             if (p !== key) {
               it[p] = it[key as keyof HelmetChildProps] as unknown;
+              // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
               delete it[key as keyof HelmetChildProps];
             }
           }
@@ -111,6 +113,7 @@ function reduceChildrenAndProps(props: HelmetProps): Omit<HelmetProps, 'children
         const p = getPropName(key);
         if (p !== key) {
           it[p] = it[key as keyof HelmetChildProps] as unknown;
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete it[key as keyof HelmetChildProps];
         }
       }

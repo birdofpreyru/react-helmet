@@ -1,5 +1,5 @@
-export type * from './types';
+export type * from './types.js';
 
-export { default as Helmet } from './Helmet';
-export { default as MetaTags } from './MetaTags';
-export { default as HelmetProvider } from './Provider';
+export { default as Helmet } from './Helmet.js';
+export { default as MetaTags } from './MetaTags.js';
+export { default as HelmetProvider } from './Provider.js';

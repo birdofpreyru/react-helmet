@@ -1,7 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('Declarative API', () => {
@@ -28,9 +28,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(body?.bodyAttributes).toBeDefined();
-      expect(body!.bodyAttributes.toString).toBeDefined();
-      expect(body?.bodyAttributes.toString()).toMatchSnapshot();
+      if (!body) throw Error('Missing body');
+      expect(body.bodyAttributes).toBeDefined();
+      expect(body.bodyAttributes.toString).toBeDefined();
+      expect(body.bodyAttributes.toString()).toMatchSnapshot();
     });
   });
 });

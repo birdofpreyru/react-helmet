@@ -3,7 +3,7 @@ import {
   SEO_PRIORITY_TAGS,
   TAG_NAMES,
   TAG_PROPERTIES,
-} from './constants';
+} from './constants.js';
 
 import type {
   AggregatedState,
@@ -17,7 +17,7 @@ import type {
   PropArrayItem,
   RegisteredHelmetPropsArray,
   ScriptProps,
-} from './types';
+} from './types.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type PropList = Record<string, any>;
@@ -41,7 +41,9 @@ function getInnermostProperty<T extends keyof HelmetProps>(
   propName: T,
 ): HelmetProps[T] | undefined {
   for (let i = props.length - 1; i >= 0; --i) {
-    const value = props[i]![1][propName];
+    const prop = props[i];
+    if (!prop) throw Error('Missing prop');
+    const value = prop[1][propName];
     if (value !== undefined) return value;
   }
   return undefined;
@@ -102,7 +104,9 @@ export function aggregateBaseProps(
   props: RegisteredHelmetPropsArray,
 ): BaseProps | undefined {
   for (let i = props.length - 1; i >= 0; --i) {
-    const res = props[i]![1].base;
+    const prop = props[i];
+    if (!prop) throw Error('Missing prop');
+    const res = prop[1].base;
     if (res?.href || res?.target) return res;
   }
   return undefined;
@@ -187,7 +191,8 @@ export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
     .reduce<Array<PropArrayItem<T>>>((approvedTags, instanceTags) => {
       const instanceSeenTags: SeenTags<T> = {};
 
-      instanceTags!.filter((tag: PropArrayItem<T>) => {
+      if (!instanceTags) throw Error('Missing instance tags');
+      instanceTags.filter((tag: PropArrayItem<T>) => {
         const primaryAttributeKey = getPrimaryProp(tag, primaryAttributes);
 
         if (!primaryAttributeKey || !tag[primaryAttributeKey]) {
@@ -239,9 +244,9 @@ export function getTagsFromPropsList<T extends keyof HelmetPropArrays>(
     .reverse() as HelmetPropArrays[T];
 }
 
-function getAnyTrueFromPropsArray<T extends keyof HelmetPropBooleans>(
+function getAnyTrueFromPropsArray(
   propsArray: RegisteredHelmetPropsArray,
-  propName: T,
+  propName: keyof HelmetPropBooleans,
 ): boolean {
   for (const [, props] of propsArray) {
     if (props[propName]) return true;

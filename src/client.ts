@@ -3,7 +3,7 @@ import {
   HTML_TAG_MAP,
   TAG_NAMES,
   TAG_PROPERTIES,
-} from './constants';
+} from './constants.js';
 
 import type {
   AggregatedState,
@@ -12,9 +12,9 @@ import type {
   HelmetTags,
   HtmlProps,
   StateUpdate,
-} from './types';
+} from './types.js';
 
-import { flattenArray } from './utils';
+import { flattenArray } from './utils.js';
 
 type TagUpdates = {
   allTags: HTMLElement[];
@@ -51,8 +51,12 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
       // eslint-disable-next-line prefer-object-has-own
       if (Object.prototype.hasOwnProperty.call(tag, key)) {
         const name = HTML_TAG_MAP[key] ?? key;
+        // TODO: Revise!
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
         if (name as TAG_PROPERTIES === TAG_PROPERTIES.INNER_HTML) {
           newElement.innerHTML = value as string;
+        // TODO: Revise!
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-enum-assignment
         } else if (name as TAG_PROPERTIES === TAG_PROPERTIES.CSS_TEXT) {
           // TODO: Not sure when this is true?
           // @ts-expect-error "pre-existing"
@@ -81,7 +85,9 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
     for (let i = 0; ; ++i) {
-      if (newElement.isEqualNode(oldTags[i]!)) {
+      const oldTag = oldTags[i];
+      if (!oldTag) throw Error('Missing tag');
+      if (newElement.isEqualNode(oldTag)) {
         oldTags.splice(i, 1);
         break;
       }
@@ -149,7 +155,9 @@ function updateAttributes(tagName: string, props: BodyProps | HtmlProps) {
   }
 
   for (let i = attributesToRemove.length - 1; i >= 0; i -= 1) {
-    elementTag.removeAttribute(attributesToRemove[i]!);
+    const attribute = attributesToRemove[i];
+    if (!attribute) throw Error('Missing attribute');
+    elementTag.removeAttribute(attribute);
   }
 
   if (helmetAttributes.length === attributesToRemove.length) {
@@ -193,7 +201,8 @@ export function commitTagChanges(
   updateAttributes(TAG_NAMES.BODY, bodyAttributes ?? {});
   updateAttributes(TAG_NAMES.HTML, htmlAttributes ?? {});
 
-  updateTitle(title, titleAttributes!);
+  if (titleAttributes === undefined) throw Error('Missing title attributes');
+  updateTitle(title, titleAttributes);
 
   const tagUpdates: TagUpdateList = {
     baseTag: updateTags(TAG_NAMES.BASE, base ? [base] : []),
@@ -237,7 +246,9 @@ export function commitTagChanges(
   const removedTags: Partial<HelmetTags> = {};
 
   Object.keys(tagUpdates).forEach((tagType) => {
-    const { allTags, newTags, oldTags } = tagUpdates[tagType]!;
+    const tagUpdate = tagUpdates[tagType];
+    if (!tagUpdate) throw Error('Missing tag update');
+    const { allTags, newTags, oldTags } = tagUpdate;
 
     (resultTags[tagType as keyof HelmetTags] as HTMLElement[]) = allTags;
 
@@ -246,7 +257,7 @@ export function commitTagChanges(
     }
     if (oldTags.length) {
       (removedTags[tagType as keyof HelmetTags] as HTMLElement[])
-        = tagUpdates[tagType]!.oldTags;
+        = tagUpdate.oldTags;
     }
   });
 

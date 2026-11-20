@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_ATTRIBUTE } from '../../build/constants.js';
+import { Helmet } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('base tag', () => {
   describe('API', () => {
@@ -36,7 +36,10 @@ describe('base tag', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      const firstTag = existingTags[0]!;
+
+      const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
+
       expect(firstTag).toBeInstanceOf(Element);
       expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('target', '_blank');
@@ -60,16 +63,18 @@ describe('base tag', () => {
       );
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
+
       const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
 
       expect(firstTag).toHaveAttribute('href', 'http://mysite.com/public');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
@@ -121,7 +126,10 @@ describe('base tag', () => {
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
-      const firstTag = existingTags[0]!;
+
+      const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
+
       expect(firstTag).toBeInstanceOf(Element);
       expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('target', '_blank');
@@ -157,16 +165,17 @@ describe('base tag', () => {
 
       const existingTags = [...document.head.querySelectorAll(`base[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
 
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
 
       expect(firstTag).toHaveAttribute('href', 'http://mysite.com/public');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {

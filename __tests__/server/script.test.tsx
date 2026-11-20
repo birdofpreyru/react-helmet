@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { isArray, renderContextServer } from '../../jest/server-utils';
-import { Helmet } from '../../src';
+import { Helmet } from '../../build/index.js';
+import { isArray, renderContextServer } from '../../jest/server-utils.tsx';
 
 describe('server', () => {
   describe('API', () => {
@@ -22,11 +22,12 @@ describe('server', () => {
         />,
       );
 
-      expect(head?.script).toBeDefined();
-      expect(head!.script.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.script).toBeDefined();
+      expect(head.script.toComponent).toBeDefined();
 
       const scriptComponent
-        = head?.script.toComponent() as unknown as Element[];
+        = head.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toStrictEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
@@ -56,9 +57,10 @@ describe('server', () => {
         />,
       );
 
-      expect(head?.script).toBeDefined();
-      expect(head!.script.toString).toBeDefined();
-      expect(head?.script.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.script).toBeDefined();
+      expect(head.script.toString).toBeDefined();
+      expect(head.script.toString()).toMatchSnapshot();
     });
   });
 
@@ -71,11 +73,12 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.script).toBeDefined();
-      expect(head!.script.toComponent).toBeDefined();
+      if (!head) throw Error('Missing head');
+      expect(head.script).toBeDefined();
+      expect(head.script.toComponent).toBeDefined();
 
       const scriptComponent
-        = head?.script.toComponent() as unknown as Element[];
+        = head.script.toComponent() as unknown as Element[];
 
       expect(scriptComponent).toStrictEqual(isArray);
       expect(scriptComponent).toHaveLength(2);
@@ -97,9 +100,10 @@ describe('server', () => {
         </Helmet>,
       );
 
-      expect(head?.script).toBeDefined();
-      expect(head!.script.toString).toBeDefined();
-      expect(head?.script.toString()).toMatchSnapshot();
+      if (!head) throw Error('Missing head');
+      expect(head.script).toBeDefined();
+      expect(head.script.toString).toBeDefined();
+      expect(head.script.toString()).toMatchSnapshot();
     });
   });
 });

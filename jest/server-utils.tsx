@@ -4,8 +4,8 @@
 import { type ReactNode, StrictMode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import Provider from '../src/Provider';
-import type { HelmetServerState } from '../src/types';
+import Provider from '../build/Provider.js';
+import type { HelmetServerState } from '../build/types.js';
 
 /**
  * Renders the given `node` within the provided `context` into HTML markup,

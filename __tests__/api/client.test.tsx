@@ -1,8 +1,7 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-
-import { Helmet, type OnChangeClientState } from '../../src';
+import { Helmet, type OnChangeClientState } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('onChangeClientState', () => {
   describe('API', () => {

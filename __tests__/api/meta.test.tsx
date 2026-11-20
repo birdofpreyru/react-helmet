@@ -1,8 +1,8 @@
 /** @jest-environment jsdom */
 
-import { renderClient } from '../../jest/browser-utils';
-import { Helmet } from '../../src';
-import { HELMET_ATTRIBUTE } from '../../src/constants';
+import { HELMET_ATTRIBUTE } from '../../build/constants.js';
+import { Helmet } from '../../build/index.js';
+import { renderClient } from '../../jest/browser-utils.tsx';
 
 describe('meta tags', () => {
   describe('API', () => {
@@ -33,20 +33,16 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => tag.getAttribute('charset') === 'utf-8'
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('name') === 'description'
             && tag.getAttribute('content') === 'Test description'
           )
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('http-equiv') === 'content-type'
             && tag.getAttribute('content') === 'text/html'
           )
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('itemprop') === 'name'
             && tag.getAttribute('content') === 'Test name itemprop'
           ),
@@ -110,26 +106,27 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
+      if (!firstTag || !secondTag || !thirdTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(3);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('charset', 'utf-8');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag!.getAttribute).toBeDefined();
+      expect(thirdTag.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('name', 'keywords');
       expect(thirdTag).toHaveAttribute('content', 'test,meta,tags');
-      expect(thirdTag?.outerHTML).toMatchSnapshot();
+      expect(thirdTag.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate meta tags if specified in the same component', () => {
@@ -150,21 +147,22 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Test description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Duplicate description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate meta tags with single meta tag in a nested component', () => {
@@ -195,15 +193,16 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single meta tag with duplicate meta tags in a nested component', () => {
@@ -234,21 +233,22 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner duplicate description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
@@ -319,20 +319,16 @@ describe('meta tags', () => {
       expect(existingTags).toBeDefined();
 
       const filteredTags = existingTags.filter(
-        // eslint-disable-next-line jest/no-conditional-in-test
         (tag) => tag.getAttribute('charset') === 'utf-8'
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('name') === 'description'
             && tag.getAttribute('content') === 'Test description'
           )
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('http-equiv') === 'content-type'
             && tag.getAttribute('content') === 'text/html'
           )
           || (
-            // eslint-disable-next-line jest/no-conditional-in-test
             tag.getAttribute('itemprop') === 'name'
             && tag.getAttribute('content') === 'Test name itemprop'
           ),
@@ -388,26 +384,27 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag, thirdTag] = existingTags;
+      if (!firstTag || !secondTag || !thirdTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(3);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('charset', 'utf-8');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
 
       expect(thirdTag).toBeInstanceOf(Element);
-      expect(thirdTag!.getAttribute).toBeDefined();
+      expect(thirdTag.getAttribute).toBeDefined();
       expect(thirdTag).toHaveAttribute('name', 'keywords');
       expect(thirdTag).toHaveAttribute('content', 'test,meta,tags');
-      expect(thirdTag?.outerHTML).toMatchSnapshot();
+      expect(thirdTag.outerHTML).toMatchSnapshot();
     });
 
     it('allows duplicate meta tags if specified in the same component', () => {
@@ -420,21 +417,22 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Test description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Duplicate description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('overrides duplicate meta tags with single meta tag in a nested component', () => {
@@ -452,15 +450,16 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag] = existingTags;
+      if (!firstTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(1);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
     });
 
     it('overrides single meta tag with duplicate meta tags in a nested component', () => {
@@ -478,21 +477,22 @@ describe('meta tags', () => {
 
       const existingTags = [...document.head.querySelectorAll(`meta[${HELMET_ATTRIBUTE}]`)];
       const [firstTag, secondTag] = existingTags;
+      if (!firstTag || !secondTag) throw Error('Missing tag');
 
       expect(existingTags).toBeDefined();
       expect(existingTags).toHaveLength(2);
 
       expect(firstTag).toBeInstanceOf(Element);
-      expect(firstTag!.getAttribute).toBeDefined();
+      expect(firstTag.getAttribute).toBeDefined();
       expect(firstTag).toHaveAttribute('name', 'description');
       expect(firstTag).toHaveAttribute('content', 'Inner description');
-      expect(firstTag?.outerHTML).toMatchSnapshot();
+      expect(firstTag.outerHTML).toMatchSnapshot();
 
       expect(secondTag).toBeInstanceOf(Element);
-      expect(secondTag!.getAttribute).toBeDefined();
+      expect(secondTag.getAttribute).toBeDefined();
       expect(secondTag).toHaveAttribute('name', 'description');
       expect(secondTag).toHaveAttribute('content', 'Inner duplicate description');
-      expect(secondTag?.outerHTML).toMatchSnapshot();
+      expect(secondTag.outerHTML).toMatchSnapshot();
     });
 
     it('does not render tag when primary attribute is null', () => {
