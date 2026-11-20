@@ -1,7 +1,7 @@
 export default {
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,mjs,ts,tsx}',
+    'build/**/*.{js,jsx,mjs,ts,tsx}',
   ],
   coverageDirectory: '__coverage__',
   rootDir: '../..',

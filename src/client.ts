@@ -85,9 +85,7 @@ function updateTags(type: string, tags: HelmetChildProps[]) {
 
     // Remove a duplicate tag from domTagstoRemove, so it isn't cleared.
     for (let i = 0; ; ++i) {
-      const oldTag = oldTags[i];
-      if (!oldTag) throw Error('Missing tag');
-      if (newElement.isEqualNode(oldTag)) {
+      if (newElement.isEqualNode(oldTags[i] ?? null)) {
         oldTags.splice(i, 1);
         break;
       }
